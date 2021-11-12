@@ -1,0 +1,347 @@
+DEBUG 2020-10-14 12:31:32,643 [12] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"6949ecf4-1842-4474-96e9-2f9de10bc13d","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 12:31:32,734 [12] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"6949ecf4-1842-4474-96e9-2f9de10bc13d","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 12:31:32,857 [16] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"3f3dd3f5-07b0-4040-8e6b-b745d23f2c35","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 12:31:32,879 [16] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"3f3dd3f5-07b0-4040-8e6b-b745d23f2c35","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+INFO  2020-10-14 12:32:14,470 [14] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 12:32:14,749 [14] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 12:32:14,749 [14] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 12:32:15,301 [14] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 12:32:15,302 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-14.mpp Started parallel checkProcess
+INFO  2020-10-14 12:32:15,304 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-14 12:32:19,693 [14] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-14 12:32:19,695 [14] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.TableApply(Object Name)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 138
+INFO  2020-10-14 12:32:20,308 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-14 12:32:20,320 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-14 12:32:20,329 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-14 12:32:20,339 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 1
+INFO  2020-10-14 12:32:20,377 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Before WINPROJ - auto kill after 5000 ms
+INFO  2020-10-14 12:32:20,379 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - After WINPROJ - auto kill after 5000 ms
+INFO  2020-10-14 12:32:22,164 [14] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 12:32:22,287 [14] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 12:32:22,287 [14] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 12:32:22,807 [14] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 12:32:22,808 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-22.mpp Started parallel checkProcess
+INFO  2020-10-14 12:32:24,235 [14] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-14 12:32:24,238 [14] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.Runtime.InteropServices.ComTypes.ITypeInfo.GetFuncDesc(Int32 index, IntPtr& ppFuncDesc)
+   at System.Dynamic.IDispatchComObject.GetFuncDescForDescIndex(ITypeInfo typeInfo, Int32 funcIndex, FUNCDESC& funcDesc, IntPtr& funcDescHandle)
+   at System.Dynamic.IDispatchComObject.EnsureScanDefinedMethods()
+   at System.Dynamic.IDispatchComObject.System.Dynamic.IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+   at System.Dynamic.DynamicMetaObject.Create(Object value, Expression expression)
+   at System.Dynamic.DynamicMetaObjectBinder.Bind(Object[] args, ReadOnlyCollection`1 parameters, LabelTarget returnLabel)
+   at System.Runtime.CompilerServices.CallSiteBinder.BindCore[T](CallSite`1 site, Object[] args)
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute3[T0,T1,T2,TRet](CallSite site, T0 arg0, T1 arg1, T2 arg2)
+   at CallSite.Target(Closure , CallSite , Task , PjField , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecuteVoid3[T0,T1,T2](CallSite site, T0 arg0, T1 arg1, T2 arg2)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 259
+INFO  2020-10-14 12:32:30,253 [14] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 12:32:30,353 [14] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 12:32:30,354 [14] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 12:32:30,887 [14] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 12:32:30,889 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-30.mpp Started parallel checkProcess
+INFO  2020-10-14 12:32:31,883 [14] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 2
+INFO  2020-10-14 12:32:31,884 [14] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at Microsoft.Office.Interop.MSProject.Tasks.Add(Object Name, Object Before)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 235
+INFO  2020-10-14 12:32:33,389 [14] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 12:32:33,500 [14] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 12:32:33,500 [14] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 12:32:34,009 [14] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 12:32:34,010 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-33.mpp Started parallel checkProcess
+INFO  2020-10-14 12:32:36,459 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-33.mpp before saving
+INFO  2020-10-14 12:32:36,705 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-33.mpp Saved successfully
+INFO  2020-10-14 12:32:36,919 [14] WebAPI.Controllers.ExportToMPPController GetFile - Before Process Kill
+INFO  2020-10-14 12:32:36,921 [14] WebAPI.Controllers.ExportToMPPController GetFile - After Process Kill
+INFO  2020-10-14 12:32:36,924 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-33.mpp before GetBinaryFile
+INFO  2020-10-14 12:32:36,992 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-33.mpp after GetBinaryFile
+INFO  2020-10-14 12:32:36,997 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-33.mpp before DeleteFile
+INFO  2020-10-14 12:32:37,019 [14] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 4_Baseline_week_10142020_12-32-33.mpp after DeleteFile
+DEBUG 2020-10-14 15:05:53,412 [8] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"9a28b1b0-45c4-4cc7-8c63-d53bdacd7153","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:05:53,592 [8] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"9a28b1b0-45c4-4cc7-8c63-d53bdacd7153","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 15:05:53,737 [8] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"ad145b31-ff2e-4fde-bea5-87aec08a336a","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:05:53,750 [8] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"ad145b31-ff2e-4fde-bea5-87aec08a336a","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 15:07:15,715 [9] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"d49b81f1-ec30-486c-82a8-fe6d56ed8ae0","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:07:15,731 [9] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"d49b81f1-ec30-486c-82a8-fe6d56ed8ae0","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 15:07:15,910 [18] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"c88c2382-298f-47da-a0f5-b56913baf148","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:07:15,915 [18] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"c88c2382-298f-47da-a0f5-b56913baf148","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 15:14:05,752 [29] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"8e86cf01-9091-425f-b6bb-9e794b012ca2","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:14:05,758 [29] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"8e86cf01-9091-425f-b6bb-9e794b012ca2","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 15:14:05,823 [24] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"6316d44b-5425-4ee6-a6db-52cf90a5ff9f","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:14:06,049 [24] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"6316d44b-5425-4ee6-a6db-52cf90a5ff9f","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+INFO  2020-10-14 15:16:55,173 [8] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 15:16:55,306 [8] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 15:16:55,307 [8] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 15:16:56,072 [8] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 15:16:56,077 [8] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-16-55.mpp Started parallel checkProcess
+INFO  2020-10-14 15:16:56,080 [15] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-14 15:16:58,209 [8] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-16-55.mpp before saving
+INFO  2020-10-14 15:16:58,371 [8] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-16-55.mpp Saved successfully
+INFO  2020-10-14 15:16:58,723 [8] WebAPI.Controllers.ExportToMPPController GetFile - Before Process Kill
+INFO  2020-10-14 15:16:58,724 [8] WebAPI.Controllers.ExportToMPPController GetFile - After Process Kill
+INFO  2020-10-14 15:16:58,725 [8] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-16-55.mpp before GetBinaryFile
+INFO  2020-10-14 15:16:58,771 [8] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-16-55.mpp after GetBinaryFile
+INFO  2020-10-14 15:16:58,774 [8] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-16-55.mpp before DeleteFile
+INFO  2020-10-14 15:16:58,782 [8] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-16-55.mpp after DeleteFile
+INFO  2020-10-14 15:17:01,134 [15] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-14 15:17:01,138 [15] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-14 15:17:01,144 [15] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-14 15:17:01,152 [15] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 0
+INFO  2020-10-14 15:24:25,142 [13] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 15:24:25,302 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 15:24:25,303 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 15:24:26,082 [13] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 15:24:26,083 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-24-25.mpp Started parallel checkProcess
+INFO  2020-10-14 15:24:26,083 [22] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-14 15:24:28,870 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-24-25.mpp before saving
+INFO  2020-10-14 15:24:28,984 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-24-25.mpp Saved successfully
+INFO  2020-10-14 15:24:29,513 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before Process Kill
+INFO  2020-10-14 15:24:29,515 [13] WebAPI.Controllers.ExportToMPPController GetFile - After Process Kill
+INFO  2020-10-14 15:24:29,517 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-24-25.mpp before GetBinaryFile
+INFO  2020-10-14 15:24:29,540 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-24-25.mpp after GetBinaryFile
+INFO  2020-10-14 15:24:29,581 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-24-25.mpp before DeleteFile
+INFO  2020-10-14 15:24:29,584 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-24-25.mpp after DeleteFile
+INFO  2020-10-14 15:24:31,120 [22] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-14 15:24:31,132 [22] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-14 15:24:31,148 [22] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-14 15:24:31,154 [22] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 0
+INFO  2020-10-14 15:28:38,560 [22] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 15:28:38,688 [22] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 15:28:38,689 [22] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 15:28:39,162 [22] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 15:28:39,164 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-38.mpp Started parallel checkProcess
+INFO  2020-10-14 15:28:39,164 [37] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-14 15:28:40,591 [22] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-14 15:28:40,594 [22] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   at System.Dynamic.ComRuntimeHelpers.GetITypeInfoFromIDispatch(IDispatch dispatch, Boolean throwIfMissingExpectedTypeInfo)
+   at System.Dynamic.IDispatchComObject.EnsureScanDefinedMethods()
+   at CallSite.Target(Closure , CallSite , ComObject , PjField , Object )
+   at CallSite.Target(Closure , CallSite , Task , PjField , Object )
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 437
+INFO  2020-10-14 15:28:43,601 [22] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 15:28:43,665 [22] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 15:28:43,665 [22] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 15:28:44,164 [22] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 15:28:44,166 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-43.mpp Started parallel checkProcess
+INFO  2020-10-14 15:28:44,168 [37] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-14 15:28:44,191 [37] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-14 15:28:44,203 [37] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-14 15:28:44,209 [37] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 1
+INFO  2020-10-14 15:28:44,220 [37] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Before WINPROJ - auto kill after 5000 ms
+INFO  2020-10-14 15:28:44,221 [37] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - After WINPROJ - auto kill after 5000 ms
+INFO  2020-10-14 15:28:44,310 [22] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-14 15:28:44,313 [22] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x800706BE): The remote procedure call failed. (Exception from HRESULT: 0x800706BE)
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.ViewApply(Object Name, Object SinglePane, Object Toggle)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 122
+INFO  2020-10-14 15:28:45,096 [22] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 15:28:45,211 [22] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 15:28:45,212 [22] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 15:28:45,590 [22] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 15:28:45,592 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-45.mpp Started parallel checkProcess
+INFO  2020-10-14 15:28:46,926 [22] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 2
+INFO  2020-10-14 15:28:46,928 [22] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at Microsoft.Office.Interop.MSProject.Task.get_PercentComplete()
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 439
+INFO  2020-10-14 15:28:49,935 [22] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 15:28:50,050 [22] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 15:28:50,051 [22] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 15:28:50,479 [22] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 15:28:50,481 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-50.mpp Started parallel checkProcess
+INFO  2020-10-14 15:28:51,793 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-50.mpp before saving
+INFO  2020-10-14 15:28:51,999 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-50.mpp Saved successfully
+INFO  2020-10-14 15:28:52,220 [22] WebAPI.Controllers.ExportToMPPController GetFile - Before Process Kill
+INFO  2020-10-14 15:28:52,226 [22] WebAPI.Controllers.ExportToMPPController GetFile - After Process Kill
+INFO  2020-10-14 15:28:52,227 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-50.mpp before GetBinaryFile
+INFO  2020-10-14 15:28:52,301 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-50.mpp after GetBinaryFile
+INFO  2020-10-14 15:28:52,304 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-50.mpp before DeleteFile
+INFO  2020-10-14 15:28:52,337 [22] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_15-28-50.mpp after DeleteFile
+DEBUG 2020-10-14 15:59:15,836 [19] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"00826026-0dea-4dd9-b089-7e304597abee","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:59:15,851 [19] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"00826026-0dea-4dd9-b089-7e304597abee","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 15:59:15,921 [6] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"3e4a93f7-f049-4b88-b275-cff525e54ef5","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:59:15,936 [6] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"3e4a93f7-f049-4b88-b275-cff525e54ef5","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+INFO  2020-10-14 15:59:34,004 [25] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 15:59:34,123 [25] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 15:59:34,124 [25] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 15:59:34,607 [25] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 15:59:34,611 [25] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\yawa_Baseline_week_10142020_15-59-34.mpp Started parallel checkProcess
+INFO  2020-10-14 15:59:34,612 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-14 15:59:36,501 [25] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\yawa_Baseline_week_10142020_15-59-34.mpp before saving
+INFO  2020-10-14 15:59:36,760 [25] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\yawa_Baseline_week_10142020_15-59-34.mpp Saved successfully
+INFO  2020-10-14 15:59:36,836 [25] WebAPI.Controllers.ExportToMPPController GetFile - Before Process Kill
+INFO  2020-10-14 15:59:36,838 [25] WebAPI.Controllers.ExportToMPPController GetFile - After Process Kill
+INFO  2020-10-14 15:59:36,839 [25] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\yawa_Baseline_week_10142020_15-59-34.mpp before GetBinaryFile
+INFO  2020-10-14 15:59:36,889 [25] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\yawa_Baseline_week_10142020_15-59-34.mpp after GetBinaryFile
+INFO  2020-10-14 15:59:36,894 [25] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\yawa_Baseline_week_10142020_15-59-34.mpp before DeleteFile
+INFO  2020-10-14 15:59:36,902 [25] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\yawa_Baseline_week_10142020_15-59-34.mpp after DeleteFile
+INFO  2020-10-14 15:59:39,806 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-14 15:59:39,822 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-14 15:59:39,833 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-14 15:59:39,839 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 0
+DEBUG 2020-10-14 15:59:55,030 [10] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"558c0d6d-d8a0-44bb-8bb9-06afc5055ccf","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:59:55,035 [10] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"558c0d6d-d8a0-44bb-8bb9-06afc5055ccf","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 15:59:55,121 [6] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"33d93ae9-633f-407b-93dd-e9265f1a8a4a","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 15:59:55,127 [6] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"33d93ae9-633f-407b-93dd-e9265f1a8a4a","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+INFO  2020-10-14 16:00:16,354 [6] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 16:00:16,473 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 16:00:16,473 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 16:00:16,994 [6] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 16:00:16,997 [25] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-14 16:00:16,997 [6] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_16-00-16.mpp Started parallel checkProcess
+INFO  2020-10-14 16:00:18,486 [6] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-14 16:00:18,489 [6] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at Microsoft.Office.Interop.MSProject.Task.set_Manual(Object retval)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 281
+INFO  2020-10-14 16:00:21,999 [25] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-14 16:00:22,003 [25] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-14 16:00:22,009 [25] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-14 16:00:22,013 [25] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 1
+INFO  2020-10-14 16:00:22,026 [25] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Before WINPROJ - auto kill after 5000 ms
+INFO  2020-10-14 16:00:22,027 [25] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - After WINPROJ - auto kill after 5000 ms
+INFO  2020-10-14 16:00:23,758 [6] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 16:00:23,913 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 16:00:23,922 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 16:00:24,412 [6] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 16:00:24,413 [6] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_16-00-23.mpp Started parallel checkProcess
+INFO  2020-10-14 16:00:25,812 [6] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-14 16:00:25,815 [6] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at Microsoft.Office.Interop.MSProject.Task.set_ActualFinish(Object retval)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 309
+INFO  2020-10-14 16:00:28,822 [6] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 16:00:28,902 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 16:00:28,902 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 16:00:29,543 [6] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 16:00:29,549 [6] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_16-00-28.mpp Started parallel checkProcess
+INFO  2020-10-14 16:00:33,058 [6] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_16-00-28.mpp before saving
+INFO  2020-10-14 16:00:33,371 [6] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_16-00-28.mpp Saved successfully
+INFO  2020-10-14 16:00:33,591 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before Process Kill
+INFO  2020-10-14 16:00:33,595 [6] WebAPI.Controllers.ExportToMPPController GetFile - After Process Kill
+INFO  2020-10-14 16:00:33,596 [6] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_16-00-28.mpp before GetBinaryFile
+INFO  2020-10-14 16:00:33,676 [6] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_16-00-28.mpp after GetBinaryFile
+INFO  2020-10-14 16:00:33,679 [6] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_16-00-28.mpp before DeleteFile
+INFO  2020-10-14 16:00:33,695 [6] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_16-00-28.mpp after DeleteFile
+DEBUG 2020-10-14 16:02:23,308 [25] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"4e51ceaa-5a70-46b5-9ebc-707f949b1e24","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 16:02:23,329 [25] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"4e51ceaa-5a70-46b5-9ebc-707f949b1e24","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 16:02:23,396 [19] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"e470edb1-ac26-41bc-9e65-c4288d3a8182","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 16:02:23,406 [19] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"e470edb1-ac26-41bc-9e65-c4288d3a8182","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+INFO  2020-10-14 16:03:11,344 [24] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 16:03:11,448 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 16:03:11,448 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 16:03:11,900 [24] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 16:03:11,901 [32] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-14 16:03:11,901 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_16-03-11.mpp Started parallel checkProcess
+INFO  2020-10-14 16:03:15,282 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_16-03-11.mpp before saving
+INFO  2020-10-14 16:03:15,405 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_16-03-11.mpp Saved successfully
+INFO  2020-10-14 16:03:15,966 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before Process Kill
+INFO  2020-10-14 16:03:15,967 [24] WebAPI.Controllers.ExportToMPPController GetFile - After Process Kill
+INFO  2020-10-14 16:03:15,970 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_16-03-11.mpp before GetBinaryFile
+INFO  2020-10-14 16:03:16,031 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_16-03-11.mpp after GetBinaryFile
+INFO  2020-10-14 16:03:16,033 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_16-03-11.mpp before DeleteFile
+INFO  2020-10-14 16:03:16,047 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 7_Baseline_week_10142020_16-03-11.mpp after DeleteFile
+INFO  2020-10-14 16:03:16,916 [32] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-14 16:03:16,985 [32] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-14 16:03:16,995 [32] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-14 16:03:17,000 [32] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 0
+DEBUG 2020-10-14 19:39:09,563 [17] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"31a7c30a-d46f-4a26-a94c-e789f897ef86","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 19:39:09,633 [17] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"31a7c30a-d46f-4a26-a94c-e789f897ef86","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-14 19:39:09,821 [17] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"99f8c5a7-e9bd-4a84-819b-9d83b3319134","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-14 19:39:09,904 [17] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"99f8c5a7-e9bd-4a84-819b-9d83b3319134","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+INFO  2020-10-14 19:39:28,630 [6] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 19:39:28,762 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 19:39:28,763 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 19:39:28,856 [6] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-14 19:39:28,858 [6] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.FileNew(Object SummaryInfo, Object Template, Object FileNewDialog, Object FileNewWorkpane)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 102
+INFO  2020-10-14 19:39:28,865 [6] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 19:39:28,948 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 19:39:28,949 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 19:39:28,972 [6] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-14 19:39:28,973 [6] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.FileNew(Object SummaryInfo, Object Template, Object FileNewDialog, Object FileNewWorkpane)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 102
+INFO  2020-10-14 19:39:28,976 [6] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 19:39:29,054 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 19:39:29,055 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 19:39:29,082 [6] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 2
+INFO  2020-10-14 19:39:29,083 [6] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.FileNew(Object SummaryInfo, Object Template, Object FileNewDialog, Object FileNewWorkpane)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 102
+INFO  2020-10-14 19:39:29,086 [6] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 19:39:29,142 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 19:39:29,143 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 19:39:29,166 [6] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 3
+INFO  2020-10-14 19:39:29,167 [6] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.FileNew(Object SummaryInfo, Object Template, Object FileNewDialog, Object FileNewWorkpane)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 102
+INFO  2020-10-14 19:39:29,170 [6] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 19:39:29,225 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 19:39:29,227 [6] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 19:39:29,262 [6] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 4
+INFO  2020-10-14 19:39:29,263 [6] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.FileNew(Object SummaryInfo, Object Template, Object FileNewDialog, Object FileNewWorkpane)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 102
+INFO  2020-10-14 19:39:43,144 [5] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 19:39:43,278 [5] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 19:39:43,279 [5] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 19:39:43,821 [5] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 19:39:43,822 [5] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_19-39-43.mpp Started parallel checkProcess
+INFO  2020-10-14 19:39:43,823 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-14 19:39:45,505 [5] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-14 19:39:45,510 [5] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.Runtime.InteropServices.ComTypes.ITypeInfo.GetFuncDesc(Int32 index, IntPtr& ppFuncDesc)
+   at System.Dynamic.IDispatchComObject.GetFuncDescForDescIndex(ITypeInfo typeInfo, Int32 funcIndex, FUNCDESC& funcDesc, IntPtr& funcDescHandle)
+   at System.Dynamic.IDispatchComObject.EnsureScanDefinedMethods()
+   at System.Dynamic.IDispatchComObject.System.Dynamic.IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+   at System.Dynamic.DynamicMetaObject.Create(Object value, Expression expression)
+   at System.Dynamic.DynamicMetaObjectBinder.Bind(Object[] args, ReadOnlyCollection`1 parameters, LabelTarget returnLabel)
+   at System.Runtime.CompilerServices.CallSiteBinder.BindCore[T](CallSite`1 site, Object[] args)
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute3[T0,T1,T2,TRet](CallSite site, T0 arg0, T1 arg1, T2 arg2)
+   at CallSite.Target(Closure , CallSite , Task , PjField , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecuteVoid3[T0,T1,T2](CallSite site, T0 arg0, T1 arg1, T2 arg2)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 260
+INFO  2020-10-14 19:39:48,522 [5] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 19:39:48,648 [5] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 19:39:48,649 [5] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 19:39:48,834 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-14 19:39:48,840 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-14 19:39:48,849 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-14 19:39:48,856 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 1
+INFO  2020-10-14 19:39:48,882 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Before WINPROJ - auto kill after 5000 ms
+INFO  2020-10-14 19:39:48,883 [6] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - After WINPROJ - auto kill after 5000 ms
+INFO  2020-10-14 19:39:48,980 [5] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-14 19:39:48,981 [5] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x800706BE): The remote procedure call failed. (Exception from HRESULT: 0x800706BE)
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.FileNew(Object SummaryInfo, Object Template, Object FileNewDialog, Object FileNewWorkpane)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 102
+INFO  2020-10-14 19:39:50,096 [5] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 19:39:50,244 [5] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 19:39:50,245 [5] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 19:39:50,675 [5] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 19:39:50,676 [5] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_19-39-50.mpp Started parallel checkProcess
+INFO  2020-10-14 19:39:51,498 [5] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 2
+INFO  2020-10-14 19:39:51,499 [5] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ProjectClass.set_CurrencyCode(String )
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 179
+INFO  2020-10-14 19:40:57,820 [5] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-14 19:40:57,919 [5] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-14 19:40:57,919 [5] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-14 19:40:58,467 [5] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-14 19:40:58,475 [5] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_19-40-57.mpp Started parallel checkProcess
+INFO  2020-10-14 19:41:13,196 [5] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_19-40-57.mpp before saving
+INFO  2020-10-14 19:41:13,587 [5] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_19-40-57.mpp Saved successfully
+INFO  2020-10-14 19:41:14,287 [5] WebAPI.Controllers.ExportToMPPController GetFile - Before Process Kill
+INFO  2020-10-14 19:41:14,289 [5] WebAPI.Controllers.ExportToMPPController GetFile - After Process Kill
+INFO  2020-10-14 19:41:14,290 [5] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_19-40-57.mpp before GetBinaryFile
+INFO  2020-10-14 19:41:14,335 [5] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_19-40-57.mpp after GetBinaryFile
+INFO  2020-10-14 19:41:14,339 [5] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_19-40-57.mpp before DeleteFile
+INFO  2020-10-14 19:41:14,346 [5] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\APACS Mobile_Real_Baseline_week_10142020_19-40-57.mpp after DeleteFile

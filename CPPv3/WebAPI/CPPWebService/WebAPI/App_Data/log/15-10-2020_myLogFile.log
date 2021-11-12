@@ -1,0 +1,289 @@
+DEBUG 2020-10-15 11:23:33,462 [7] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"d20b6b01-d9b7-4616-981c-dd94bff541d7","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 11:23:33,547 [7] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"d20b6b01-d9b7-4616-981c-dd94bff541d7","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-15 11:23:33,629 [14] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"65c56256-b3e4-4e79-b854-7859bc138741","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 11:23:33,639 [14] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"65c56256-b3e4-4e79-b854-7859bc138741","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-15 11:24:14,652 [9] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"574cec8e-fc10-4ea9-9419-724fe5882caf","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 11:24:14,665 [9] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"574cec8e-fc10-4ea9-9419-724fe5882caf","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-15 11:24:14,741 [8] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"b7b07fed-c7fd-4c57-8204-30bf6bed313d","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 11:24:14,756 [8] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"b7b07fed-c7fd-4c57-8204-30bf6bed313d","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+INFO  2020-10-15 11:30:30,458 [13] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:30:30,597 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:30:30,597 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:30:31,197 [13] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:30:31,199 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-30-30.mpp Started parallel checkProcess
+INFO  2020-10-15 11:30:31,199 [19] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-15 11:30:31,894 [13] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-15 11:30:31,896 [13] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at Microsoft.Office.Interop.MSProject.Resource.SetField(PjField FieldID, String Value)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 152
+INFO  2020-10-15 11:30:36,203 [19] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-15 11:30:36,215 [19] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-15 11:30:36,224 [19] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-15 11:30:36,231 [19] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 1
+INFO  2020-10-15 11:30:36,247 [19] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Before WINPROJ - auto kill after 5000 ms
+INFO  2020-10-15 11:30:36,248 [19] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - After WINPROJ - auto kill after 5000 ms
+INFO  2020-10-15 11:30:37,588 [13] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:30:37,704 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:30:37,705 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:30:38,164 [13] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:30:38,165 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-30-37.mpp Started parallel checkProcess
+INFO  2020-10-15 11:30:39,793 [13] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-15 11:30:39,797 [13] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.Runtime.InteropServices.ComTypes.ITypeInfo.GetNames(Int32 memid, String[] rgBstrNames, Int32 cMaxNames, Int32& pcNames)
+   at System.Dynamic.ComMethodDesc..ctor(ITypeInfo typeInfo, FUNCDESC funcDesc)
+   at System.Dynamic.IDispatchComObject.EnsureScanDefinedMethods()
+   at System.Dynamic.IDispatchComObject.System.Dynamic.IDynamicMetaObjectProvider.GetMetaObject(Expression parameter)
+   at System.Dynamic.DynamicMetaObject.Create(Object value, Expression expression)
+   at System.Dynamic.DynamicMetaObjectBinder.Bind(Object[] args, ReadOnlyCollection`1 parameters, LabelTarget returnLabel)
+   at System.Runtime.CompilerServices.CallSiteBinder.BindCore[T](CallSite`1 site, Object[] args)
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute3[T0,T1,T2,TRet](CallSite site, T0 arg0, T1 arg1, T2 arg2)
+   at CallSite.Target(Closure , CallSite , Task , PjField , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecuteVoid3[T0,T1,T2](CallSite site, T0 arg0, T1 arg1, T2 arg2)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 260
+INFO  2020-10-15 11:31:52,971 [13] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:31:53,057 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:31:53,058 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:31:53,611 [13] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:31:53,613 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-31-53.mpp Started parallel checkProcess
+INFO  2020-10-15 11:31:56,299 [13] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 2
+INFO  2020-10-15 11:31:56,300 [13] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:31:56,305 [13] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:31:56,377 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:31:56,378 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:31:57,152 [13] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:31:57,153 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-31-56.mpp Started parallel checkProcess
+INFO  2020-10-15 11:31:58,919 [13] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 3
+INFO  2020-10-15 11:31:58,920 [13] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:31:58,926 [13] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:31:59,016 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:31:59,017 [13] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:31:59,598 [13] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:31:59,599 [13] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-31-59.mpp Started parallel checkProcess
+INFO  2020-10-15 11:32:03,614 [13] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 4
+INFO  2020-10-15 11:32:03,615 [13] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:32:23,944 [24] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:32:24,067 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:32:24,067 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:32:24,681 [24] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:32:24,683 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-32-24.mpp Started parallel checkProcess
+INFO  2020-10-15 11:32:24,683 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-15 11:32:26,463 [24] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-15 11:32:26,464 [24] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:32:26,473 [24] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:32:26,540 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:32:26,541 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:32:27,471 [24] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:32:27,475 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-32-26.mpp Started parallel checkProcess
+INFO  2020-10-15 11:32:29,658 [24] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-15 11:32:29,660 [24] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:32:29,666 [24] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:32:29,688 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-15 11:32:29,692 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-15 11:32:29,696 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-15 11:32:29,700 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 1
+INFO  2020-10-15 11:32:29,713 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Before WINPROJ - auto kill after 5000 ms
+INFO  2020-10-15 11:32:29,714 [13] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - After WINPROJ - auto kill after 5000 ms
+INFO  2020-10-15 11:32:29,783 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:32:29,784 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:32:29,997 [24] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 2
+INFO  2020-10-15 11:32:30,003 [24] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x800706BE): The remote procedure call failed. (Exception from HRESULT: 0x800706BE)
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.FileNew(Object SummaryInfo, Object Template, Object FileNewDialog, Object FileNewWorkpane)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 102
+INFO  2020-10-15 11:32:31,198 [24] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:32:31,334 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:32:31,335 [24] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:32:31,681 [24] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:32:31,682 [24] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-32-31.mpp Started parallel checkProcess
+INFO  2020-10-15 11:32:32,515 [24] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 3
+INFO  2020-10-15 11:32:32,517 [24] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.TimescaleEdit(Object MajorUnits, Object MinorUnits, Object MajorLabel, Object MinorLabel, Object MajorAlign, Object MinorAlign, Object MajorCount, Object MinorCount, Object MajorTicks, Object MinorTicks, Object Enlarge, Object Separator, Object MajorUseFY, Object MinorUseFY, Object TopUnits, Object TopLabel, Object TopAlign, Object TopCount, Object TopTicks, Object TopUseFY, Object TierCount)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 186
+INFO  2020-10-15 11:35:34,134 [24] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 4
+INFO  2020-10-15 11:35:34,135 [24] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Retrieving the COM class factory for component with CLSID {36D27C48-A1E8-11D3-BA55-00C04F72F325} failed due to the following error: 80010001 Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED)).
+   at System.Runtime.Remoting.RemotingServices.AllocateUninitializedObject(RuntimeType objectType)
+   at System.Runtime.Remoting.Activation.ActivationServices.CreateInstance(RuntimeType serverType)
+   at System.Runtime.Remoting.Activation.ActivationServices.IsCurrentContextOK(RuntimeType serverType, Object[] props, Boolean bNewObj)
+   at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean noCheck, Boolean& canBeCached, RuntimeMethodHandleInternal& ctor, Boolean& bNeedSecurityCheck)
+   at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark& stackMark)
+   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark& stackMark)
+   at System.Activator.CreateInstance(Type type, Boolean nonPublic)
+   at System.Activator.CreateInstance(Type type)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 41
+INFO  2020-10-15 11:50:22,976 [16] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-15 11:50:22,978 [16] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Retrieving the COM class factory for component with CLSID {36D27C48-A1E8-11D3-BA55-00C04F72F325} failed due to the following error: 80010001 Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED)).
+   at System.Runtime.Remoting.RemotingServices.AllocateUninitializedObject(RuntimeType objectType)
+   at System.Runtime.Remoting.Activation.ActivationServices.CreateInstance(RuntimeType serverType)
+   at System.Runtime.Remoting.Activation.ActivationServices.IsCurrentContextOK(RuntimeType serverType, Object[] props, Boolean bNewObj)
+   at System.RuntimeTypeHandle.CreateInstance(RuntimeType type, Boolean publicOnly, Boolean noCheck, Boolean& canBeCached, RuntimeMethodHandleInternal& ctor, Boolean& bNeedSecurityCheck)
+   at System.RuntimeType.CreateInstanceSlow(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark& stackMark)
+   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean skipCheckThis, Boolean fillCache, StackCrawlMark& stackMark)
+   at System.Activator.CreateInstance(Type type, Boolean nonPublic)
+   at System.Activator.CreateInstance(Type type)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 41
+INFO  2020-10-15 11:50:42,557 [16] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:50:42,687 [16] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:50:42,687 [16] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:50:43,463 [16] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:50:43,465 [16] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-50-42.mpp Started parallel checkProcess
+INFO  2020-10-15 11:50:45,543 [16] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-15 11:50:45,544 [16] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:50:45,552 [16] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:50:45,676 [16] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:50:45,677 [16] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:50:46,401 [16] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:50:46,404 [16] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-50-45.mpp Started parallel checkProcess
+INFO  2020-10-15 11:50:50,299 [16] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 2
+INFO  2020-10-15 11:50:50,300 [16] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:50:50,308 [16] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:50:52,788 [16] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:50:52,788 [16] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:50:53,630 [16] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:50:53,631 [16] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-50-52.mpp Started parallel checkProcess
+INFO  2020-10-15 11:50:56,843 [16] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 3
+INFO  2020-10-15 11:50:56,844 [16] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:50:56,864 [16] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:50:56,983 [16] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:50:56,984 [16] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:50:57,803 [16] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:50:57,806 [16] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-50-56.mpp Started parallel checkProcess
+INFO  2020-10-15 11:51:00,072 [16] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 4
+INFO  2020-10-15 11:51:00,073 [16] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:51:40,125 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:51:40,191 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:51:40,192 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:51:40,463 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:51:40,465 [34] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-15 11:51:40,465 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-51-40.mpp Started parallel checkProcess
+INFO  2020-10-15 11:51:42,233 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-15 11:51:42,234 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:51:42,244 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:51:42,319 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:51:42,319 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:51:43,080 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:51:43,082 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-51-42.mpp Started parallel checkProcess
+INFO  2020-10-15 11:51:44,683 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-15 11:51:44,683 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:51:44,689 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:51:44,773 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:51:44,774 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:51:45,386 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:51:45,387 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-51-44.mpp Started parallel checkProcess
+INFO  2020-10-15 11:51:45,470 [34] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-15 11:51:45,489 [34] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-15 11:51:45,493 [34] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-15 11:51:45,498 [34] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 1
+INFO  2020-10-15 11:51:45,518 [34] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Before WINPROJ - auto kill after 5000 ms
+INFO  2020-10-15 11:51:45,519 [34] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - After WINPROJ - auto kill after 5000 ms
+INFO  2020-10-15 11:51:45,610 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 2
+INFO  2020-10-15 11:51:45,613 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x800706BE): The remote procedure call failed. (Exception from HRESULT: 0x800706BE)
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.ViewApply(Object Name, Object SinglePane, Object Toggle)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 122
+INFO  2020-10-15 11:51:46,603 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:51:46,732 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:51:46,733 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:51:47,022 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:51:47,024 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-51-46.mpp Started parallel checkProcess
+INFO  2020-10-15 11:51:47,849 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 3
+INFO  2020-10-15 11:51:47,850 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ProjectClass.get_Application()
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 224
+INFO  2020-10-15 11:51:52,360 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:51:52,449 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:51:52,450 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:51:53,025 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:51:53,029 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-51-52.mpp Started parallel checkProcess
+INFO  2020-10-15 11:51:54,903 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 4
+INFO  2020-10-15 11:51:54,904 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:53:03,017 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:53:03,130 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:53:03,131 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:53:04,322 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:53:04,324 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-53-03.mpp Started parallel checkProcess
+INFO  2020-10-15 11:53:04,324 [36] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - before sleep
+INFO  2020-10-15 11:53:08,058 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 0
+INFO  2020-10-15 11:53:08,060 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:53:08,070 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:53:08,153 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:53:08,153 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:53:08,839 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:53:08,840 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-53-08.mpp Started parallel checkProcess
+INFO  2020-10-15 11:53:09,338 [36] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Inside parallel task - after sleep
+INFO  2020-10-15 11:53:09,345 [36] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of DWWIN 0
+INFO  2020-10-15 11:53:09,351 [36] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WerFault 0
+INFO  2020-10-15 11:53:09,359 [36] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Number of WINPROJ 1
+INFO  2020-10-15 11:53:09,406 [36] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - Before WINPROJ - auto kill after 5000 ms
+INFO  2020-10-15 11:53:09,408 [36] WebAPI.Controllers.ExportToMPPController <checkProcess>b__6_0 - After WINPROJ - auto kill after 5000 ms
+INFO  2020-10-15 11:53:09,570 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 1
+INFO  2020-10-15 11:53:09,572 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x800706BE): The remote procedure call failed. (Exception from HRESULT: 0x800706BE)
+   at Microsoft.Office.Interop.MSProject.Resource.SetField(PjField FieldID, String Value)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 169
+INFO  2020-10-15 11:53:10,561 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:53:10,672 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:53:10,673 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:53:11,007 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:53:11,008 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-53-10.mpp Started parallel checkProcess
+INFO  2020-10-15 11:53:11,811 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 2
+INFO  2020-10-15 11:53:11,812 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.Runtime.InteropServices.COMException (0x80010001): Call was rejected by callee. (Exception from HRESULT: 0x80010001 (RPC_E_CALL_REJECTED))
+   at System.RuntimeType.ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, Int32[] aWrapperTypes, MessageData& msgData)
+   at Microsoft.Office.Interop.MSProject.ApplicationClass.TimescaleEdit(Object MajorUnits, Object MinorUnits, Object MajorLabel, Object MinorLabel, Object MajorAlign, Object MinorAlign, Object MajorCount, Object MinorCount, Object MajorTicks, Object MinorTicks, Object Enlarge, Object Separator, Object MajorUseFY, Object MinorUseFY, Object TopUnits, Object TopLabel, Object TopAlign, Object TopCount, Object TopTicks, Object TopUseFY, Object TierCount)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 186
+INFO  2020-10-15 11:53:17,819 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:53:17,936 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:53:17,937 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:53:18,435 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:53:18,437 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-53-17.mpp Started parallel checkProcess
+INFO  2020-10-15 11:53:20,000 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 3
+INFO  2020-10-15 11:53:20,001 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+INFO  2020-10-15 11:53:20,009 [33] WebAPI.Controllers.ExportToMPPController GetFile - start of mpp export function
+INFO  2020-10-15 11:53:20,087 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before open application
+INFO  2020-10-15 11:53:20,087 [33] WebAPI.Controllers.ExportToMPPController GetFile - Before filenew
+INFO  2020-10-15 11:53:20,545 [33] WebAPI.Controllers.ExportToMPPController GetFile - After filenew
+INFO  2020-10-15 11:53:20,547 [33] WebAPI.Controllers.ExportToMPPController GetFile - C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Uploads\Manasi test 6_Baseline_week_10152020_11-53-20.mpp Started parallel checkProcess
+INFO  2020-10-15 11:53:22,107 [33] WebAPI.Controllers.ExportToMPPController GetFile - ATTEMPT: 4
+INFO  2020-10-15 11:53:22,108 [33] WebAPI.Controllers.ExportToMPPController GetFile - System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)
+   at WebAPI.Controllers.ExportToMPPController.GetFile(Int32 projectId, Int32 trendNumber, String granularity, Int32 phaseId) in C:\Manasi\Live Projects\CPP\CPPv3\WebAPI\CPPWebService\WebAPI\Controllers\ExportToMPPController.cs:line 337
+DEBUG 2020-10-15 14:47:52,773 [8] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"7edf454f-9231-408e-9bfd-ea74447e190a","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 14:47:52,937 [8] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"7edf454f-9231-408e-9bfd-ea74447e190a","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-15 14:47:53,265 [8] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"905afc52-11ec-46ea-a3e7-45b16809953f","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 14:47:53,277 [8] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"905afc52-11ec-46ea-a3e7-45b16809953f","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-15 15:43:26,349 [22] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"226c9dd1-e3d9-415b-b6eb-80171227c3e0","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 15:43:26,389 [22] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"226c9dd1-e3d9-415b-b6eb-80171227c3e0","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-15 15:43:26,481 [16] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"f86271f4-d85c-403f-b2c4-e87fba3402a3","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 15:43:26,517 [16] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"f86271f4-d85c-403f-b2c4-e87fba3402a3","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-15 17:15:20,690 [19] WebAPI.Models.Organization getOrganization - Getting all organizations. {"SessionID":"0362a9e9-cd8d-4437-a8d9-0ddaae9d51da","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 17:15:20,813 [19] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"0362a9e9-cd8d-4437-a8d9-0ddaae9d51da","Params":{"OrganizationID":"null","KeyStroke":"null"},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":76,"OrganizationName":"Test Organization","ShapeType":"","OrganizationAddress":"123 st","GeocodedLocation":"","RGBValue":"","LatLong":"","Note":"notes","CreatedDate":"2020-05-20T21:14:28","UpdatedDate":"2020-05-20T21:14:28","CreatedBy":"admin","UpdatedBy":"admin"},{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
+DEBUG 2020-10-15 17:15:20,922 [12] WebAPI.Models.Organization getOrganization - Getting organization details for OrganizationID {"SessionID":"8a5d570c-a0cf-42a5-ac61-768e20e4fd54","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":""}
+DEBUG 2020-10-15 17:15:20,936 [12] WebAPI.Models.Organization getOrganization - Retreived Organization List {"SessionID":"8a5d570c-a0cf-42a5-ac61-768e20e4fd54","Params":{"OrganizationID":"75","KeyStroke":null},"RequestedUser":"admin","Result":[{"Operation":0,"OrganizationID":75,"OrganizationName":"Birdi Systems Inc.","ShapeType":"","OrganizationAddress":"723 E. Green Street, Pasadena, CA","GeocodedLocation":"","RGBValue":"","LatLong":"34.144975224064495,-118.13570469617844 34.14497836340614,-118.13549816608429 34.14462675641512,-118.13550218939781 34.144623617060404,-118.1356979906559","Note":"From Solutions to Service.","CreatedDate":"0001-01-01T00:00:00","UpdatedDate":"2019-12-11T19:47:39","CreatedBy":null,"UpdatedBy":"admin"}]}
