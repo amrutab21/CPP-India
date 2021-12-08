@@ -362,11 +362,13 @@ angular.module('xenon.controllers', []).
 
                 console.log("logout function: controllers.js");
                 var getlic_key = localStorage.getItem("lckey").toString();
+                var auth = localStorageService.get("authorizationData");
+                var userName = auth.userName;
                 console.log(getlic_key);
-                authService.releaselicense(getlic_key).then(function (responseData) {
+                authService.releaselicense(userName,getlic_key).then(function (responseData) {
                     console.log("success");
                     console.log(responseData);
-                    localStorage.removeItem("lckey");
+                   // localStorage.removeItem("lckey");
 
                 },
                     function (error) {

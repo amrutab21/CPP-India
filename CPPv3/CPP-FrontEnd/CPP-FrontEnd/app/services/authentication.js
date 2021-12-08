@@ -29,7 +29,7 @@ angular.module('cpp.services').
 
         };
 
-        var _checklicense = function (registrationkey) {
+        var _checklicense = function (userName, registrationkey) {
             var config = {
                 headers: {
                     'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ angular.module('cpp.services').
             }
             return $http({
                 method: 'GET',
-                url: license4jPath + 'verifylicense/' + registrationkey,
+                url: license4jPath + 'verifylicense/' + userName + '/' + registrationkey ,
                 config: config
 
             }).then(function success(response) {
@@ -49,7 +49,7 @@ angular.module('cpp.services').
 
         };
 
-        var _releaselicense = function (registrationkey) {
+        var _checkconcurrencylicense = function (userName, registrationkey) {
             var config = {
                 headers: {
                     'Content-Type': 'application/json'
@@ -57,7 +57,27 @@ angular.module('cpp.services').
             }
             return $http({
                 method: 'GET',
-                url: license4jPath + 'releaselicense/' + registrationkey,
+                url: license4jPath + 'checklicenseconcurrency/' + userName + '/' + registrationkey,
+                config: config
+
+            }).then(function success(response) {
+                return response;
+            }, function error(err) {
+                return err;
+            });
+
+
+        };
+
+        var _releaselicense = function (userName,registrationkey) {
+            var config = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            return $http({
+                method: 'GET',
+                url: license4jPath + 'releaselicense/' + userName + '/' + registrationkey,
                 config: config
 
 
@@ -145,6 +165,7 @@ angular.module('cpp.services').
         authServiceFactory.authentication = _authentication;
         authServiceFactory.checklicense = _checklicense;
         authServiceFactory.releaselicense = _releaselicense;
+        authServiceFactory.checklicenseconcurrency = _checkconcurrencylicense;
 
         return authServiceFactory;
     }]).

@@ -3,7 +3,9 @@
 //var serviceBasePath = 'http://localhost:1832/';
 //var serviceBasePath = 'http://192.168.0.19:1832/';
 var serviceBasePath = 'http://localhost:29980/api/';
-var license4jPath = 'http://172.31.45.102:8091/';
+//var license4jPath = 'http://cpp.birdi-inc.io:8091/license4j-1.0/'; //test server
+var license4jPath = 'http://localhost:8080/'; //local
+var premiseActivation = true;
 //var serviceBasePath = 'http://localhost/CPP_API/';
 //var serviceBasePath = 'http://dev.birdi-inc.com/CPP_API/';
 //var serviceBasePath = 'http://birdi-dev02/CPP_API/';
@@ -53,14 +55,38 @@ var app = angular.module('xenon-app', [
 
 ]);
 
-app.run(function ($rootScope) {
+app.run(function ($rootScope, localStorageService, authService) {
     // Page Loading Overlay
     public_vars.$pageLoadingOverlay = jQuery('.page-loading-overlay');
 
     jQuery(window).load(function () {
         public_vars.$pageLoadingOverlay.addClass('loaded');
-    })
+    });
+   
+    window.addEventListener("beforeunload", function (event) {
+        console.log("Signed out tab/browser closed===");
+        console.log(localStorageService);
+        var auth = localStorageService.get("authorizationData");
+        var userName = auth.userName;
+        var getlic_key = localStorage.getItem("lckey").toString();
+        console.log(getlic_key);
+       
+        debugger;
+        //dhtmlx.alert("html.....");
+       authService.releaselicense(userName, getlic_key).success(function (responseData) {
+           
+            console.log("success");
+            console.log(responseData);
+            // localStorage.removeItem("lckey");
 
+        }).error({
+            function(error) {
+                console.log(error);
+            }
+        });
+
+        
+    });
 
 });
 
@@ -156,7 +182,7 @@ app.factory('httpInterceptor', function ($q, $rootScope, $log, $timeout, usSpinn
         }
     };
 });
-app.run(function ($location, authService, $rootScope, Idle, $timeout, Session) {
+app.run(function ($location, authService, $rootScope, Idle, $timeout, Session, localStorageService) {
 
     Idle.watch();
     $rootScope.$on('IdleStart', function () {
@@ -179,6 +205,21 @@ app.run(function ($location, authService, $rootScope, Idle, $timeout, Session) {
                     callback: function (response) {
                         console.log(response);
                         if (response == false) {
+                            console.log("Signed out auto===");
+                            var getlic_key = localStorage.getItem("lckey").toString();
+                            var auth = localStorageService.get("authorizationData");
+                            var userName = auth.userName;
+                            console.log(getlic_key);
+                            authService.releaselicense(userName, getlic_key).then(function (responseData) {
+                                console.log("success");
+                                console.log(responseData);
+                                // localStorage.removeItem("lckey");
+
+                            },
+                                function (error) {
+                                    console.log(error);
+                                }
+                            );
                             authService.logOut();
                             $location.path('/login');
 
@@ -209,6 +250,21 @@ app.run(function ($location, authService, $rootScope, Idle, $timeout, Session) {
                     $(".dhtmlx_yes_button").click();
                     $(".dhtmlx_modal_box").css("visibility", "hidden");
                     $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').remove();
+                    console.log("Signed out after timeout===");
+                    var getlic_key = localStorage.getItem("lckey").toString();
+                    var auth = localStorageService.get("authorizationData");
+                    var userName = auth.userName;
+                    console.log(getlic_key);
+                    authService.releaselicense(userName, getlic_key).then(function (responseData) {
+                        console.log("success");
+                        console.log(responseData);
+                        // localStorage.removeItem("lckey");
+
+                    },
+                        function (error) {
+                            console.log(error);
+                        }
+                    );
 		    authService.logOut();
                     $location.path('/login');
 		    $(".dhx_modal_cover").css("display", "none");
