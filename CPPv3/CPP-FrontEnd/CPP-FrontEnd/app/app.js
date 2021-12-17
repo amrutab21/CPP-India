@@ -5,7 +5,7 @@
 var serviceBasePath = 'http://localhost:29980/api/';
 //var license4jPath = 'http://cpp.birdi-inc.io:8091/license4j-1.0/'; //test server
 var license4jPath = 'http://localhost:8080/'; //local
-var premiseActivation = true;
+var premiseActivation = false;
 //var serviceBasePath = 'http://localhost/CPP_API/';
 //var serviceBasePath = 'http://dev.birdi-inc.com/CPP_API/';
 //var serviceBasePath = 'http://birdi-dev02/CPP_API/';
@@ -55,6 +55,8 @@ var app = angular.module('xenon-app', [
 
 ]);
 
+var isBrowserClosed = false;
+
 app.run(function ($rootScope, localStorageService, authService) {
     // Page Loading Overlay
     public_vars.$pageLoadingOverlay = jQuery('.page-loading-overlay');
@@ -62,31 +64,62 @@ app.run(function ($rootScope, localStorageService, authService) {
     jQuery(window).load(function () {
         public_vars.$pageLoadingOverlay.addClass('loaded');
     });
+
    
+    debugger;
+
     window.addEventListener("beforeunload", function (event) {
-        console.log("Signed out tab/browser closed===");
         console.log(localStorageService);
         var auth = localStorageService.get("authorizationData");
         var userName = auth.userName;
         var getlic_key = localStorage.getItem("lckey").toString();
         console.log(getlic_key);
-       
+
+        console.log(document.visibilityState);
         debugger;
-        //dhtmlx.alert("html.....");
-       authService.releaselicense(userName, getlic_key).success(function (responseData) {
-           
-            console.log("success");
-            console.log(responseData);
-            // localStorage.removeItem("lckey");
+      //  document.addEventListener('visibilitychange', function logData() {
+           // if (document.visibilityState === 'hidden') {
+                debugger;
 
-        }).error({
-            function(error) {
-                console.log(error);
-            }
-        });
+                console.log("Unload on sign out tab/browser closed===");
+                console.log(event.returnValue);
+                if (event.returnValue === '') {
+                    console.log("Close on sign out tab/browser closed===");
+                    isBrowserClosed = true;
 
-        
+
+                }
+                debugger;
+                if (isBrowserClosed) {
+
+                    navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
+                    authService.logOut();
+                    //$location.path('/login');
+                    //isBrowserClosed = false;
+
+                }
+           // }
+       // });
+
     });
+    document.addEventListener('visibilitychange', function logData() {
+        debugger;
+        console.log("Signed out tab/browser closed===");
+        console.log(localStorageService);
+        
+       
+        if (document.visibilityState === 'hidden' && isBrowserClosed) {
+          
+            navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
+            authService.logOut();
+            $location.path('/login');
+            isBrowserClosed = false;
+            
+        }
+    });
+
+   
+   
 
 });
 

@@ -61,6 +61,10 @@ angular.module('cpp.controllers').
 
                 $scope.licensedataForSave = {};
 
+                if (flag) {
+                    $scope.loginData = $scope.param.loginData;
+                }
+
                 //if (licenseKeyTxt == null)
                   //  licenseKeyTxt = "";
                 var licenseData = {

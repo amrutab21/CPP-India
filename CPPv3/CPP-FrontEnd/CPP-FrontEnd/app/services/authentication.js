@@ -76,7 +76,7 @@ angular.module('cpp.services').
                 }
             }
             return $http({
-                method: 'GET',
+                method: 'POST',
                 url: license4jPath + 'releaselicense/' + userName + '/' + registrationkey,
                 config: config
 
@@ -143,6 +143,7 @@ angular.module('cpp.services').
             localStorage.removeItem('pgmId');
             localStorage.removeItem('projId');
             localStorage.removeItem('pgmEltId');
+            localStorage.removeItem('SearchText');
             _authentication.isAuth = false;
             _authentication.userName = "";
 
