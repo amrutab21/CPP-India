@@ -75,6 +75,9 @@ app.run(function ($rootScope, localStorageService, authService) {
 
 
 
+    
+
+
     window.addEventListener("beforeunload", function (event) {
 
         console.log("Unload on sign out tab/browser closed===");
@@ -86,14 +89,14 @@ app.run(function ($rootScope, localStorageService, authService) {
             userName = auth.userName;
         }
         var getlic_key = localStorage.getItem("lckey").toString();
-
+        debugger;
         var pageReloaded = window.performance
             .getEntriesByType('navigation')
             .map((nav) => nav.type)
             .includes('reload');
         if (pageReloaded)
-            return;
-           // dhtmlx.alert(pageReloaded);
+            //return;
+            dhtmlx.alert(pageReloaded);
         if (!pageReloaded) { // The pageReloaded boolean we set earlier
 
             var localStorageTime = parseInt(localStorage.getItem('storageTime'));
@@ -111,7 +114,7 @@ app.run(function ($rootScope, localStorageService, authService) {
             localStorage.setItem('tabCount', tbCount.toString());
 
             //for browser close
-           var localStorageTime1 = parseInt(localStorage.getItem('storageTime'));
+            var localStorageTime1 = parseInt(localStorage.getItem('storageTime'));
             var currentTime = new Date().getTime();
             var timeDifference = currentTime - localStorageTime1;
             // updating condition
