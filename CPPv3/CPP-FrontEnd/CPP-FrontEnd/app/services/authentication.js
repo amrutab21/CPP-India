@@ -69,6 +69,26 @@ angular.module('cpp.services').
 
         };
 
+        var _userRole = function (userName) {
+            var config = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            return $http({
+                method: 'GET',
+                url: serviceBase + 'Request/User/' + userName ,
+                config: config
+
+            }).then(function success(response) {
+                return response;
+            }, function error(err) {
+                return err;
+            });
+
+
+        };
+
         var _releaselicense = function (userName,registrationkey) {
             var config = {
                 headers: {
@@ -144,6 +164,7 @@ angular.module('cpp.services').
             localStorage.removeItem('projId');
             localStorage.removeItem('pgmEltId');
             localStorage.removeItem('SearchText');
+            localStorage.removeItem("lckey");
             _authentication.isAuth = false;
             _authentication.userName = "";
 
@@ -167,7 +188,7 @@ angular.module('cpp.services').
         authServiceFactory.checklicense = _checklicense;
         authServiceFactory.releaselicense = _releaselicense;
         authServiceFactory.checklicenseconcurrency = _checkconcurrencylicense;
-
+        authServiceFactory.userRole = _userRole;
         return authServiceFactory;
     }]).
 
@@ -218,7 +239,7 @@ angular.module('cpp.services').
         return {
             addUser: addUser,
             getUser: getUser
-        }; s
+        }; 
     }).
     factory('PasswordRecovery', function ($resource) {
         var serviceBase = serviceBasePath;

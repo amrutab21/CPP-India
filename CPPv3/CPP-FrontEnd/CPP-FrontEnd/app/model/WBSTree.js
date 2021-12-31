@@ -2698,23 +2698,30 @@ WBSTree = (function ($) {
                             singeChangeOrder = changeOrderList[x];
 
                             // alert(singeChangeOrder.DocumentName);
+                            debugger;
                             console.log(singeChangeOrder);
 
                             // Jignesh-ChangeOrderPopUpChanges
                             var changeOrderType = singeChangeOrder.ModificationTypeId == 1 ? 'Value' :
                                 singeChangeOrder.ModificationTypeId == 2 ? 'Schedule Impact' : 'Value & Schedule Impact'
 
+                            var changeOrderAmount = singeChangeOrder.ChangeOrderAmount == "" ? '0' : singeChangeOrder.ChangeOrderAmount;
 
                             $('#program_element_change_order_table_id').append(
                                 '<tr id="' + singeChangeOrder.ChangeOrderID + '" class="fade-selection-animation clickable-row">' +
+
                                 ' <td style="width: 20px">' +
                                 '<input id=rbCo' + singeChangeOrder.ChangeOrderID + ' type="radio" name="rbChangeOrder" value="' + serviceBasePath + 'Request/DocumentByDocID/' + singeChangeOrder.DocumentID + '" />' +
                                 '</td >' +
+                                '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ChangeOrderNumber + '</td>' +
+                                '</td >' +
                                 '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ChangeOrderName + '</td>' +
                                 '</td >' +
-                                '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.DocumentName + '</td>' +
+                                //'<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.DocumentName + '</td>' +
                                 //'<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ChangeOrderName + '</td>' +
                                 '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + changeOrderType + '</td>' + // Jignesh-ChangeOrderPopUpChanges
+                                '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + changeOrderAmount + '</td>' +
+                                '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ScheduleImpact + '</td>' +
                                 //'<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ChangeOrderNumber + '</td>' +
                                 //'<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ChangeOrderAmount + '</td>' +
                                 //'<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.OrderDate + '</td>' +

@@ -66,10 +66,10 @@ angular.module('cpp.controllers').
                 }
 
                 //if (licenseKeyTxt == null)
-                  //  licenseKeyTxt = "";
+                //  licenseKeyTxt = "";
                 var licenseData = {
-                    userName : $scope.loginData.userName,
-                    licenseKey : licenseKeyTxt
+                    userName: $scope.loginData.userName,
+                    licenseKey: licenseKeyTxt
                 };
                 console.log("Licensedataa::");
                 console.log(licenseData);
@@ -178,11 +178,20 @@ angular.module('cpp.controllers').
 
 
                                             $location.path('/layout/user-info-navbar.html');
-                                         
+
 
                                         }
                                     } else {
+                                        authService.login($scope.param.loginData).then(function (response) {
+                                            //add logic to display dialogue box for license key
+                                            console.log("CHECK !!");
+                                            console.log(response.data);
+                                        },
+                                            function (error) {
+                                                console.log("Role can't be fetched, facing error..");
+                                            });
                                         dhtmlx.alert("Failed to connect server. Please try again later!!");
+                                        document.getElementById("loading").style.display = "none";
                                     }
 
                                     console.log("Flag truee==");
@@ -192,7 +201,7 @@ angular.module('cpp.controllers').
                                         console.log(responseData);
 
                                     });
-                                   
+
                                 },
                                     function (err) {
                                         console.log("Error");
@@ -217,23 +226,30 @@ angular.module('cpp.controllers').
                                         $scope.message = err.data.error_description;
                                 });
                         } else {
+                            //open popup
                             console.log("Error");
                             console.log(licresponse);
                             document.getElementById("loading").style.display = "none";
-                           // debugger;
-                            if (licresponse.validationMessage != undefined)
-                                dhtmlx.alert(licresponse.validationMessage);
-                            else
-                                dhtmlx.alert("Error connecting server!!");
 
-                            // $scope.message = licresponse;
+                           
+                            // debugger;
+                            
+                                if (licresponse.validationMessage != undefined)
+                                    dhtmlx.alert(licresponse.validationMessage);
+                                else
+                                    dhtmlx.alert("Error connecting server!!");
+                            
+
+
                         }
                     } else {
                         dhtmlx.alert("Failed to connect server. Please try again later!!");
+                        document.getElementById("loading").style.display = "none";
                     }
                 },
                     function (err) {
                         console.log("Checklicense returns error in login controller");
+                        document.getElementById("loading").style.display = "none";
                         dhtmlx.alert("Error connecting server!!!");
                     });
 
@@ -246,9 +262,9 @@ angular.module('cpp.controllers').
                                         console.log(responseData);
                                         *//*dhtmlx.alert('Purchase Order :' + ' ' + response.result + '\n' + 'has been Approved.');*//*
 
-                //  $location.path('/app/po-Approval/');
-            });
-        }*/
+//  $location.path('/app/po-Approval/');
+});
+}*/
                 //$scope.$close('close');
             }
 
@@ -277,7 +293,7 @@ angular.module('cpp.controllers').
                 else {
                     if (premiseActivation) {
                         $scope.loginData = $scope.loginData;
-                       
+
                         $scope.verifyLicense(null, false);
                     }
                     else {
@@ -286,10 +302,11 @@ angular.module('cpp.controllers').
                             var licresponse = response.result;
                             console.log(licresponse);
 
+
                             if (licresponse.length > 0) {
-                                debugger;
+
                                 localStorage.setItem("lckey", licresponse[0].licenseKey);
-                               // sessionStorage.setItem("username", $scope.loginData.userName);
+                                // sessionStorage.setItem("username", $scope.loginData.userName);
                                 sessionStorage.setItem("lckey", licresponse[0].licenseKey);
                                 angular.forEach(licresponse, function (item, index) {
                                     console.log(item, index);
@@ -302,7 +319,34 @@ angular.module('cpp.controllers').
                                 });
                             }
                             else {
-                                var scope = $rootScope.$new();
+                                authService.userRole($scope.loginData.userName).then(function (response) {
+                                    console.log(response.data.result);
+                                    var role = response.data.result.Role;
+                                    if (role == "Admin") {
+                                        var scope = $rootScope.$new();
+                                        scope.param = {
+                                            loginData: $scope.loginData
+                                        }
+                                        document.getElementById("loading").style.display = "none";
+                                        $rootScope.modalInstance = $uibModal.open({
+                                            backdrop: 'static',
+                                            keyboard: false,
+                                            scope: scope,
+                                            templateUrl: "app/views/licenseKeyModal.html",
+                                            windowClass: "loginAlertModal",
+                                            controller: "LoginCtrl"
+                                        });
+                                    }
+                                    else {
+                                        document.getElementById("loading").style.display = "none";
+                                        dhtmlx.alert("License not available. Please contact your admin.");
+                                    }
+                                },
+                                    function (error) {
+                                        console.log("Role fetching issue..");
+                                    });
+
+                                /*var scope = $rootScope.$new();
                                 scope.param = {
                                     loginData: $scope.loginData
                                 }
@@ -314,93 +358,93 @@ angular.module('cpp.controllers').
                                     templateUrl: "app/views/licenseKeyModal.html",
                                     windowClass: "loginAlertModal",
                                     controller: "LoginCtrl"
-                                });
+                                });  */
                             }
 
                         },
                             function error(response) {
 
                             });
-                    
-                    /*if (true) {
-                        console.log("testt==");
-                        // $scope.modalShown = true;
-                        // $scope.modalTitle = "License Key";
-                        var scope = $rootScope.$new();
-                        document.getElementById("loading").style.display = "none";
-                        $rootScope.modalInstance = $uibModal.open({
-                            backdrop: 'static',
-                            keyboard: false,
-                            scope: scope,
-                            templateUrl: "app/views/licenseKeyModal.html",
-                            windowClass: "loginAlertModal",
-                            controller: "LoginCtrl"
-                        });
-                    }*/ /*else {
-                        console.log("DIrect login Path");
-                        console.log($scope.loginData);
-                        debugger;
-                        authService.login($scope.loginData).then(function (response) {
 
-                            console.log(response);
-                            ///luan here - change password
-                            console.log(response.data.passwordChangeRequired);
-                            if (response.data.passwordChangeRequired == "True") {
-                                document.getElementById("loading").style.display = "none";
-                                $scope.changePassword();
-                                return;
-                            }
-
-                            UserName.addUser($scope.loginData.userName);
-                            console.log(UserName.getUser());
-                            $rootScope.user = $scope.loginData.userName;
-                            $scope.$emit('user', { userName: $scope.loginData.userName });
-
-                            debugger;
-                            //luan here
-                            var directUrl = localStorageService.get("directUrlPath");
-                            console.log(directUrl);
-
-                            //$rootScope.$broadcast('USERNAME', { any: userName });
-                            var auth = localStorageService.get("authorizationData");
-                            console.log(auth);
-
-                            if (directUrl && directUrl.indexOf("cost-gantt") >= 0) {
-                                document.getElementById("loading").style.display = "none";
-                                var urlArray = directUrl.split("cost-gantt/")[1].split("/");
-                                window.location.hash = '#/app/cost-gantt/' + urlArray[0] + "/" + urlArray[1] + "/" + urlArray[2];
-                            }
-                            //debugger
-                            else if (directUrl && directUrl.indexOf("po-Approval") >= 0 && auth.role == "Accounting") {
-                                document.getElementById("loading").style.display = "none";
-                                var urlArray = directUrl.split("po-Approval/")[1].split("/");
-                                window.location.hash = '#/app/po-Approval/' + urlArray[0];
-                            }
-                            else {
-
-                                document.getElementById("loading").style.display = "none";
-                                window.location.hash = '#/app/wbs';
-                            }
-
-
-
-
-                            $location.path('/layout/user-info-navbar.html');
-                            //$state.reload();
-                            //$window.location.reload();
-                            //if(auth.userName === 'rmani'){
-                            //
-                            //    $scope.menuItems.splice(5,1);
-                            //}
-                        },
-                            function (err) {
-                                console.log(err);
-                                document.getElementById("loading").style.display = "none";
-                                if (err && err.data)
-                                    $scope.message = err.data.error_description;
+                        /*if (true) {
+                            console.log("testt==");
+                            // $scope.modalShown = true;
+                            // $scope.modalTitle = "License Key";
+                            var scope = $rootScope.$new();
+                            document.getElementById("loading").style.display = "none";
+                            $rootScope.modalInstance = $uibModal.open({
+                                backdrop: 'static',
+                                keyboard: false,
+                                scope: scope,
+                                templateUrl: "app/views/licenseKeyModal.html",
+                                windowClass: "loginAlertModal",
+                                controller: "LoginCtrl"
                             });
-                    }*/
-                }
+                        }*/ /*else {
+                            console.log("DIrect login Path");
+                            console.log($scope.loginData);
+                            debugger;
+                            authService.login($scope.loginData).then(function (response) {
+    
+                                console.log(response);
+                                ///luan here - change password
+                                console.log(response.data.passwordChangeRequired);
+                                if (response.data.passwordChangeRequired == "True") {
+                                    document.getElementById("loading").style.display = "none";
+                                    $scope.changePassword();
+                                    return;
+                                }
+    
+                                UserName.addUser($scope.loginData.userName);
+                                console.log(UserName.getUser());
+                                $rootScope.user = $scope.loginData.userName;
+                                $scope.$emit('user', { userName: $scope.loginData.userName });
+    
+                                debugger;
+                                //luan here
+                                var directUrl = localStorageService.get("directUrlPath");
+                                console.log(directUrl);
+    
+                                //$rootScope.$broadcast('USERNAME', { any: userName });
+                                var auth = localStorageService.get("authorizationData");
+                                console.log(auth);
+    
+                                if (directUrl && directUrl.indexOf("cost-gantt") >= 0) {
+                                    document.getElementById("loading").style.display = "none";
+                                    var urlArray = directUrl.split("cost-gantt/")[1].split("/");
+                                    window.location.hash = '#/app/cost-gantt/' + urlArray[0] + "/" + urlArray[1] + "/" + urlArray[2];
+                                }
+                                //debugger
+                                else if (directUrl && directUrl.indexOf("po-Approval") >= 0 && auth.role == "Accounting") {
+                                    document.getElementById("loading").style.display = "none";
+                                    var urlArray = directUrl.split("po-Approval/")[1].split("/");
+                                    window.location.hash = '#/app/po-Approval/' + urlArray[0];
+                                }
+                                else {
+    
+                                    document.getElementById("loading").style.display = "none";
+                                    window.location.hash = '#/app/wbs';
+                                }
+    
+    
+    
+    
+                                $location.path('/layout/user-info-navbar.html');
+                                //$state.reload();
+                                //$window.location.reload();
+                                //if(auth.userName === 'rmani'){
+                                //
+                                //    $scope.menuItems.splice(5,1);
+                                //}
+                            },
+                                function (err) {
+                                    console.log(err);
+                                    document.getElementById("loading").style.display = "none";
+                                    if (err && err.data)
+                                        $scope.message = err.data.error_description;
+                                });
+                        }*/
+                    }
                 }
             };
 

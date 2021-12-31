@@ -3470,11 +3470,12 @@ angular.module('cpp.controllers').
 
 
             $scope.loadOrganizations = function () {
+                debugger;
                 Organization.lookup().get({}, function (organizationData) {
                     $scope.organizationList = organizationData.result;
 
                     if ($scope.organizationList.length == 0) {
-                        if (localStorageService.get("authorizationData").role == "Admin") {
+                        if (localStorage.get("authorizationData").role == "Admin") {
                             window.location.hash = '#/app/admin-organization';
                         }
                     }
@@ -3630,6 +3631,7 @@ angular.module('cpp.controllers').
                     if (data.isCancel == true) {
                         return;
                     }
+                    debugger;
                     Organization.lookup().get({}, function (organizationData) {
                         //rename the node when renaming from wbstree
                         console.log(organizationData);

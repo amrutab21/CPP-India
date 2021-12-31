@@ -16,7 +16,7 @@ using WebAPI.Helper;
 
 namespace WebAPI.Models
 {
-    [Table("userlicensemapping")] 
+    [Table("userlicensemapping")]
     public class User_LicenseMapping
     {
         [NotMapped]
@@ -47,7 +47,7 @@ namespace WebAPI.Models
 
                 using (var ctx = new CPPDbContext())
                 {
-                    User_LicenseMapping = ctx.User_LicenseMapping.OrderBy(a => a.id).ToList();
+                    User_LicenseMapping = ctx.User_LicenseMapping.Where(a => a.expirationDate.Date > DateTime.Now.Date).OrderBy(a => a.id).ToList();
                 }
 
             }
@@ -85,11 +85,18 @@ namespace WebAPI.Models
 
                     if (retreivedUserLicenseMapping == null)
                     {
+                        //  if (retreivedUserLicenseMapping.expirationDate.Date > DateTime.Now.Date)
+                        // {
                         //register
                         ctx.User_LicenseMapping.Add(user_LicenseMapping);
                         ctx.SaveChanges();
+                        // }
+                        // else
+                        // {
+                        //     result += user_LicenseMapping.licenseKey + " license Key expired. \n";
+                        // }
 
-                        result += user_LicenseMapping.licenseKey  + " has been created successfully. \n";
+                        result += user_LicenseMapping.licenseKey + " has been created successfully. \n";
                     }
                     else
                     {
@@ -136,10 +143,10 @@ namespace WebAPI.Models
                     ServiceClass sc = new ServiceClass();
 
                     User_LicenseMapping duplicateUser_LicenseMapping = ctx.User_LicenseMapping.Where(a => (a.userId == user_LicenseMapping.userId
-                                                                                  && a.licenseKey == user_LicenseMapping.licenseKey   
+                                                                                  && a.licenseKey == user_LicenseMapping.licenseKey
                                                                                   && a.licenseStatus == user_LicenseMapping.licenseStatus
                                                                                   )).FirstOrDefault();
-                   
+
 
 
                     if (duplicateUser_LicenseMapping != null)
@@ -148,13 +155,22 @@ namespace WebAPI.Models
                     }
                     else if (retreivedUser_LicenseMapping != null)
                     {
-                        retreivedUser_LicenseMapping.licenseKey = user_LicenseMapping.licenseKey;
-                        retreivedUser_LicenseMapping.licenseStatus = user_LicenseMapping.licenseStatus;
-                        if(user_LicenseMapping.expirationDate != null)
-                         retreivedUser_LicenseMapping.expirationDate = user_LicenseMapping.expirationDate;
-                        ctx.SaveChanges();
+                        if (retreivedUser_LicenseMapping.expirationDate.Date > DateTime.Now.Date)
+                        {
+                            retreivedUser_LicenseMapping.licenseKey = user_LicenseMapping.licenseKey;
+                            retreivedUser_LicenseMapping.licenseStatus = user_LicenseMapping.licenseStatus;
+                            if (user_LicenseMapping.expirationDate != null)
+                                retreivedUser_LicenseMapping.expirationDate = user_LicenseMapping.expirationDate;
+                            ctx.SaveChanges();
 
-                        result += user_LicenseMapping.licenseKey + " has been updated successfully.\n";
+                            result += user_LicenseMapping.licenseKey + " has been updated successfully.\n";
+                        }
+                        else
+                        {
+                            retreivedUser_LicenseMapping.licenseStatus = "LICENSE_EXPIRED";
+                            ctx.SaveChanges();
+                            result += user_LicenseMapping.licenseKey + " license Key expired.\n";
+                        }
                     }
                     else
                     {
@@ -193,7 +209,7 @@ namespace WebAPI.Models
                     User_LicenseMapping retreivedUser_LicenseMapping = new User_LicenseMapping();
                     retreivedUser_LicenseMapping = ctx.User_LicenseMapping.Where(u => u.id == user_LicenseMapping.id).FirstOrDefault();
 
-                  
+
                     if (retreivedUser_LicenseMapping != null)
                     {
                         ctx.User_LicenseMapping.Remove(retreivedUser_LicenseMapping);
@@ -228,6 +244,7 @@ namespace WebAPI.Models
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "", Logger.logLevel.Debug);
 
             List<User_LicenseMapping> User_LicenseMapping = new List<User_LicenseMapping>();
+            User_LicenseMapping userMapping = new User_LicenseMapping();
             try
             {
 
@@ -235,8 +252,24 @@ namespace WebAPI.Models
                 {
                     User userId = ctx.User.Where(u => u.UserID == userName).FirstOrDefault();
                     Int32 userID = userId.Id;
+                    if (userId.Role != "Admin")
+                    {
+                        Employee emp = ctx.Employee.Where(e => e.ID == userId.EmployeeID).FirstOrDefault();
+                        userID = ctx.User.Where(u => u.UserID == emp.CreatedBy).FirstOrDefault().Id;
+                    }
+                    userMapping = ctx.User_LicenseMapping.Where(l => l.userId == userID && l.licenseStatus == "LICENSE_VALID").FirstOrDefault();
+                    if (userMapping != null)
+                    {
+                        if (userMapping.expirationDate.Date < DateTime.Now.Date)
+                        {
+                            userMapping.licenseStatus = "LICENSE_EXPIRED";
+                            ctx.SaveChanges();
+                        }
+                    }
+
                     User_LicenseMapping = ctx.User_LicenseMapping.Where(l => l.userId == userID && l.licenseStatus == "LICENSE_VALID").
-                        OrderByDescending(u =>u.id).ToList();
+                        OrderByDescending(u => u.id).ToList();
+
 
                 }
 
@@ -256,5 +289,5 @@ namespace WebAPI.Models
         }
     }
 
-    
+
 }
