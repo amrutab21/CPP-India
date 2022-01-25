@@ -2940,7 +2940,7 @@ angular.module('cpp.controllers').
                         // Rename the project and project element nodes to include project number and project element number.
                         var organization = response;
                         var str = "<table class='gridView'>" +
-                            "<tr><th>Organization</th><th>Contract</th><th>Project</th><th>Project Element</th></tr>";
+                            "<tr><th>Organization11</th><th>Contract</th><th>Project</th><th>Project Element</th></tr>";
                         var currentProgramCost, currentProjectCost, currentProjectElementCost;
                         for (programI = 0; programI < organization.children.length; programI++) {
                             var program = organization.children[programI];

@@ -119,13 +119,23 @@ app.run(function ($rootScope, localStorageService, authService) {
             var timeDifference = currentTime - localStorageTime1;
             // updating condition
             debugger;
-            if (tbCount == 0 || timeDifference < 8000000) {
-                navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
+            if (tbCount == 0) {
                 localStorage.removeItem('tabCount');
+                navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
+
+                authService.logOut();
+            }
+
+      /*      if (tbCount == 0 || timeDifference < 8000000) {
+                dhtmlx.alert("Time diff==>");
+                navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
+                
                 authService.logOut();
                 //$location.path('/login');
                 //isBrowserClosed = false;
-            }
+            }*/
+
+          
 
         }
         /*if (event.returnValue === '') {
@@ -280,11 +290,13 @@ app.run(function ($location, authService, $rootScope, Idle, $timeout, Session, l
                         console.log(response);
                         if (response == false) {
                             console.log("Signed out auto===");
+                           // $scope.logout();
                             var getlic_key = localStorage.getItem("lckey").toString();
                             var auth = localStorageService.get("authorizationData");
                             var userName = auth.userName;
                             console.log(getlic_key);
-                            authService.releaselicense(userName, getlic_key).then(function (responseData) {
+                            navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
+                       /*     authService.releaselicense(userName, getlic_key).then(function (responseData) {
                                 console.log("success");
                                 console.log(responseData);
                                 // localStorage.removeItem("lckey");
@@ -292,8 +304,8 @@ app.run(function ($location, authService, $rootScope, Idle, $timeout, Session, l
                             },
                                 function (error) {
                                     console.log(error);
-                                }
-                            );
+                                }*/
+                            //);
                             authService.logOut();
                             $location.path('/login');
 
@@ -325,6 +337,7 @@ app.run(function ($location, authService, $rootScope, Idle, $timeout, Session, l
                     $(".dhtmlx_modal_box").css("visibility", "hidden");
                     $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').remove();
                     console.log("Signed out after timeout===");
+                    //$scope.logout();
                     var getlic_key = localStorage.getItem("lckey").toString();
                     var auth = localStorageService.get("authorizationData");
                     var userName = auth.userName;

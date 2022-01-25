@@ -251,7 +251,9 @@ namespace WebAPI.Models
                 using (var ctx = new CPPDbContext())
                 {
                     User userId = ctx.User.Where(u => u.UserID == userName).FirstOrDefault();
-                    Int32 userID = userId.Id;
+                    Int32 userID=0;
+                    if (userId != null) { 
+                         userID = userId.Id;
                     if (userId.Role != "Admin")
                     {
                         Employee emp = ctx.Employee.Where(e => e.ID == userId.EmployeeID).FirstOrDefault();
@@ -266,7 +268,7 @@ namespace WebAPI.Models
                             ctx.SaveChanges();
                         }
                     }
-
+                }
                     User_LicenseMapping = ctx.User_LicenseMapping.Where(l => l.userId == userID && l.licenseStatus == "LICENSE_VALID").
                         OrderByDescending(u => u.id).ToList();
 

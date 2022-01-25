@@ -368,6 +368,8 @@ angular.module('xenon.controllers', []).
                 authService.releaselicense(userName,getlic_key).then(function (responseData) {
                     console.log("success");
                     console.log(responseData);
+                    authService.logOut();
+                    $location.path('/login');
                    // localStorage.removeItem("lckey");
 
                 },
@@ -375,8 +377,8 @@ angular.module('xenon.controllers', []).
                         console.log(error);
                     }
                 );
-                authService.logOut();
-                $location.path('/login');
+              /*  authService.logOut();
+                $location.path('/login');*/
 
             };
 

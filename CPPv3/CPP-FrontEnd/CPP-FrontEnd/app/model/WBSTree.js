@@ -9518,7 +9518,7 @@ WBSTree = (function ($) {
                     wbsTree.setIsProgramElementNew(false);
                     _Is_Program_Element_New = false;
                     populateProgramElementMilestoneTable(wbsTree.getSelectedProgramElementID());
-                    populateProgramElementChangeOrderTable(wbsTree.getSelectedProgramElementID()); // pritho
+                    populateProgramElementChangeOrderTable(selectedNode.ProgramElementID); // pritho
                     //Populate Client PM, Client Phone #
                     var employeeList = wbsTree.getEmployeeList();
                     //------------------ Swapnil commented unused code 26/10/2020 ---------------------------------------------
