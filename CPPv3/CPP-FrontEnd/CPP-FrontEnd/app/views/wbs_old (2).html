@@ -208,7 +208,7 @@
         list-style-type: none;
         margin: 0;
         padding: 0;
-        height: 50px;
+        height: 100px;
         overflow: auto;
         overflow-y: auto;
     }
@@ -219,36 +219,7 @@
         background-color: white;
         outline: 0;
     }
-    /*Aditya PMDD CSS 05052022*/
-    #program_project_manager_multiselect + .btn-group {
-        display: inline-block;
-        width: 100%;
-    }
 
-        #program_project_manager_multiselect + .btn-group .btn.btn-default {
-            width: 100%;
-            text-align: left;
-            border: 1px solid #ccc;
-            height: 34px;
-            border-radius: 4px;
-        }
-
-            #program_project_manager_multiselect + .btn-group .btn.btn-default .caret {
-                margin-top: 8px;
-                float: right;
-                border-top: 5px dashed;
-                border-right: 5px solid transparent;
-                border-left: 5px solid transparent;
-            }
-
-        #program_project_manager_multiselect + .btn-group label {
-            padding: 7px 20px 7px 40px
-        }
-
-        #program_project_manager_multiselect + .btn-group .checkbox input[type=checkbox] {
-            margin-left: -25px;
-        }
-        <!--->
     #emp_class + .btn-group {
         display: inline-block;
         width: 100%;
@@ -277,117 +248,6 @@
         #emp_class + .btn-group .checkbox input[type=checkbox] {
             margin-left: -25px;
         }
-    /* //Vaishnavi 12-04-2022*/
-    #wrap_select + .btn-group, #certified_payroll_select + .btn-group, #prevailing_wages_select + .btn-group {
-        display: inline-block;
-        width: 100%;
-    }
-
-
-        #wrap_select + .btn-group .btn.btn-default, #certified_payroll_select + .btn-group .btn.btn-default, #prevailing_wages_select + .btn-group .btn.btn-default {
-            width: 100%;
-            text-align: left;
-            border: 1px solid #ccc;
-            height: 34px;
-            border-radius: 4px;
-        }
-
-            #wrap_select + .btn-group .btn.btn-default .caret, #certified_payroll_select + .btn-group .btn.btn-default .caret, #prevailing_wages_select + .btn-group .btn.btn-default .caret {
-                margin-top: 8px;
-                float: right;
-                border-top: 5px dashed;
-                border-right: 5px solid transparent;
-                border-left: 5px solid transparent;
-            }
-
-        #wrap_select + .btn-group label, #certified_payroll_select + .btn-group label, #prevailing_wages_select + .btn-group label {
-            padding: 7px 20px 7px 40px
-        }
-
-        #wrap_select + .btn-group .checkbox input[type=checkbox], #certified_payroll_select + .btn-group .checkbox input[type=checkbox], #prevailing_wages_select + .btn-group .checkbox input[type=checkbox] {
-            margin-left: -25px;
-        }
-    /* //Vaishnavi 12-04-2022*/
-    /* Style the tab */
-    .tab {
-        overflow: hidden;
-        border: 1px solid #ccc;
-        background-color: #f1f1f1;
-    }
-    /* Style the tab */
-    .tab {
-        overflow: hidden;
-        border: 1px solid #ccc;
-        background-color: #f1f1f1;
-    }
-
-
-        /* Style the buttons inside the tab */
-        .tab button {
-            background-color: inherit;
-            float: left;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 14px 16px;
-            transition: 0.3s;
-            font-size: 17px;
-        }
-
-            /* Change background color of buttons on hover */
-            .tab button:hover {
-                background-color: #ddd;
-            }
-
-            /* Create an active/current tablink class */
-            .tab button.active {
-                background-color: #ccc;
-            }
-
-    /* Style the tab content */
-    .tabcontent {
-        display: none;
-        padding: 6px 12px;
-        border: 1px solid #ccc;
-        border-top: none;
-    }
-
-    .accordion {
-        background-color: #eee;
-        color: #444;
-        cursor: pointer;
-        padding: 18px;
-        width: 100%;
-        border: none;
-        text-align: left;
-        outline: none;
-        font-size: 15px;
-        transition: 0.4s;
-    }
-
-        .active, .accordion:hover {
-            background-color: #ccc;
-        }
-
-    .panel {
-        padding: 0 18px;
-        display: none;
-        background-color: white;
-        overflow: hidden;
-        margin-bottom: 9px;
-    }
-
-    .accordion:after {
-        content: '\02795'; /* Unicode character for "plus" sign (+) */
-        font-size: 13px;
-        color: #777;
-        float: right;
-        margin-left: 5px;
-    }
-
-    .accordion.active:after {
-        content: "\2796"; /* Unicode character for "minus" sign (-) */
-    }
 </style>
 <div class="row">
     <div class="col-sm-8" id="program_navigation">
@@ -458,11 +318,11 @@
             <div class="row wbs" style="height:96%;overflow: auto;overflow-x:hidden; margin-right:0px;display:block" id="mindmap">
 
                 <!--<svg style="background-color: #ffffff; overflow-y: scroll;width : 100%; height: 100%;" id="wbs-tree" viewBox="0 0 1407 20800">-->
-                <svg style="background-color: #ffffff; overflow-y: scroll;width : 100%; height: 100%;padding-top:20px;" id="wbs-tree">
+                <svg style="background-color: #ffffff; overflow-y: scroll;width : 100%; height: 100%;" id="wbs-tree">
 
                 </svg>
             </div>
-            <div class="row wbs gridWBS" style="background-color: #ffffff;height: 96%; overflow: auto; overflow-x: hidden; margin-right: 0px; display: none" OnClientShowing="OnClientItemFocus" id="wbsGridView">
+            <div class="row wbs" style="background-color: #ffffff;height: 96%; overflow: auto; overflow-x: hidden; margin-right: 0px; display: none" id="wbsGridView">
 
                 <!--<svg style="background-color: #ffffff; overflow-y: scroll;width : 100%; height: 100%;" id="wbs-grid">
 
@@ -659,7 +519,7 @@
 <!--First Pop up which is visible-->
 <!--=================== Added by Jignesh (27-10-2020) Document Management View Model =======================================-->
 
-<div class="modal fade" id="DocViewModalPrg" role="dialog" aria-labelledby="modal_heading" aria-hidden="true" style="z-index:99999;">
+<div class="modal fade" id="DocViewModalPrg" role="dialog" aria-labelledby="modal_heading" aria-hidden="true">
     <div class="modal-dialog" style="width:30%;">
         <div class="modal-content">
             <div class="modal-header modal-header-program-element">
@@ -903,7 +763,7 @@
                 <div class="col-md-6" style="padding-left:0;">
 
                     <!--Contracts-->
-                    <form style="height: 235px; border: .5px solid #a9a9a9; margin-left: 20px; padding: 5px; margin-bottom: 8px; background-color: #fbfbfb;">
+                    <form style="height: 245px; border: .5px solid #a9a9a9; margin-left: 20px; padding: 5px; margin-bottom: 25px; background-color: #fbfbfb;">
                         <!--css changes by shweta-->
                         <!--<div class="_form-group" style="margin-top:5px;">
                             <div class="col-xs-12" style="padding-left: 0; padding-right:0; margin-bottom: 15px;">
@@ -941,12 +801,12 @@
                             <!--Aditya ogDate--->
                             <div class="col-md-4" style="padding-left: 0;">
                                 <label for="program_element_project_number" class="control-label _bold">Original Contract End Date</label>
-                                <input type="text" class="form-control" id="program_original_end_date" disabled="disabled" autocomplete="off" placeholder="MM/DD/YYYY"><!--Aditya: This is original End Date-->
+                                <input type="text" class="form-control" id="program_original_end_date" autocomplete="off" placeholder="MM/DD/YYYY"><!--Aditya: This is original End Date-->
                             </div>
 
                             <div class="col-md-4" style="padding-left: 0; padding-right: 0;">
                                 <label for="program_element_contract_number" class="control-label _bold">Current Contract End Date</label>
-                                <input type="text" class="form-control" id="program_current_end_date" autocomplete="off" disabled="disabled"> <!--This Current End Date which is modified by Schedule impact-->
+                                <input type="text" class="form-control" id="program_current_end_date" autocomplete="off"> <!--This Current End Date which is modified by Schedule impact-->
                             </div>
                             <!--<div class="col-md-4" style="padding-left: 0;">
                             <label for="program_element_project_number" class="control-label _bold">Original Contract End Date</label>
@@ -1062,53 +922,53 @@
                     <!--=====================================================================================================-->
                     <!--</form>-->
 
-                    <form style="height:317px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb;margin-left:20px;margin-bottom:8px;">
+                    <form style="height:540px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb;margin-left:20px;">
                         <div class="_form-group" style="margin-top:5px; margin-bottom: 75px;">
-                            <div class="col-xs-6" style="padding-left: 0;">
+                            <div class="col-xs-12" style="padding-left: 0; padding-right:0;">
                                 <label for="program_element_project_number" class="control-label _bold required">Client Name</label>
                                 <!--<input type="text" class="form-control" id="program_client_poc">-->
                                 <!--Added by Amruta -->
                                 <select type="text" class="form-control" id="program_client_poc"></select>
                             </div>
-                            <div class="col-xs-6" style="padding-left: 0; padding-right:0;">
-                                <label for="program_name" class="_control-label _bold required">Billing POC</label>
-                                <input type="text" class="form-control" id="program_billing_poc">
-                            </div>
                         </div>
 
+                        <div class="_form-group" style="margin-top:5px">
+                            <label for="program_name" class="_control-label _bold required">Billing POC</label>
+                            <input type="text" class="form-control" id="program_billing_poc">
+                        </div>
 
-
-                        <div class="_form-group" style="margin-top:10px; margin-bottom: 140px;">
-                            <div class="col-xs-3" style="padding-left: 0;">
+                        <div class="_form-group" style="margin-top:10px; margin-bottom: 85px;">
+                            <div class="col-xs-6" style="padding-left: 0;">
                                 <label for="program_element_project_number" class="control-label _bold">Phone # 1</label>
                                 <input type="text" maxlength="12" class="form-control" id="program_billing_poc_phone_1" placeholder="xxx-xxx-xxxx"> <!--Jignesh-01-03-2021-->
                             </div>
-                            <div class="col-xs-3" style="padding-left: 0;">
+                            <div class="col-xs-6" style="padding-left: 0; padding-right: 0;">
                                 <label for="program_element_contract_number" class="control-label _bold">Phone # 2</label>
                                 <input type="text" maxlength="12" class="form-control" id="program_billing_poc_phone_2" placeholder="xxx-xxx-xxxx"> <!--Jignesh-01-03-2021-->
                             </div>
-                            <div class="col-xs-6" style="padding-left: 0; padding-right: 0;">
-                                <label for="program_name" class="_control-label _bold">Email Address</label>
-                                <input type="text" class="form-control" id="program_billing_poc_email">
-                            </div>
                         </div>
 
+                        <div class="_form-group">
+                            <label for="program_name" class="_control-label _bold">Email Address</label>
+                            <input type="text" class="form-control" id="program_billing_poc_email">
+                        </div>
                         <!-- ================= Jignesh-AddAddressField-21-01-2021 =======================-->
                         <!--<div class="_form-group">
                             <label for="program_name" class="_control-label _bold">Physical Address</label>
                             <input type="text" class="form-control" id="program_billing_poc_address">
                         </div>-->
                         <div class="_form-group" style="margin-top:10px;">
-                            <div class="col-xs-6" style="padding-left: 0;">
+                            <div class="col-xs-12" style="padding-left: 0; padding-right: 0;margin-bottom:10px">
                                 <label for="program_element_contract_number" class="control-label _bold">Address Line 1</label>
                                 <input type="text" class="form-control" id="program_billing_poc_address_line1">
                             </div>
-                            <div class="col-xs-6" style="padding-left: 0; padding-right: 0;">
+                        </div>
+                        <div class="_form-group" style="margin-top:10px">
+                            <div class="col-xs-12" style="padding-left: 0; padding-right: 0;margin-bottom:10px">
                                 <label for="program_element_contract_number" class="control-label _bold">Address Line 2</label>
                                 <input type="text" class="form-control" id="program_billing_poc_address_line2">
                             </div>
                         </div>
-                        <!--<div class="clearfix"></div>-->
                         <div class="_form-group" style="margin-top:10px;">
                             <div class="col-xs-4" style="padding-left: 0;">
                                 <label for="program_element_contract_number" class="control-label _bold">City</label>
@@ -1171,16 +1031,15 @@
                             </div>
                         </div>
                     </form>
-                    <form style="height: 250px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb;margin-left:20px;">
+                </div>
+
+                <div class="col-sm-6">
+                    <!--style="height:400px;"-->
+                    <form style="height: 270px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb;">
                         <div class="_form-group" style="margin-top:5px; margin-bottom:75px;">
-                            <!--Aditya PMDD 05052022-->
-                            <div class="col-xs-6" style="padding-left: 0">
+                            <div class="col-xs-12" style="padding-left: 0; padding-right:0;">
                                 <label for="program_element_project_number" class="control-label _bold required">Contract Manager Name</label>
                                 <input type="text" class="form-control" id="program_project_manager">
-                            </div>
-                            <div class="col-xs-6" style="padding-left: 0; padding-right:0;">
-                                <label for="program_element_project_number" class="control-label _bold required">Project Manager</label>
-                                <select type="text" class="form-control" id="program_project_manager_multiselect" multiple={true}></select>
                             </div>
                         </div>
                         <!--Changed by Jignesh From Project to Contract 27-10-2020 -->
@@ -1197,13 +1056,10 @@
                         <div class="clearfix"></div>
                         <div class="_form-group" style="margin-top:10px;">
                             <label for="program_name" class="_control-label _bold">Special Instructions</label>
-                            <textarea style="height:60px;" type="text" class="form-control" id="program_billing_poc_special_instruction"></textarea>
+                            <textarea style="height:75px;" type="text" class="form-control" id="program_billing_poc_special_instruction"></textarea>
                         </div>
                     </form>
-                </div>
 
-                <div class="col-sm-6">
-                    <!--style="height:400px;"-->
                     <!--Hide fund allocation-->
                     <!--<form>
 
@@ -1261,503 +1117,140 @@
                     <!--<div class="divider"></div>-->
                 </div>
 
-                <div class="col-md-6" style="padding-left:0; margin-top:5px;">
+                <div class="col-md-6" style="padding-left:0; margin-top:20px;">
                     <!--css changes by shweta-->
                     <div id="project-map-canvas-edit" style="height:300px;width:98%; display: none;"></div>
                     <!--<form style="border: .5px solid #a9a9a9; margin-right: 16px;margin-left: 0; padding: 5px; margin-bottom:15px;">
-        <label for="program_element_milestone_name" class="control-label _bold" style="font-family: Verdana, Arial, sans-serif !important;display: block;text-align: center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;font-size: 18px;line-height: 1.1;">Key Project Element Milestones</label>
-        <div class="gadget-content " style="height: 50%;" st-table="liveViews" st-safe-src="copiedLiveViews">
-            <div class="panel-body" style="overflow: scroll;height : 140px !important;padding-top: 0; background:#FFF;margin-bottom:10px">
-                <table class="table table-condensed table-responsive " style="height: 99%; width: 100%; border: none;">
-                    <thead style="height: 5%; position:sticky; top:0; background:#FFF">
-                        <tr class="table-background">
-                            <td style="width: 30px; padding-left:5px;"></td>
-                            <td class="th-c sortable" data-sortable="true" st-sort="Lane" data-field="name" scope="col" style="position: relative; width: 20%; text-align:left !important; padding: 2%; background: #FFF !important; border-bottom: none; color: #000 !important;">
+                        <label for="program_element_milestone_name" class="control-label _bold" style="font-family: Verdana, Arial, sans-serif !important;display: block;text-align: center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;font-size: 18px;line-height: 1.1;">Key Project Element Milestones</label>
+                        <div class="gadget-content " style="height: 50%;" st-table="liveViews" st-safe-src="copiedLiveViews">
+                            <div class="panel-body" style="overflow: scroll;height : 140px !important;padding-top: 0; background:#FFF;margin-bottom:10px">
+                                <table class="table table-condensed table-responsive " style="height: 99%; width: 100%; border: none;">
+                                    <thead style="height: 5%; position:sticky; top:0; background:#FFF">
+                                        <tr class="table-background">
+                                            <td style="width: 30px; padding-left:5px;"></td>
+                                            <td class="th-c sortable" data-sortable="true" st-sort="Lane" data-field="name" scope="col" style="position: relative; width: 20%; text-align:left !important; padding: 2%; background: #FFF !important; border-bottom: none; color: #000 !important;">
 
-                                Title
-                            </td>
+                                                Title
+                                            </td>
 
-                            <td class="th-c sortable" data-sortable="true" st-sort="AvgDwellTime" scope="col" style="position: relative; width: 35%; text-align:right !important; padding: 2%; background: #FFF !important; border-bottom: none; color: #000 !important;">
+                                            <td class="th-c sortable" data-sortable="true" st-sort="AvgDwellTime" scope="col" style="position: relative; width: 35%; text-align:right !important; padding: 2%; background: #FFF !important; border-bottom: none; color: #000 !important;">
 
-                                Description
-                            </td>
+                                                Description
+                                            </td>
 
-                            <td class="th-c sortable" st-sort="Occupancy" scope="col" style="position: relative; width: 31%; text-align:right !important; padding-left: 0; padding: 2%; background: #FFF !important; border-bottom: none; color: #000 !important;">
-                                Date
-                            </td>
-                            <td class="th-c sortable" st-sort="Occupancy" scope="col" style="position: relative; width: 31%; text-align:right !important; padding-left: 0; padding: 2%; background: #FFF !important; border-bottom: none; color: #000 !important;">
-                            </td>
-                        </tr>
-                    </thead>
-                    <tfoot></tfoot>
-                    <tbody>
-                        <tr class="table-background">
-                            <td colspan="9" style="border-bottom: none;">
-                                <div class="scrolable-table" style="height:70px;">
-                                    <table id="project_element_milestone_table_id" class="table table-condensed table-responsive" style="border:none;"></table>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div style="text-align: center;">
-                <button id="new_project_element_milestone" class="btn btn-black">Add</button>
-                <button id="edit_project_element_milestone" class="btn btn-black">Edit</button>
-            </div>
-        </div>
-    </form>-->
-                    <!--hiding accordion : Aditya 14042022-->
-                    <div style="height: 510px; display:none; overflow-y: auto; border: .5px solid #a9a9a9; padding: 10px; margin-bottom: 8px; background-color: #fbfbfb;">
-
-
-                        <!--Accordian-->
-                        <button class="accordion">Prime/ Sub</button>
-                        <div class="panel">
-                            <!--Aditya primedd 01042022-->
-                            <div class="_form-group" style="margin-top:5px;">
-                                <div class="col-xs-6" style="padding-left: 0">
-                                    <label for="program_element_project_number" class="control-label _bold required">Prime/ Sub</label>
-                                    <!--<input type="text" class="form-control" id="program_client_poc">-->
-                                    <!--Added by Amruta -->
-                                    <select type="text" class="form-control" id="prime_subPrime_dd">
-                                        <option>Prime</option>
-                                        <option>Sub</option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-6" style="padding-left: 0; padding-right:0;">
-                                    <label for="program_name" class="_control-label _bold required">Primes</label>
-                                    <select type="text" class="form-control" id="prime_dd" disabled={true}></select>
-                                </div>
+                                            <td class="th-c sortable" st-sort="Occupancy" scope="col" style="position: relative; width: 31%; text-align:right !important; padding-left: 0; padding: 2%; background: #FFF !important; border-bottom: none; color: #000 !important;">
+                                                Date
+                                            </td>
+                                            <td class="th-c sortable" st-sort="Occupancy" scope="col" style="position: relative; width: 31%; text-align:right !important; padding-left: 0; padding: 2%; background: #FFF !important; border-bottom: none; color: #000 !important;">
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tfoot></tfoot>
+                                    <tbody>
+                                        <tr class="table-background">
+                                            <td colspan="9" style="border-bottom: none;">
+                                                <div class="scrolable-table" style="height:70px;">
+                                                    <table id="project_element_milestone_table_id" class="table table-condensed table-responsive" style="border:none;"></table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="text-align: center;">
+                                <button id="new_project_element_milestone" class="btn btn-black">Add</button>
+                                <button id="edit_project_element_milestone" class="btn btn-black">Edit</button>
                             </div>
                         </div>
-                        <button class="accordion">P&P Bond</button>
-                        <div class="panel">
-                            <form style="height:170px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb;margin-left:20px;">
-                                <!--<div class="_form-group" style="margin-top:5px; margin-bottom: 75px;">
-                                    <div class="col-xs-12" style="padding-left: 0; padding-right:0;">
-
-                                        <label for="program_P&P" class="control-label _bold required">P&P Bonds</label>
-                                        <div class="radio-inline">
-                                            <input type="radio" value="Yes" name="PPBond" id="PPBondYes" onclick="ShowDiv('ShowDivCost')">
-                                            <label class="custom-control-label lblnxttoggle" for="defaultYes">Yes</label>
-                                        </div>
-                                        <div class="radio-inline">
-                                            <input type="radio" value="No" name="PPBond" id="PPBondNo" onclick="HideDiv('ShowDivCost')">
-                                            <label class="custom-control-label lblnxttoggle" for="defaultno">No</label>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-xs-12" style="padding-left: 0; padding-right:0; display:none;" id="ShowDivCost">
-
-                                        <label for="program_P&P" class="control-label _bold required">Is the cost part of the contract?</label>
-                                        <div class="radio-inline">
-                                            <input type="radio" value="Yes" name="costPartQ" id="costPartQYes" onclick="HideDiv('PPNotes')">
-                                            <label class="custom-control-label lblnxttoggle" for="defaultYes">Yes</label>
-                                        </div>
-                                        <div class="radio-inline">
-                                            <input type="radio" value="No" name="costPartQ" id="costPartQNo" onclick="ShowDiv('PPNotes')">
-                                            <label class="custom-control-label lblnxttoggle" for="defaultno">No</label>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-xs-12" style="margin-top:2px;padding-left: 0; padding-right:0;display:none;" id="PPNotes">
-                                        <label for="" class="_control-label _bold">Notes</label>
-                                        <textarea style="height:70px;" type="text" class="form-control" id="txtPPNotes"></textarea>
-                                    </div>
-
-
-                                </div>-->
-                            </form>
-                        </div>
-                        <button class="accordion">Certified Payroll</button>
-                        <div class="panel">
-                            <div class="row" style="">
-
-                                <!--<form id="certified_payroll_options" style="height: 170px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px">
-                                    <div class="col-xs-4">
-                                        <label for="program_element_project_number" class="control-label _bold">Certified Payroll </label>
-                                        <input type="radio" class="control-group" name="certified_payroll" value="Yes">Yes
-                                        <input type="radio" class="control-group" name="certified_payroll" value="No">No
-                                    </div>
-                                    <div class="col-xs-4" id="certified_payroll_select_div">
-                                        <select type="text" class="form-control" style="width:50%;" id="certified_payroll_select" multiple>-->
-                                            <!--<option value="state">A</option>
-                                            <option value="federal">B </option>-->
-                                        <!--</select>
-                                    </div>
-                                </form>-->
-                            </div>
-                        </div>   <!--//Vaishnavi 12-04-2022-->
-                        <button class="accordion">Prevailing Wage</button>
-                        <div class="panel">
-
-                            <div class="row" style="">
-                                <!--<form id="prevailing_wages_options" style="height: 170px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px">
-                                    <div class="col-xs-4">
-                                        <label for="program_element_project_number" class="control-label _bold">Prevailing Wages </label>
-                                        <input type="radio" class="control-group" name="prevailing_wages" value="Yes">Yes
-                                        <input type="radio" class="control-group" name="prevailing_wages" value="No">No
-                                    </div>
-                                    <div class="col-xs-4" id="prevailing_wages_select_div">
-                                        <select type="text" class="form-control" style="width:50%;" id="prevailing_wages_select" multiple>
-                                            <option value="state">State</option>
-                                            <option value="federal">Federal </option>
-                                        </select>
-                                    </div>
-                                </form>-->
-                            </div>
-                        </div>      <!--//Vaishnavi 12-04-2022-->
-                        <button class="accordion">Prelimary Notices</button>
-                        <div id="tabPrelimnaryNotices" class="panel">
-                            <!--<form id="prelimnary_notice">
-                                <div class="row" style="">
-
-                                    <div class="col-xs-8">
-                                        <label for="program_element_project_number" class="control-label _bold required">Date of Notice </label>
-                                        <input type="text" class="form-control" id="date_of_pre_notice" autocomplete="off" placeholder="MM/DD/YYYY" style="width: 50%;">-->
-                                        <!--</div>
-                                        <div class="col-xs-8">-->
-                                        <!--<label for="program_element_project_number" class="control-label _bold required">Reason of Notice </label>
-                                        <textarea class="form-control" id="notice_reason" rows="5" cols="30"></textarea>
-                                    </div>
-                                    <div class="text-center col-xs-4" style="margin-top: 158px">
-                                        <button type="button" id="btnSaveNotice" class="btn btn-primary c-btn-save" style="width:100px;">Save</button>
-                                        <button type="button" id="btnClearNotice" class="btn btn-primary c-btn-back" style="width:100px;">Clear</button>
-                                    </div>
-                                </div>
-
-
-                            </form>
-                            <div>
-                                <h4 style="text-align:center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;">Notice History</h4>
-                                <div class="panel-body" style="overflow: scroll; padding-top: 0;margin-top:10px; height: 175px !important;">
-                                    <table id="gridNoticeList" class="table table-striped table-bordered">
-                                        <thead style="height: 5%; position: sticky; top: 0; background: #FFF">
-                                            <tr>
-                                                <td style="font-weight:900;min-width: 85px;">Sr. No.</td>
-                                                <td style="font-weight:900;min-width: 150px;">Date of Notice	</td>
-                                                <td style="font-weight:900;" width="500">Reason</td>-->
-                                                <!--<td style="font-weight:900;">Date of Created</td>-->
-                                            <!--</tr>
-                                        </thead>
-                                        <tbody></tbody>
-
-                                    </table>
-                                </div>
-                            </div>-->
-                        </div>
-
-                        <button class="accordion">Insurance</button>
-                        <!--<div class="panel">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>-->
-                        <!--<div id="tabInsurance" class="panel">
-                            <form id="contract_insurance">
-                                <div class="row" style="">
-                                    <div class="col-xs-6">
-                                        <label for="program_element_project_number" class="control-label _bold required">Insurance Type </label>
-                                        <select type="text" class="form-control" style="width:50%;" id="insurance_type_select">
-                                            <option value="GL Policy Limits">GL Policy Limits</option>
-                                            <option value="Auto Liability">Auto Liability</option>
-                                            <option value="WC Liability">WC Liability</option>
-                                            <option value="Others">Others</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <label for="program_element_project_number" class="control-label _bold required">Limit </label>
-                                        <input type="text" class="form-control" id="insurance_limit" autocomplete="off" style="width: 50%;">
-                                    </div>
-                                </div>
-
-                                <div class="text-center" style="margin-top: 10px">
-                                    <button type="button" id="btnSaveInsurance" class="btn btn-primary c-btn-save" style="width:100px;">Add</button>
-                                </div>
-                            </form>
-                            <div>
-                                <h4 style="text-align:center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;">Insurance History</h4>
-                                <div class="panel-body" style="overflow: scroll; padding-top: 0;margin-top:10px; height: 175px !important;">
-                                    <table id="gridInsuranceList" class="table table-striped table-bordered">
-                                        <thead style="height: 5%; position: sticky; top: 0; background: #FFF">
-                                            <tr>
-                                                <td style="font-weight:900;min-width: 85px;">Sr. No.</td>
-                                                <td style="font-weight:900;min-width: 300px;">Type</td>
-                                                <td style="font-weight:900;">Limit</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>-->
-                        <button class="accordion">WRAP</button>
-                        <div class="panel">
-                            <div class="row" style="">
-                                <!--//Vaishnavi 12-04-2022-->
-
-                                <!--<form id="wrap_options" style="height: 170px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px">
-                                    <div class="col-xs-4">
-                                        <label for="program_element_project_number" class="control-label _bold">Wrap </label>
-                                        <input type="radio" class="control-group" name="wrap" value="Yes">Yes
-                                        <input type="radio" class="control-group" name="wrap" value="No">No
-                                    </div>
-                                    <div id="wrap_select_div">
-                                        <div class="col-xs-4">
-                                            <select type="text" class="form-control" style="width:50%;" id="wrap_select" multiple>
-                                            </select>
-                                        </div>
-                                        <div class="row" style="">
-                                            <div class="col-xs-12">
-                                                <label for="program_element_project_number" class="control-label _bold required">Reporting to</label>
-                                                <textarea style="height:60px" type="text" class="form-control" id="reporting_to"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>-->
-                            </div>
-                        </div>                     <!--//Vaishnavi 12-04-2022-->
-                        <button class="accordion">Warranty</button>
-                        <div class="panel">
-                            <!--<form id="labor_warranty_form" style="height: 167px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px; scroll-behavior:auto">
-
-                                <div class="row">
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-4" style="padding-left: 0;">
-                                            <label for="program_element_project_number" class="control-label _bold">Labor Warranty </label>
-                                            <textarea style="height:45px" type="text" class="form-control" id="labor_warranty"></textarea>
-
-                                        </div>
-                                    </div>
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-4" style="padding-left:10px;">
-                                            <label for="program_element_project_number" class="control-label _bold">Start Date</label>
-                                            <input type="text" class="form-control" id="labor_start_date" autocomplete="off" placeholder="MM/DD/YYYY">
-                                        </div>
-                                    </div>
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-4" style="padding-left: 10px;">
-                                            <label for="program_element_project_number" class="control-label _bold">End Date</label>
-                                            <input type="text" class="form-control" id="labor_end_date" autocomplete="off" placeholder="MM/DD/YYYY">
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-6" style="padding-left: 0;">
-                                            <label for="program_element_project_number" class="control-label _bold">Description</label>
-                                            <textarea type="text" style="height:40px;width:180%" class="form-control" id="labordescription"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-                            </form>
-                            <form id="materials_warranty_form" style="height: 167px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px; scroll-behavior:auto">
-
-                                <div class="row">
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-4" style="padding-left: 0;">
-                                            <label for="program_element_project_number" class="control-label _bold">Materials Warranty </label>
-                                            <textarea style="height: 45px" type="text" class="form-control" id="materials_warranty"></textarea>
-
-                                        </div>
-                                    </div>
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-4" style="padding-left:10px;">
-                                            <label for="program_element_project_number" class="control-label _bold">Start Date</label>
-                                            <input type="text" class="form-control" id="materials_start_date" autocomplete="off" placeholder="MM/DD/YYYY">
-                                        </div>
-                                    </div>
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-4" style="padding-left: 10px;">
-                                            <label for="program_element_project_number" class="control-label _bold">End Date</label>
-                                            <input type="text" class="form-control" id="materials_end_date" autocomplete="off" placeholder="MM/DD/YYYY">
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-6" style="padding-left: 0;">
-                                            <label for="program_element_project_number" class="control-label _bold">Description</label>
-                                            <textarea type="text" style="height:40px;width:180%" class="form-control" id="materialsdescription"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-                            </form>
-                            <form id="other_warranty_form" style="height: 167px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px; scroll-behavior:auto">
-
-                                <div class="row">
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-4" style="padding-left: 0;">
-                                            <label for="program_element_project_number" class="control-label _bold">Other Warranty </label>
-                                            <textarea style="height:45px" type="text" class="form-control" id="other_warranty"></textarea>
-
-                                        </div>
-                                    </div>
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-4" style="padding-left:10px;">
-                                            <label for="program_element_project_number" class="control-label _bold">Start Date</label>
-                                            <input type="text" class="form-control" id="other_start_date" autocomplete="off" placeholder="MM/DD/YYYY">
-                                        </div>
-                                    </div>
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-4" style="padding-left: 10px;">
-                                            <label for="program_element_project_number" class="control-label _bold">End Date</label>
-                                            <input type="text" class="form-control" id="other_end_date" autocomplete="off" placeholder="MM/DD/YYYY">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-
-                                    <div class="_form-group" style="margin-top:10px;">
-                                        <div class="col-xs-6" style="padding-left: 0;">
-                                            <label for="program_element_project_number" class="control-label _bold">Description</label>
-                                            <textarea type="text" style="height:40px;width:180%" class="form-control" id="otherdescription"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-                            </form>-->
-                            <!--//Vaishnavi 12-04-2022-->
-                        </div>
-
-
+                    </form>-->
+                    <div>
                         <!--style="padding-left: 3%;"-->
                         <!--Pritesh Latest New Code-->
-                        <!--<div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'tabGeneral')" id="defaultOpen">General</button>
-            <button class="tablinks" onclick="openTab(event, 'tabPrelimnaryNotices')">Prelimnary Notices</button>
-            <button class="tablinks" onclick="openTab(event, 'tabWarrenty')">Warrenty</button>
-            <button class="tablinks" onclick="openTab(event, 'documentUploadProgramNew')">Document Management</button>
-            <button class="tablinks" onclick="openTab(event, 'tabCommonNotes')">Common Notes</button>
-        </div>-->
-                        <!--<div id="tabGeneral" class="tabcontent">
-            <form style="height:2000px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb;margin-left:20px;">
-                <div class="_form-group" style="margin-top:5px; margin-bottom: 75px;">
-                    <div class="col-xs-12" style="padding-left: 0; padding-right:0;">
 
-                        <label for="program_P&P" class="control-label _bold required">P&P Bonds</label>
-                        <div class="radio-inline">
-                            <input type="radio" value="yes" name="P&PBond" onclick="ShowDivCost(this)">
-                            <label class="custom-control-label lblnxttoggle" for="defaultYes">Yes</label>
+                        <div id="documentUploadProgramNew" style="padding:5px; height:515px;float:right;width:97%;margin-right:5px;border: #a9a9a9;border-style: solid; border-width: thin;">
+                            <h4 style="text-align:center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;">Contract Document Management</h4>
+                            <div class="panel-body" style="overflow: scroll; padding-top: 0; height: 410px !important;">
+                                <table id="gridUploadedDocumentProgramNew" class="table table-striped">
+                                    <thead style="position:sticky;top:0; background:#FFF">
+                                        <tr>
+                                            <td style="width: 20px; padding-left:5px;"></td>
+                                            <td style="font-weight:900;"> Name</td>
+                                            <!--<td style="font-weight:900;"> Execution Date</td>--> <!--Comment by Jignesh-->
+                                            <!--<td style="font-weight:900;"> Special Notes</td>-->
+                                            <!--<td style="font-weight:900;"> Notes</td>-->  <!--Manasi--><!--Comment by Jignesh-->
+                                            <td style="font-weight:900;">Document Type</td>
+                                            <td style="font-weight:900;">Modification</td> <!--Jignesh-ModificationPopUpChanges-->
+                                            <!--<td style="font-weight:900;">Upload Date</td>
+                                            <td style="font-weight:900;">Upload By</td>-->
+                                            <!--Comment by Jignesh-->
+                                            <td style="font-weight:900;">Document Details</td> <!--Added by Jignesh-->
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+
+                                </table>
+                            </div>
+
+                            <div class="row" id="buttonRow">
+                                <div class="col-sm-12 text-center">
+                                    <!--<button type="button" id="delete-doc-program" class="btn  btn-outline-danger fa fa-trash" data-toggle="tooltip"
+                                    data-placement="top" title="Delete Selected Documents"></button>-->
+                                    <button id="DeleteUploadProgram" class="btn btn-black" style="margin-top:8px;">Delete</button>  <!-- Shweta 16-07-2020 -->
+                                    <button id="updateBtnProgram" class="btn btn-black" style="margin-top:8px;">Upload</button>      <!-- Shweta 16-07-2020 -->
+                                    <button id="downloadBtnProgram" class="btn btn-black" style="margin-top:8px;">Download</button>   <!-- Shweta 16-07-2020 -->
+                                    <button id="ViewUploadFileProgram" class="btn btn-black" style="margin-top:8px;width:145px;">View Documents</button>  <!-- Shweta 16-07-2020 -->
+                                    <button id="ViewAllUploadFileContracts" class="btn btn-black" style="margin-top:8px;">View All</button>   <!--Swapnil 29-01-2021-->
+                                    <button id="EditBtnProgram" class="btn btn-black" style="margin-top:8px;">Edit</button>
+                                </div>
+                                <!--<div class="col-sm-6" id="bfc-container" style="text-align:right;">
+                                    <button id="new_program_element_milestone">add</button>
+                                    <button id="prgbtnuploadpopup" class="btn btn-black" style="margin-top:30px;">upload</button>
+                                    <button id="updateBtnProgram" class="btn btn-black" style="margin-top:10px;">Upload</button>
+                                </div>-->
+                                <!--<div class="col-sm-2" style="text-align: center; padding: 0;">
+                                    <button id="ViewUploadFileProgram" class="btn btn-black" style="margin-top:10px;">View</button>
+                                </div>-->
+                            </div>
+                            <div class="row" id="spinRow" style="margin-top:0.3%; display: none;">
+                                <center><i class="fa-spinner fa-spin" style="font-size:24px;"></i>  Uploading...</center>
+                            </div>
                         </div>
-                        <div class="radio-inline">
-                            <input type="radio" value="no" name="P&PBond" checked="checked" id="P&PNo">
-                            <label class="custom-control-label lblnxttoggle" for="defaultno">No</label>
-                        </div>
 
-                    </div>
-                    <div class="col-xs-12" style="padding-left: 0; padding-right:0; display:none;" id="ShowDivCost">
 
-                        <label for="program_P&P" class="control-label _bold required">Is it the cost part of the contract?</label>
-                        <div class="radio-inline">
-                            <input type="radio" value="yes" checked="checked" name="costPartQ">
-                            <label class="custom-control-label lblnxttoggle" for="defaultYes">Yes</label>
-                        </div>
-                        <div class="radio-inline">
-                            <input type="radio" value="no" name="costPartQ">
-                            <label class="custom-control-label lblnxttoggle" for="defaultno">No</label>
-                        </div>
 
-                    </div>
-                </div>
-            </form>
-        </div>-->
-                        <!--<div id="tabPrelimnaryNotices" class="tabcontent"></div>
-        <div id="tabWarrenty" class="tabcontent"></div>
-        <div id="documentUploadProgramNew" style="padding:5px; height:515px;float:right;width:97%;margin-right:5px;border: #a9a9a9;border-style: solid; border-width: thin;" class="tabcontent">
-            <h4 style="text-align:center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;">Contract Document Management</h4>
-            <div class="panel-body" style="overflow: scroll; padding-top: 0; height: 410px !important;">
-                <table id="gridUploadedDocumentProgramNew" class="table table-striped">
-                    <thead style="position:sticky;top:0; background:#FFF">
-                        <tr>
-                            <td style="width: 20px; padding-left:5px;"></td>
-                            <td style="font-weight:900;"> Name</td>-->
-                        <!--<td style="font-weight:900;"> Execution Date</td>--> <!--Comment by Jignesh-->
-                        <!--<td style="font-weight:900;"> Special Notes</td>-->
-                        <!--<td style="font-weight:900;"> Notes</td>-->  <!--Manasi--><!--Comment by Jignesh-->
-                        <!--<td style="font-weight:900;">Document Type</td>
-        <td style="font-weight:900;">Modification</td>-->
-                        <!--Jignesh-ModificationPopUpChanges-->
-                        <!--<td style="font-weight:900;">Upload Date</td>
-        <td style="font-weight:900;">Upload By</td>-->
-                        <!--Comment by Jignesh-->
-                        <!--<td style="font-weight:900;">Document Details</td>--> <!--Added by Jignesh-->
-                        <!--</tr>
-                </thead>
-                <tbody></tbody>
 
-            </table>
-        </div>
 
-        <div class="row" id="buttonRow">
-            <div class="col-sm-12 text-center">-->
-                        <!--<button type="button" id="delete-doc-program" class="btn  btn-outline-danger fa fa-trash" data-toggle="tooltip"
-        data-placement="top" title="Delete Selected Documents"></button>-->
-                        <!--<button id="DeleteUploadProgram" class="btn btn-black" style="margin-top:8px;">Delete</button>-->  <!-- Shweta 16-07-2020 -->
-                        <!--<button id="updateBtnProgram" class="btn btn-black" style="margin-top:8px;">Upload</button>-->      <!-- Shweta 16-07-2020 -->
-                        <!--<button id="downloadBtnProgram" class="btn btn-black" style="margin-top:8px;">Download</button>-->   <!-- Shweta 16-07-2020 -->
-                        <!--<button id="ViewUploadFileProgram" class="btn btn-black" style="margin-top:8px;width:145px;">View Documents</button>-->  <!-- Shweta 16-07-2020 -->
-                        <!--<button id="ViewAllUploadFileContracts" class="btn btn-black" style="margin-top:8px;">View All</button>-->   <!--Swapnil 29-01-2021-->
-                        <!--<button id="EditBtnProgram" class="btn btn-black" style="margin-top:8px;">Edit</button>
-        </div>-->
-                        <!--<div class="col-sm-6" id="bfc-container" style="text-align:right;">
-            <button id="new_program_element_milestone">add</button>
-            <button id="prgbtnuploadpopup" class="btn btn-black" style="margin-top:30px;">upload</button>
-            <button id="updateBtnProgram" class="btn btn-black" style="margin-top:10px;">Upload</button>
-        </div>-->
-                        <!--<div class="col-sm-2" style="text-align: center; padding: 0;">
-            <button id="ViewUploadFileProgram" class="btn btn-black" style="margin-top:10px;">View</button>
-        </div>-->
-                        <!--</div>
-            <div class="row" id="spinRow" style="margin-top:0.3%; display: none;">
-                <center><i class="fa-spinner fa-spin" style="font-size:24px;"></i>  Uploading...</center>
-            </div>
-        </div>
-        <div id="tabCommonNotes" class="tabcontent"></div>-->
                         <!--PROGRAM DOCUMENT UPLOAD old working code-->
                         <!--<div id="documentUploadProgram" style="padding:5px; height:250px;width:99.5%;border: #a9a9a9;border-style: solid; border-width: thin;">
-            <div class="row" id="buttonRow" style="margin-top:0.3%;">
-                <div class="col-sm-3" style="margin-left:10px;">
-                    <label for="program_class" class="control-label _bold" style="font-size: 14px;">Doc Type</label>
-                    <select type="text" class="form-control col-sm-3" id="document_type_program"></select>
-                </div>
-                <div class="col-sm-6" id="bfc-container" style="text-align:left;">
-                    <input class="fileInput" style="margin-top: 30px; margin-bottom: -10px;" id="fileUploadProgram" sizeLimit="5MB" ngf-multiple="false" type="file" name="fileProgram" value="Upload Files" />
-                </div>
-                <div class="col-sm-2" style="text-align: center; padding: 0;">
-                    <button id="uploadBtnProgram" class="btn btn-black" style="margin-top:30px;">Upload</button>
-                </div>
-            </div>
-            <div class="row" id="spinRow" style="margin-top:0.3%; display: none;">
-                <center><i class="fa-spinner fa-spin" style="font-size:24px;"></i>  Uploading...</center>
-            </div>
-            <div class="panel-body" style="overflow-y: scroll; padding-top: 0; height: 175px !important;">
-                <table id="gridUploadedDocumentProgram" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <td style="width: 20px; padding-left:5px;"><button type="button" id="delete-doc-program" class="btn  btn-outline-danger fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete Selected Documents"></button></td>
-                            <td style="font-weight:900;">Document Name</td>
-                            <td style="font-weight:900;">Document Type</td>
-                            <td style="font-weight:900;">Upload Date</td>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>-->
+                            <div class="row" id="buttonRow" style="margin-top:0.3%;">
+                                <div class="col-sm-3" style="margin-left:10px;">
+                                    <label for="program_class" class="control-label _bold" style="font-size: 14px;">Doc Type</label>
+                                    <select type="text" class="form-control col-sm-3" id="document_type_program"></select>
+                                </div>
+                                <div class="col-sm-6" id="bfc-container" style="text-align:left;">
+                                    <input class="fileInput" style="margin-top: 30px; margin-bottom: -10px;" id="fileUploadProgram" sizeLimit="5MB" ngf-multiple="false" type="file" name="fileProgram" value="Upload Files" />
+                                </div>
+                                <div class="col-sm-2" style="text-align: center; padding: 0;">
+                                    <button id="uploadBtnProgram" class="btn btn-black" style="margin-top:30px;">Upload</button>
+                                </div>
+                            </div>
+                            <div class="row" id="spinRow" style="margin-top:0.3%; display: none;">
+                                <center><i class="fa-spinner fa-spin" style="font-size:24px;"></i>  Uploading...</center>
+                            </div>
+                            <div class="panel-body" style="overflow-y: scroll; padding-top: 0; height: 175px !important;">
+                                <table id="gridUploadedDocumentProgram" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <td style="width: 20px; padding-left:5px;"><button type="button" id="delete-doc-program" class="btn  btn-outline-danger fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete Selected Documents"></button></td>
+                                            <td style="font-weight:900;">Document Name</td>
+                                            <td style="font-weight:900;">Document Type</td>
+                                            <td style="font-weight:900;">Upload Date</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>-->
 
 
 
@@ -1814,154 +1307,7 @@
 
 
                     </div>
-                    <!--Hide doc mang button : Aditya 14042022-->
-                    <!--<div class="text-center">
-        <button id="btnDocManagement" style="margin-top:8px;" class="btn btn-black w-auto m-t-8">Document Management</button>
-    </div>-->
-                    <!--<form style="height: 130px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb;margin:0">
-
-    </form>-->
-                    <!--Add Prime on Top : Aditya 14042022-->
-                    <form style="height: auto; border: 0.5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px; margin-bottom: 8px; margin-top: auto ">
-                        <!--Aditya primedd 01042022-->
-                        <div class="_form-group" style="margin-top: 10px; margin-bottom: 80px;">
-                            <div class="col-xs-6" style="padding-left: 0">
-                                <label for="program_element_project_number" class="control-label _bold required">Prime/ Sub</label>
-                                <!--<input type="text" class="form-control" id="program_client_poc">-->
-                                <!--Added by Amruta -->
-                                <select class="form-control" id="prime_subPrime_dd">
-                                    <option>Prime</option>
-                                    <option>Sub</option>
-                                </select>
-                            </div>
-                            <div class="col-xs-6" style="padding-left: 0; padding-right:0;">
-                                <label for="program_name" class="_control-label _bold required">Primes</label>
-                                <select type="select" class="form-control" id="prime_dd" disabled={true}></select>
-                            </div>
-                        </div>
-                    </form>
-
-                    <form id="divNotesHistory" style="height: 310px; border: 0.5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px; margin-bottom: 8px; margin-top: auto ">
-
-                        <div class="_form-group" style="margin-top:10px;">
-                            <label for="" class="_control-label _bold">Notes</label>
-                            <button type="button" id="btnClearNotesDesc" class="btn btn-primary pull-right" style="">Clear</button>
-                            <textarea style="height:70px;" type="text" class="form-control" id="txtprogramNotes"></textarea>
-                        </div>
-                        <!--<label for="program_element_milestone_name" id="noteshistrorylabel" class="control-label _bold" style="font-size: 14px;font-family:Verdana, Arial, sans-serif !important;display: block;text-align: center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;font-size: 18px;line-height: 1.1;">Notes History</label>-->
-                        <div class="gadget-content " st-table="liveViews" st-safe-src="copiedLiveViews" style="height:50%;" id="noteshistorygrid">
-                            <div class="panel-body" style="overflow-x: hidden; height: 169px !important; margin-bottom: 10px; padding-top: 0;">
-                                <table id="gridNoticehistoryList" class="table table-striped table-bordered">
-                                    <thead style="height: 5%; position: sticky; top: 0; background: #FFF">
-                                        <tr>
-                                            <td style="font-weight: 900; width: 12%; ">ID</td>
-                                            <td style="font-weight: 900; width: 42%; "> Description</td>
-                                            <td style="font-weight: 900; width: 16%; "> Created Date</td>
-                                            <td style="font-weight: 900; width: 16%; "> Created By</td>
-                                            <!--<td style="font-weight:900;">Date of Created</td>-->
-                                            <td style="font-weight: 900;">Action</td>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-
-
-                            <!--<table class="table table-striped">
-                            <thead style="height: 5%; position: sticky; top: 0; background: #FFF">
-                                <tr class="table-background">
-                                    <td style="width: 20px; padding-left:5px;"></td>
-
-                                    <td class="th-c sortable" data-sortable="true" st-sort="Lane" data-field="name" scope="col"
-                                        style="position: relative;  text-align:left !important; padding: 12px 8px; text-overflow: ellipsis;white-space: nowrap; background: #fff !important; color: #2c2e2f !important;" data-sortable="true">
-                                        ID
-                                    </td>
-                                    <td class="th-c sortable" data-sortable="true" st-sort="Lane" data-field="name" scope="col"
-                                        style="position: relative;  text-align:left !important; padding: 12px 8px; text-overflow: ellipsis;white-space: nowrap; background: #fff !important; color: #2c2e2f !important;" data-sortable="true">
-                                        Description
-                                    </td>
-
-
-                                    <td class="th-c sortable" data-sortable="true" st-sort="Lane" data-field="name" scope="col"
-                                        style="position: relative; text-align:left !important; padding: 12px 8px; text-overflow: ellipsis;white-space: nowrap;  background: #fff !important; color: #2c2e2f !important;" data-sortable="true">
-                                       Created Date
-                                    </td>
-
-                                    <td class="th-c sortable" data-sortable="true" st-sort="Lane" data-field="name" scope="col"
-                                        style="position: relative;  text-align:left !important; padding: 12px 8px; text-overflow: ellipsis;white-space: nowrap; background: #fff !important; color: #2c2e2f !important;" data-sortable="true">
-                                      Created By
-                                    </td>-->
-                            <!--<td class="th-c sortable" data-sortable="true" st-sort="Lane" data-field="name" scope="col"
-                                style="position: relative; text-align:left !important; padding: 12px 8px; text-overflow: ellipsis;white-space: nowrap;  background: #fff !important; color: #2c2e2f !important;" data-sortable="true">
-                                Schedule Impact
-                            </td>
-
-                            <td class="th-c sortable" data-sortable="true" st-sort="Lane" data-field="name" scope="col"
-                                style="position: relative; text-align:left !important; padding: 12px 8px; text-overflow: ellipsis;white-space: nowrap;  background: #fff !important; color: #2c2e2f !important;" data-sortable="true">
-                                Order Detail
-                            </td>-->
-                            <!--</tr>
-                                </thead>
-                                <tbody id="program_element_notes_history_table_id"></tbody>
-
-                            </table>-->
-
-                            <div style="text-align: center;">
-
-
-                            </div>
-                        </div>
-                    </form>
-
                     <!--The three textboxes-->
-                    <!--<div class="_form-group">-->
-                    <div id="documentUploadProgramNew" style="height: 401px; border: 0.5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px; margin-bottom: 8px; margin-top: auto ">
-                        <h4 style="text-align:center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;">Contract Document Management</h4>
-                        <div class="panel-body" style="overflow: scroll; padding-top: 0; height: 311px !important;">
-                            <table id="gridUploadedDocumentProgramNew" class="table table-striped">
-                                <thead style="position:sticky;top:0; background:#FFF">
-                                    <tr>
-                                        <td style="width: 20px; padding-left:5px;"></td>
-                                        <td style="font-weight:900;"> Name</td>
-
-                                        <td style="font-weight:900;">Document Type</td>
-                                        <td style="font-weight:900;">Modification</td>
-
-                                        <td style="font-weight:900;">Document Details</td>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-
-                            </table>
-                        </div>
-                        <div class="row" id="buttonRow">
-                            <div class="col-sm-12 text-center">
-
-                                <button id="DeleteUploadProgram" class="btn btn-black" style="margin-top:8px;">Delete</button>
-
-
-                                <button id="updateBtnProgram" class="btn btn-black" style="margin-top:8px;">Upload</button>
-
-
-                                <button id="downloadBtnProgram" class="btn btn-black" style="margin-top:8px;">Download</button>
-
-
-                                <button id="ViewUploadFileProgram" class="btn btn-black" style="margin-top:8px;width:145px;">View Documents</button>
-
-
-                                <button id="ViewAllUploadFileContracts" class="btn btn-black" style="margin-top:8px;">View All</button>
-
-
-                                <button id="EditBtnProgram" class="btn btn-black" style="margin-top:8px;">Edit</button>
-
-                            </div>
-                        </div>
-
-
-                    </div>
-
-                    <!--</div>-->
                 </div>
 
                 <!--TemporyRemovedCode.txt-->
@@ -1970,7 +1316,7 @@
                 <!--<button type="button" class="btn btn-default" id = "close_modal" data-dismiss="modal">Close</button>-->
                 <div class="row">
                     <!--<div class="col-sm-3" style="margin-left:5px;text-align: left;">-->
-                    <span id="spnBtndelete_program" title="" class="col-sm-2" style="margin-left:5px;text-align: left;">
+                    <span id="spnBtndelete_program" title="" class="col-sm-3" style="margin-left:5px;text-align: left;">
                         <!--Manasi 24-02-2021-->
                         <!--Manasi 23-02-2021-->
                         <button id="delete_program" type="button"
@@ -1980,23 +1326,17 @@
                     </span>
                     <!--</div>-->
                     <!--<div class="col-sm-3" style="padding-right:130px;">-->
-                    <span id="spnBtnModification" title="" class="col-sm-3 text-center">
+                    <span id="spnBtnModification" title="" class="col-sm-3" style="padding-right:130px;">
                         <!--Manasi 23-02-2021-->
                         <button type="button" style="background-color:#FF9407 !important;color:white;" class="btn btn-primary c-btn-save" id="btnModification">Modifications</button><!--Jignesh-01-03-2021-->
                     </span>
-
-                    <!--<div class="col-sm-3 text-center" style="padding-right:130px;">-->
-                    <span id="spnAdditionalInfo" title="" class="col-sm-2 text-center">
-                        <button type="button" id="btnAdditionalInfo" class="btn btn-primary c-btn-save" style="background-color: #4f07ff !important;color:white;">Additional Info</button>
-                    </span>
                     <!--</div>-->
-                    <!--</div>-->
-                    <div class="col-sm-3 text-center"> <!--style="padding-right:152px;"-->
+                    <div class="col-sm-3" style="padding-right:70px;">
                         <button type="button" class="btn btn-primary c-btn-save" id="update_program">Save</button>
                     </div>
-                    <div class="col-sm-2" style="margin-left:40px;margin-right:-50px;">
+                    <div class="col-sm-3" style="margin-left:40px;margin-right:-50px;">
                         <!--button type="button" style="margin-right:40px;" class="btn btn-primary c-btn-back" data-dismiss="modal" id = "cancel_program">Cancel</button-->
-                        <button id="cancel_program" type="button" style="margin-right:52px;" class="btn btn-primary c-btn-back">Exit</button> <!--Jignesh-22-03-2021-->
+                        <button id="cancel_program" type="button" style="margin-right:40px;" class="btn btn-primary c-btn-back">Exit</button> <!--Jignesh-22-03-2021-->
                     </div>
 
                 </div>
@@ -2008,7 +1348,7 @@
 
 
 <!--Pop up 1 for displaying the contract document Pritesh-->
-<div class="modal fade" id="PdfViewer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index:99999">
+<div class="modal fade" id="PdfViewer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document" style="width:70%;">
         <!--changes by shweta 23-3-2021-->
         <div class="modal-content">
@@ -2027,7 +1367,7 @@
 
 
 <!-- Pritesh Contract Document Upload Pop up 1 -->
-<div class="modal fade" id="DocUpdateModal" role="dialog" aria-labelledby="modal_heading" aria-hidden="true" style="z-index: 9999; ">
+<div class="modal fade" id="DocUpdateModal" role="dialog" aria-labelledby="modal_heading" aria-hidden="true">
     <div class="modal-dialog" style="width:30%;">
         <div class="modal-content">
             <div class="modal-header modal-header-program-element" style="background-color:#5cb85c;">
@@ -2185,15 +1525,15 @@
                     <form>
                         <!--Change Orders-->
                         <!--<div class="_form-group" style="">
-        <div class="col-xs-6" style="padding-left: 0;">
-            <label for="program_element_project_number" class="control-label _bold required">Title</label>
-            <input type="text" class="form-control" id="program_element_change_order_name_modal">
-        </div>
-        <div class="col-xs-6" style="padding-left: 0; padding-right: 0;">
-            <label for="program_element_contract_number" class="control-label _bold required">Order #</label>
-            <input type="text" class="form-control" id="program_element_change_order_number_modal">
-        </div>
-    </div>-->
+                            <div class="col-xs-6" style="padding-left: 0;">
+                                <label for="program_element_project_number" class="control-label _bold required">Title</label>
+                                <input type="text" class="form-control" id="program_element_change_order_name_modal">
+                            </div>
+                            <div class="col-xs-6" style="padding-left: 0; padding-right: 0;">
+                                <label for="program_element_contract_number" class="control-label _bold required">Order #</label>
+                                <input type="text" class="form-control" id="program_element_change_order_number_modal">
+                            </div>
+                        </div>-->
                         <div class="_form-group" style="">
                             <div class="col-xs-6 m-b-10" style="padding-left: 0;">
                                 <!--css changes by shweta-->
@@ -2204,7 +1544,6 @@
                                 <!--css changes by shweta-->
                                 <label for="program_element_contract_Date" class="control-label _bold required">Date</label>
                                 <input type="text" class="form-control" id="ChangeOrderDate" autocomplete="off" placeholder="MM/DD/YYYY">
-                                <input type="text" id="g_newProgramElement" hidden>
                             </div>
                         </div>
 
@@ -2233,11 +1572,11 @@
                                 <label for="program_element_contract_Type" class="control-label _bold required">Change Order Impact</label> <!--Jignesh-24-03-2021-->
                                 <select type="text" class="form-control" id="program_element_change_order_ddModificationType"></select>
                                 <!--<select class="form-control col-sm-3" id="ChangeOrderType">
-                <option value="0">Select Order Type</option>
-                <option value="Purchase Order">Purchase Order</option>
-                <option value="Task Order">Task Order</option>
-                <option value="Change Order">Change Order</option>
-            </select>-->
+                                    <option value="0">Select Order Type</option>
+                                    <option value="Purchase Order">Purchase Order</option>
+                                    <option value="Task Order">Task Order</option>
+                                    <option value="Change Order">Change Order</option>
+                                </select>-->
                             </div>
                         </div>
 
@@ -2251,9 +1590,9 @@
                             </div>
                             <!--================ Jignesh-24-03-2021 Change Order rectification ========================================-->
                             <!--<div class="col-xs-6 m-b-10" style="padding-left: 0; padding-right: 0; display:none;" id="divDurationDate">
-            <label for="program_element_contract_number" class="control-label _bold required">Duration</label>
-            <input type="text" class="form-control" id="program_element_change_order_duration_date">
-        </div>-->
+                                <label for="program_element_contract_number" class="control-label _bold required">Duration</label>
+                                <input type="text" class="form-control" id="program_element_change_order_duration_date">
+                            </div>-->
                             <div class="col-xs-6 m-b-10" style="padding-left: 0; padding-right: 0; display:none;" id="divDurationDate">
                                 <label for="program_element_contract_number" class="control-label _bold required">Schedule Impact(days)</label>
                                 <input type="number" class="form-control" id="program_element_change_order_schedule_impact" onkeypress="return event.charCode >= 48" min="1">
@@ -2261,50 +1600,32 @@
                             <!--========================================================================================================-->
                         </div>
 
-                        <div class="_form-group" style="">
-                            <div class="col-xs-12" style="padding-left: 0; margin-bottom: 15px">
-                                <label for="" class="control-label _bold required">Upload Files</label>
-                                <input class="fileInput" style="margin-top: 5px; margin-bottom: -10px;" id="fileUploadChangeOrder" sizeLimit="5MB" ngf-multiple="false" type="file" name="file" value="Upload Files" /> <!--css changes by shweta-->
+                        <div class="col-sm-12 m-b-10" id="documentUploadProgramElementChangeOrder" style="margin-top:10px; height:90px;">
+                            <!--css changes by shweta-->
+                            <div id="buttonRow">
+                                <!--css changes by shweta-->
+                                <div class="col-sm-3 m-b-10" style="margin-left:10px;display:none;">
+                                    <!-- border-style: solid; -->
+                                    <label for="program_element_class" class="control-label _bold" style="font-size: 14px;">Doc Type</label>
+                                    <select type="text" class="form-control col-sm-3" id="document_type_program_element_change_order_modal"></select>
+                                </div>
+                                <div class="col-sm-6 m-b-10" id="bfc-container" style="text-align:left;padding-left:0px;">
+                                    <!--css changes by shweta-->
+                                    <input class="fileInput" style="width: 100%; margin-bottom: 5px;" id="fileUploadProgramElementChangeOrderModal" sizeLimit="5MB" ngf-multiple="false" type="file" name="fileUploadProgramElementChangeOrderModal" value="Upload Files" />
+                                </div>
+                                <div class="col-sm-3 m-b-10" style="text-align: left; padding: 0;">
+                                    <!--css changes by shweta-->
+                                    <button id="uploadBtnProgramElementChangeOrderModal" class="btn btn-black">Upload</button>  <!--css changes by shweta-->
+                                </div>
+                            </div>
+                            <div class="col-sm-12" style="padding-left:0px;"><label class="control-label _bold">Uploaded File:</label></div> <!--css changes by shweta-->
+                            <div class="col-sm-12" id="program_element_change_order_file_name" style="text-align: left"></div>
+                            <div class="clearfix"></div> <!--css changes by shweta-->
+                            <div class="col-sm-12" id="spinRow" style="display: none;">
+                                <!--css changes by shweta-->
+                                <center><i class="fa-spinner fa-spin" style="font-size:24px;"></i>  Uploading...</center>
                             </div>
                         </div>
-                        <div class="_form-group" style="">
-                            <div class="col-xs-12" style="padding-left: 0; margin-bottom: 15px; margin-top: 10px; padding-right: 0;">
-                                <!--Jignesh-17-02-2021-->
-                                <label for="" class="control-label _bold required">Document Name</label>     <!--Luan-->
-                                <input type="text" class="form-control" id="document_name_changeOrder">
-                            </div>
-                        </div>
-
-                        <input type="text" id="DocChangeOrderID" hidden />
-
-                        <!--<div class="col-sm-12 m-b-10" id="documentUploadProgramElementChangeOrder" style="margin-top:10px; height:90px;">-->
-                        <!--css changes by shweta-->
-                        <!--<div id="buttonRow">-->
-                        <!--css changes by shweta-->
-                        <!--<div class="col-sm-3 m-b-10" style="margin-left:10px;display:none;">-->
-                        <!-- border-style: solid; -->
-                        <!--<label for="program_element_class" class="control-label _bold" style="font-size: 14px;">Doc Type</label>
-        <select type="text" class="form-control col-sm-3" id="document_type_program_element_change_order_modal"></select>
-    </div>
-    <div class="col-sm-6 m-b-10" id="bfc-container" style="text-align:left;padding-left:0px;">-->
-                        <!--css changes by shweta-->
-                        <!--<input class="fileInput" style="width: 100%; margin-bottom: 5px;" id="fileUploadProgramElementChangeOrderModal" sizeLimit="5MB" ngf-multiple="false" type="file" name="fileUploadProgramElementChangeOrderModal" value="Upload Files" />
-    </div>
-    <div class="col-sm-3 m-b-10" style="text-align: left; padding: 0;">-->
-                        <!--css changes by shweta-->
-                        <!--<button id="uploadBtnProgramElementChangeOrderModal" class="btn btn-black">Upload</button>-->  <!--css changes by shweta-->
-                        <!--</div>
-    </div>
-    <div class="col-sm-12" style="padding-left:0px;"><label class="control-label _bold">Uploaded File:</label></div>-->
-                        <!--css changes by shweta-->
-                        <!--<div class="col-sm-12" id="program_element_change_order_file_name" style="text-align: left"></div>
-    <div class="clearfix"></div>-->
-                        <!--css changes by shweta-->
-                        <!--<div class="col-sm-12" id="spinRow" style="display: none;">-->
-                        <!--css changes by shweta-->
-                        <!--<center><i class="fa-spinner fa-spin" style="font-size:24px;"></i>  Uploading...</center>
-        </div>
-    </div>-->
                     </form>
                 </div>
             </div>
@@ -4639,490 +3960,7 @@
             </div>
         </div>
     </div>
-</div><!--Make Doc mng. as it was before: Aditya 14042022-->
-<!--============================================================================================================================-->
-<!--=========================================== Nivedita-Additional Info Pop Up-15-04-2022 ======================================================================-->
-<div class="modal fade" id="additionalInfoPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="width:1499px !important;" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color:#5cb85c;">
-                <button id="cancel_additionalInfoPopup_x" type="button" class="exit-button"  aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title modal_heading" style="color:white;">Additional Info</h4>
-            </div>
-            <div class="modal-body" style="height:auto;">
-                <div class="col-md-6" style="padding-left:0;">
-                    <form id="pandpbondform" style="height: auto; display: inline-block; width: -webkit-fill-available; border: .5px solid #a9a9a9; margin-left: 20px; padding: 5px; padding-bottom:15px; margin-bottom: 8px; background-color: #fbfbfb;">
-                        <div class="_form-group" style="margin-top: 5px; min-height: 20px;">
-                            <div class="col-xs-12" style="padding-left: 0; padding-right:0;">
-
-                                <label for="program_P&P" class="control-label _bold">P&P Bonds</label>&nbsp;
-                                <div class="radio-inline">
-                                    <input type="radio" value="Yes" name="PPBond" id="PPBondYes" >
-                                    <label class="custom-control-label lblnxttoggle" for="defaultYes">Yes</label>
-                                </div>
-                                <div class="radio-inline">
-                                    <input type="radio" value="No" name="PPBond" id="PPBondNo" >
-                                    <label class="custom-control-label lblnxttoggle" for="defaultno">No</label>
-                                </div>
-
-                            </div>
-                            <div class="col-xs-12" style="padding-left: 0; padding-right:0;" id="ShowDivCost">
-
-                                <label for="program_P&P" class="control-label _bold ">Is the cost part of the contract?</label>&nbsp;
-                                <div class="radio-inline">
-                                    <input type="radio" value="Yes" name="costPartQ" id="costPartQYes" >
-                                    <label class="custom-control-label lblnxttoggle" for="defaultYes">Yes</label>
-                                </div>
-                                <div class="radio-inline">
-                                    <input type="radio" value="No" name="costPartQ" id="costPartQNo" onclick="ShowDiv('PPNotes')">
-                                    <label class="custom-control-label lblnxttoggle" for="defaultno">No</label>
-                                </div>
-
-                            </div>
-                            <div class="col-xs-12" style="margin-top:10px;padding-left: 0; padding-right:0;" id="PPNotes">
-                                <label for="" class="_control-label _bold">Notes</label>
-                                <textarea style="height:70px;" type="text" class="form-control" id="txtPPNotes"></textarea>
-                            </div>
-                            <br />
-
-                        </div>
-
-
-                    </form>
-                    <form id="certified_payroll_options" style="height: auto; display: inline-block; width: -webkit-fill-available; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px">
-                        <div class="" style="margin-top: 5px; min-height: 45px; ">
-                            <div class="col-xs-5">
-                                <label for="program_element_project_number" class="control-label _bold">Certified Payroll </label>&nbsp;
-                                <input type="radio" class="control-group" name="certified_payroll" value="Yes">&nbsp;Yes&nbsp;
-                                <input type="radio" class="control-group" name="certified_payroll" value="No">&nbsp;No
-                            </div>
-                            <div class="col-xs-4" id="certified_payroll_select_div">
-                                <select type="text" class="form-control" style="width:50%;" id="certified_payroll_select" multiple>
-                                    <!--<option value="state">A</option>
-                <option value="federal">B </option>-->
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                    <form id="prevailing_wages_options" style="height: auto; display: inline-block; width: -webkit-fill-available; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px">
-                        <div class="" style="margin-top: 5px; min-height: 45px;">
-                            <div class="col-xs-5">
-                                <label for="program_element_project_number" class="control-label _bold">Prevailing Wages </label>&nbsp;
-                                <input type="radio" class="control-group" name="prevailing_wages" value="Yes">&nbsp;Yes&nbsp;
-                                <input type="radio" class="control-group" name="prevailing_wages" value="No">&nbsp;No
-                            </div>
-                            <div class="col-xs-4" id="prevailing_wages_select_div">
-                                <select type="text" class="form-control" style="width:50%;" id="prevailing_wages_select" multiple>
-                                    <!--<option value="state">State</option>
-                <option value="federal">Federal </option>-->
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-
-                    <form id="contract_warranty" style=" height: auto; display: inline-block; width: -webkit-fill-available; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px; scroll-behavior: auto">
-
-                        <!--<div class="row">-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-4" style="padding-left: 15px;">
-        <label for="program_element_project_number" class="control-label _bold">Labor Warranty </label>
-        <textarea style="height:45px" type="text" class="form-control" id="labor_warranty" style="padding-left: 15px;"></textarea>
-
-    </div>-->
-                        <!--</div>-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-4" style="padding-left:10px;">
-        <label for="program_element_project_number" class="control-label _bold">Start Date</label>
-        <input type="text" class="form-control" id="labor_start_date" autocomplete="off" placeholder="MM/DD/YYYY">
-    </div>-->
-                        <!--</div>-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-4" style="padding-left: 10px;">
-        <label for="program_element_project_number" class="control-label _bold">End Date</label>
-        <input type="text" class="form-control" id="labor_end_date" autocomplete="off" placeholder="MM/DD/YYYY">
-
-    </div>-->
-                        <!--</div>-->
-                        <!--</div>
-    <div class="row">-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-6" style="padding-left: 15px;">
-        <label for="program_element_project_number" class="control-label _bold">Description</label>
-        <textarea type="text" style="height:40px;width:180%" class="form-control" id="labordescription"></textarea>
-    </div>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="row">-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-4" style="padding-left: 15px;">
-        <label for="program_element_project_number" class="control-label _bold">Materials Warranty </label>
-        <textarea style="height: 45px" type="text" class="form-control" id="materials_warranty"></textarea>
-
-    </div>-->
-                        <!--</div>-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-4" style="padding-left:10px;">
-        <label for="program_element_project_number" class="control-label _bold">Start Date</label>
-        <input type="text" class="form-control" id="materials_start_date" autocomplete="off" placeholder="MM/DD/YYYY">
-    </div>-->
-                        <!--</div>-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-4" style="padding-left: 10px;">
-        <label for="program_element_project_number" class="control-label _bold">End Date</label>
-        <input type="text" class="form-control" id="materials_end_date" autocomplete="off" placeholder="MM/DD/YYYY">
-
-    </div>-->
-                        <!--</div>-->
-                        <!--</div>
-    <div class="row">-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-6" style="padding-left: 15px;">
-        <label for="program_element_project_number" class="control-label _bold">Description</label>
-        <textarea type="text" style="height:40px;width:180%" class="form-control" id="materialsdescription"></textarea>
-    </div>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="row">-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-4" style="padding-left: 15px;">
-        <label for="program_element_project_number" class="control-label _bold">Other Warranty </label>
-        <textarea style="height:45px" type="text" class="form-control" id="other_warranty"></textarea>
-
-    </div>-->
-                        <!--</div>-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-4" style="padding-left:10px;">
-        <label for="program_element_project_number" class="control-label _bold">Start Date</label>
-        <input type="text" class="form-control" id="other_start_date" autocomplete="off" placeholder="MM/DD/YYYY">
-    </div>-->
-                        <!--</div>-->
-                        <!--<div class="_form-group" style="margin-top:3px;">-->
-                        <!--<div class="col-xs-4" style="padding-left: 10px;">
-        <label for="program_element_project_number" class="control-label _bold">End Date</label>
-        <input type="text" class="form-control" id="other_end_date" autocomplete="off" placeholder="MM/DD/YYYY">
-
-    </div>-->
-                        <!--</div>-->
-                        <!--</div>
-    <div class="row">-->
-                        <!--<div class="_form-group" style="margin-top:10px;">-->
-                        <!--<div class="col-xs-6" style="padding-left: 15px;">
-        <label for="program_element_project_number" class="control-label _bold">Description</label>
-        <textarea type="text" style="height:40px;width:180%" class="form-control" id="otherdescription" style="padding-left: 15px;"></textarea>
-    </div>-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <div style="padding: 10px;">
-                            <div class="row">
-                                <!--<div class="_form-group" style="margin-top:3px;">-->
-                                <div class="col-xs-4" style="padding-left: 15px;">
-                                    <label for="program_element_project_number" class="control-label _bold ">Warranty Type </label>
-                                    <select type="text" class="form-control" id="warranty_select">
-                                        <option value="Labor">Labor</option>
-                                        <option value="Materials">Materials</option>
-                                        <option value="Others">Others</option>
-                                    </select>
-                                </div>
-                                <!--</div>-->
-                                <!--<div class="_form-group" style="margin-top:3px;">-->
-                                <div class="col-xs-4" style="padding-left:10px;">
-                                    <label for="program_element_project_number" class="control-label _bold">Start Date</label>
-                                    <input type="text" class="form-control" id="warranty_start_date" autocomplete="off" placeholder="MM/DD/YYYY">
-                                </div>
-                                <!--</div>-->
-                                <!--<div class="_form-group" style="margin-top:3px;">-->
-                                <div class="col-xs-4" style="padding-left: 10px;">
-                                    <label for="program_element_project_number" class="control-label _bold">End Date</label>
-                                    <input type="text" class="form-control" id="warranty_end_date" autocomplete="off" placeholder="MM/DD/YYYY">
-
-                                </div>
-                                <!--</div>-->
-                            </div>
-                            <br />
-                            <div class="row">
-
-                                <!--<div class="_form-group" style="margin-top:10px;">-->
-                                <div class="col-xs-8" style="padding-left: 15px;">
-                                    <label for="program_element_project_number" class="control-label _bold">Description</label>
-                                    <textarea type="text" cols="20" class="form-control" id="warranty_description" style="padding-left: 15px;"></textarea>
-                                </div>
-                                <!--</div>-->
-                                <div class="col-xs-4 text-center" style="margin-top: 30px;">
-                                    <button type="button" id="btnSaveWarranty" class="btn btn-primary c-btn-save" style="width:100px;">Add</button>
-                                    <button type="button" id="btnClearWarranty" class="btn btn-primary c-btn-back" style="width:100px;">Clear</button>
-                                </div>
-                            </div>
-                        </div>
-                        <!--<div class="row" style="">
-        <div class="col-xs-4">
-            <label for="program_element_project_number" class="control-label _bold required">Insurance Type </label>
-            <select type="text" class="form-control" id="insurance_type_select">
-                <option value="Labor">Labor</option>
-                <option value="Materials">Materials</option>
-                <option value="Others">Others</option>
-            </select>
-        </div>
-        <div class="col-xs-4">
-            <label for="program_element_project_number" class="control-label _bold required">Limit </label>
-            <input type="text" class="form-control" id="insurance_limit" autocomplete="off">
-        </div>
-        <div class="col-xs-4" style="margin-top: 23px;">
-            <button type="button" id="btnSaveInsurance" class="btn btn-primary c-btn-save" style="width:100px;">Add</button>
-        </div>
-    </div>-->
-                        <hr />
-                        <div>
-                            <div class="panel-body" style="overflow-x: hidden; padding-top: 0; margin-top: 10px; height: 215px !important;">
-                                <table id="gridWarrantyList" class="table table-striped table-bordered">
-                                    <thead style="height: 5%; position: sticky; top: 0; background: #FFF">
-                                        <tr>
-                                            <td style="font-weight: 900; width: 13%; ">Sr. No.</td>
-                                            <td style="font-weight: 900; width: 300px;">Warranty</td>
-                                            <td style="font-weight: 900; width: 220px;">Start Date</td>
-                                            <td style="font-weight: 900; width: 220px;">End Date</td>
-                                            <td style="font-weight: 900; width: 18%;">Created By</td>
-                                            <td style="font-weight:900;">Action</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-
-                                </table>
-                            </div>
-                        </div>
-
-                    </form>
-                    <!--<form id="materials_warranty_form" style="height: 167px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px; scroll-behavior:auto">
-
-                       
-
-
-
-                    </form>
-                    <form id="other_warranty_form" style="height: 167px; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 20px; scroll-behavior:auto">
-
-                       
-
-
-
-                    </form>-->
-                </div>
-                <div class="col-md-6" style="padding-left:0;">
-
-                    <form id="prelimnary_notice" style=" height: auto; display: inline-block; width: -webkit-fill-available; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 0">
-                        <div style="padding: 10px;">
-                            <div class="row" style="">
-                                <h4 style="text-align:center;font-weight: 600;">Prelimnary Notice</h4>
-                                <div class="col-xs-9">
-                                    <label for="program_element_project_number" class="control-label _bold ">Date of Notice </label>
-                                    <input type="text" class="form-control" id="date_of_pre_notice" autocomplete="off" placeholder="MM/DD/YYYY" style="width: 50%;">
-                                    <!--</div>
-                    <div class="col-xs-8">-->
-                                    <label for="program_element_project_number" class="control-label _bold m-t-10">Reason of Notice </label>
-                                    <textarea class="form-control" id="notice_reason" rows="3" cols="40"></textarea>
-                                </div>
-                                <div class="text-center col-xs-3" style="margin-top: 120px">
-                                    <button type="button" id="btnSaveNotice" class="btn btn-primary c-btn-save" style="width:100px;">Add</button>
-                                    <button type="button" id="btnClearNotice" class="btn btn-primary c-btn-back" style="width:100px;">Clear</button>
-                                </div>
-                            </div>
-                            <hr />
-                            <div>
-                                <!--<h4 style="text-align:center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;">Notice History</h4>-->
-                                <div class="panel-body" style="overflow-x: hidden; padding-top: 0;margin-top:10px; height: 149px !important;">
-                                    <table id="gridNoticeList" class="table table-striped table-bordered">
-                                        <thead style="height: 5%; position: sticky; top: 0; background: #FFF">
-                                            <tr>
-                                                <td style="font-weight: 900; width: 13%; ">Sr. No.</td>
-                                                <td style="font-weight: 900; width: 23%; ">Date of Notice	</td>
-                                                <td style="font-weight: 900; width: 43%; " >Reason</td>
-                                                <td style="font-weight: 900; width: 18%;">Created By</td>
-                                                <td style="font-weight:900;">Action</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-
-
-
-                    <form id="contract_insurance" style=" height: auto; display: inline-block; width: -webkit-fill-available; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 0">
-                        <div style="padding: 10px;">
-                            <div class="row" style="">
-                                <div class="col-xs-4">
-                                    <label for="program_element_project_number" class="control-label _bold ">Insurance Type </label>
-                                    <select type="text" class="form-control" id="insurance_type_select">
-                                        <option value="GL Policy Limits">GL Policy Limits</option>
-                                        <option value="Auto Liability">Auto Liability</option>
-                                        <option value="WC Liability">WC Liability</option>
-                                        <option value="Others">Others</option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-4">
-                                    <label for="program_element_project_number" class="control-label _bold ">Limit </label>
-                                    <input type="text" class="form-control" id="insurance_limit" autocomplete="off">
-                                </div>
-                                <div class="col-xs-4" style="margin-top: 23px;">
-                                    <button type="button" id="btnSaveInsurance" class="btn btn-primary c-btn-save" style="width:100px;">Add</button>
-                                </div>
-                            </div>
-
-                            <!--<div class="text-center" style="margin-top: 10px">
-                <button type="button" id="btnSaveInsurance" class="btn btn-primary c-btn-save" style="width:100px;">Add</button>
-            </div>-->
-                            <hr />
-                            <div>
-                                <!--<h4 style="text-align:center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;">Insurance History</h4>-->
-                                <div class="panel-body" style="overflow-x: hidden; padding-top: 0;margin-top:10px; height: 149px !important;">
-                                    <table id="gridInsuranceList" class="table table-striped table-bordered">
-                                        <thead style="height: 5%; position: sticky; top: 0; background: #FFF">
-                                            <tr>
-                                                <td style="font-weight: 900; width: 13%; ">Sr. No.</td>
-                                                <td style="font-weight: 900; width: 33%;">Type</td>
-                                                <td style="font-weight: 900; width: 33%;">Limit</td>
-                                                <td style="font-weight: 900; width: 18%;">Created By</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-
-                    <form id="wrap_options" style=" height: auto; display: inline-block; width: -webkit-fill-available; border: .5px solid #a9a9a9; padding: 5px; background-color: #fbfbfb; margin-left: 0">
-                        <div class="" style="margin-top: 5px; min-height: 20px;">
-                            <div class="col-xs-4">
-                                <label for="additionalinfo_project_number" class="control-label _bold">Wrap </label>&nbsp;
-                                <input type="radio" class="control-group" name="wrap" value="Yes">&nbsp;Yes&nbsp;
-                                <input type="radio" class="control-group" name="wrap" value="No">&nbsp;No
-                            </div>
-                            <div id="wrap_select_div">
-                                <div class="col-xs-4">
-                                    <select type="text" class="form-control" style="width:50%;" id="wrap_select" multiple>
-                                    </select>
-                                </div>
-                            </div>
-                          
-                                <div class="col-xs-12 form-inline">
-                                    <div class="form-group" style="width: 100%; margin: 0; margin-bottom: 4px; ">
-                                        <label for="program_element_project_number" class="control-label _bold ">Reporting to</label>&nbsp;
-                                        <textarea style="height: 35px; width: 80%;" type="text" class="form-control" id="reporting_to"></textarea>
-                                    </div>
-                                </div>
-                           
-                        </div>
-                    </form>
-
-
-                </div>
-                    <!--<div class="_form-group">
-            <div id="divadditionalInfo" style="padding:5px; height:515px;float:right;width:97%;margin-right:5px;border: #a9a9a9;border-style: solid; border-width: thin;">-->
-                    <!--<h4 style="text-align:center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;">Contract Document Management</h4>-->
-                    <!--<div class="panel-body" style="overflow: scroll; padding-top: 0; height: 410px !important;">
-
-                </div>
-                <div class="row" id="buttonRow">
-                    <div class="col-sm-12 text-center">
-
-
-
-                    </div>
-                </div>
-
-
-            </div>
-
-        </div>-->
-                </div>
-            <div class="c-modal-footer">
-                    <div class="row">
-                        <div class="col-sm-12 text-center" style="margin-top: 10px;">
-                            <button id="additionalInfoPopupSave" type="button" style="margin-right:40px;" class="btn btn-primary c-btn-save">Save</button>
-                            <button id="additionalInfoPopupCancel" type="button" style="margin-right:40px;" class="btn btn-primary c-btn-back">Exit</button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-    </div>
 </div>
-<!--=========================================== Nivedita-AddNewDocModal-06-04-2022 ======================================================================-->
-<!--<div class="modal fade" id="documentUploadProgramNewPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="width:800px !important;" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color:#5cb85c;">
-                <button id="cancel_documentUploadProgramNewPopup_x" type="button" class="exit-button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title modal_heading">Contract Document Management</h4>
-            </div>
-            <div class="modal-body">-->
-                <!--<div class="_form-group">
-                    <div id="documentUploadProgramNew" style="padding:5px; height:515px;float:right;width:97%;margin-right:5px;border: #a9a9a9;border-style: solid; border-width: thin;">
-                        <h4 style="text-align:center;padding: 5px 0 8px;border-bottom: 1px solid #ccc;font-weight: 600;">Contract Document Management</h4>
-                        <div class="panel-body" style="overflow: scroll; padding-top: 0; height: 410px !important;">
-                            <table id="gridUploadedDocumentProgramNew" class="table table-striped">
-                                <thead style="position:sticky;top:0; background:#FFF">
-                                    <tr>
-                                        <td style="width: 20px; padding-left:5px;"></td>
-                                        <td style="font-weight:900;"> Name</td>
-
-                                        <td style="font-weight:900;">Document Type</td>
-                                        <td style="font-weight:900;">Modification</td>
-
-                                        <td style="font-weight:900;">Document Details</td>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-
-                            </table>
-                        </div>
-                        <div class="row" id="buttonRow">
-                            <div class="col-sm-12 text-center">
-
-                                <button id="DeleteUploadProgram" class="btn btn-black" style="margin-top:8px;">Delete</button>
-
-
-                                <button id="updateBtnProgram" class="btn btn-black" style="margin-top:8px;">Upload</button>
-
-
-                                <button id="downloadBtnProgram" class="btn btn-black" style="margin-top:8px;">Download</button>
-
-
-                                <button id="ViewUploadFileProgram" class="btn btn-black" style="margin-top:8px;width:145px;">View Documents</button>
-
-
-                                <button id="ViewAllUploadFileContracts" class="btn btn-black" style="margin-top:8px;">View All</button>
-
-
-                                <button id="EditBtnProgram" class="btn btn-black" style="margin-top:8px;">Edit</button>
-
-                            </div>
-                        </div>
-
-
-                    </div>
-
-                </div>-->
-            <!--</div>
-            <div class="c-modal-footer">
-                <div class="row">
-                    <div class="text-center">
-                        <button id="documentUploadProgramNewPopupCancel" style="margin-left:18px;" type="button" style="margin-right:40px;" class="btn btn-primary c-btn-back">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>-->
-
 <!--============================================================================================================================-->
 <!--=========================================== Jignesh-AddNewDocModal-18-02-2021 ======================================================================-->
 <div class="modal fade" id="addNewDocumentTypeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -5173,42 +4011,6 @@
     </div>
 </div>
 <!--============================================================================================================================-->
-<!--Aditya -Add New Prime 07042022-->
-<div class="modal fade" id="addNewPrimeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="width:675px !important;" role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color:#FF9407;">
-                <button id="cancel_addNewPrimeModal_x" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title modal_heading" style="color:white;">Add New Prime </h4>
-            </div>
-            <div class="modal-body">
-                <div class="block-view">
-                    <form>
-                        <div class="_form-group" style="">
-                            <div class="col-xs-12" style="padding-left: 0; margin-bottom: 10px; padding-right: 0;">
-                                <label for="" class="control-label _bold required">Prime Name</label>
-                                <input type="text" class="form-control" id="txtPrimeName">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="c-modal-footer">
-                <div class="row">
-                    <div class="col-sm-4 text-left" style="margin-left:18px;">
-                        <button id="btnSavePrime" class="btn btn-primary c-btn-save">Save</button>
-                    </div>
-                    <div class="col-sm-4 text-left" style="margin-left:18px;">
-                        <button id="addNewPrimeModalCancel" type="button" style="margin-right:40px;" class="btn btn-primary c-btn-back">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!------=================================================================================================------>
 <!--=========================================== Tanmay-AddNewDocModal-29/12/2021 ======================================================================-->
 <div class="modal fade" id="addNewClientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="width:675px !important;" role="document">
@@ -5376,7 +4178,6 @@
         <li><a tabindex="-1" id="contextMenuViewGantt" href="javascript:void(0);">View Gantt</a></li> <!-- Manasi 14-01-2021 -->
         <!--<li class="divider"></li>-->
         <li><a tabindex="-1" id="contextMenuDelete" href="javascript:void(0);">Delete</a></li>
-        <li><a tabindex="-1" id="contextMenuClosed" href="javascript:void(0);">Close</a></li>    <!--//----Vaishnavi 30-03-2022----//-->
         <!--<li><a tabindex="-1" id="contextMenuBaseline" href="javascript:void(0);">Baseline View</a></li>
         <li><a tabindex="-1" id="contextMenuCurrent" href="javascript:void(0);">Current View</a></li>
         <li><a tabindex="-1" id="contextMenuForecast" href="javascript:void(0);">Forecast View</a></li>-->
@@ -5409,31 +4210,7 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 </div>
-<!--//----Vaishnavi 30-03-2022----//-->
-<div class="modal fade modal-md" id="ClosedModal" data-backdrop="static" role="dialog" aria-labelledby="modal_heading" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!--<div class="modal-header">-->
-            <!--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
-            <!--&lt;!&ndash;// <h4 class="modal-title"></h4>&ndash;&gt;-->
-            <!--</div>-->
-            <div class="modal-body">
-                <div style="height:50px;">
-                    <p class="col-sm-12" id="closed_message" style="text-align: center; font-size:large; font-weight:bold;color:black">Are you Sure you want to Closed?</p>
-                </div>
-                <div class="row" style="text-align: center;">
-                    <div class="col-sm-6">
-                        <button id="no_delete" data-dismiss="modal" style="margin-left:25%;" type="button" class="btn btn-primary c-btn-back">No</button>
-                    </div>
-                    <div class="col-sm-6">
-                        <button type="button" data-dismiss="modal" style="margin-right:25%;" class="btn btn-primary c-btn-delete" id="closed_button">Yes</button>
-                    </div>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-</div>
-<!--//----Vaishnavi 30-03-2022----//-->
+
 <!--Exit Confirmation Modal-->
 <div class="modal modal-md" id="ExitConfirmModal" data-backdrop="static" role="dialog" aria-labelledby="modal_heading" aria-hidden="true">
     <div class="modal-dialog">
@@ -5548,7 +4325,7 @@
                     </div>
                     <div class="row" id="buttonRow">
                         <div class="col-sm-12 text-center">
-                            <button id="downloadBtnInViewAllProgramElement" class="btn btn-black" style="margin-top: 8px; width: 100px;">Download</button>
+                            <button id="downloadBtnInViewAllProgramElement" class="btn btn-black" style="margin-top:8px;">Download</button>
                             <button id="ViewUploadFileInViewAllProgramElement" class="btn btn-black" style="margin-top:8px;width:145px;">View Documents</button>
                         </div>
                     </div>
@@ -5601,7 +4378,7 @@
                     </div>
                     <div class="row" id="buttonRow">
                         <div class="col-sm-12 text-center">
-                            <button id="downloadBtnInViewAllProject" class="btn btn-black" style="margin-top: 8px; width: 100px;">Download</button>
+                            <button id="downloadBtnInViewAllProject" class="btn btn-black" style="margin-top:8px;">Download</button>
                             <button id="ViewUploadFileInViewAllProject" class="btn btn-black" style="margin-top:8px;width:145px;">View Documents</button>
                         </div>
                     </div>
@@ -5614,7 +4391,7 @@
 </div>
 
 <!--Pop up For View all documents in contract-->
-<div class="modal fade" id="DisplayAllDocumentsInContract" role="dialog" aria-labelledby="modal_heading" aria-hidden="true" style="z-index:9999;">
+<div class="modal fade" id="DisplayAllDocumentsInContract" role="dialog" aria-labelledby="modal_heading" aria-hidden="true">
     <div class="modal-dialog" style="width:60%;">
         <div class="modal-content">
             <div class="modal-header modal-header-program-element" style="background-color:#5cb85c;">
@@ -5654,7 +4431,7 @@
                     </div>
                     <div class="row" id="buttonRow">
                         <div class="col-sm-12 text-center">
-                            <button id="downloadBtnInViewAllContracts" class="btn btn-black" style="margin-top: 8px; width: 100px;">Download</button>
+                            <button id="downloadBtnInViewAllContracts" class="btn btn-black" style="margin-top:8px;">Download</button>
                             <button id="ViewUploadFileInViewAllContracts" class="btn btn-black" style="margin-top:8px;width:145px;">View Documents</button>
                         </div>
                     </div>
@@ -5704,66 +4481,12 @@
 
 
 <script>
-
-    var acc = document.getElementsByClassName("accordion");
-    var i;
-
-    for (i = 0; i < acc.length; i++) {
-        acc[i].addEventListener("click", function () {
-            this.classList.toggle("active");
-            var panel = this.nextElementSibling;
-            if (panel.style.display === "block") {
-                panel.style.display = "none";
-            } else {
-                panel.style.display = "block";
-            }
-        });
-    }
     //var formdata = new FormData();
-    //function ShowDiv(divName) {
-
-    //    var div;
-    //    div = document.getElementById(divName); 
-    //    divNote = document.getElementById('PPNotes');
-    //    radioNo = document.getElementById('costPartQNo');
-       
-    //    if (radioNo.checked == true) {
-    //        divNote.style.display = "block";
-    //    }
-
-    //    div.style.display = "block";
-    //}
-    //function HideDiv(divName) {
-    //    debugger;
-    //    var div;
-    //    div = document.getElementById(divName);
-    //    radioNo = document.getElementById('costPartQNo');
-    //    if (divName == 'ShowDivCost') {
-    //        div1 = document.getElementById('PPNotes');
-    //        div1.style.display = "none";
-    //        radioNo.checked = false;
-    //    }
-    //    div.style.display = "none";
-
-    //}
-    //function openTab(evt, cityName) {
-
-    //    var i, tabcontent, tablinks;
-    //    tabcontent = document.getElementsByClassName("tabcontent");
-    //    for (i = 0; i < tabcontent.length; i++) {
-    //        tabcontent[i].style.display = "none";
-    //    }
-    //    tablinks = document.getElementsByClassName("tablinks");
-    //    for (i = 0; i < tablinks.length; i++) {
-    //        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    //    }
-    //    document.getElementById(cityName).style.display = "block";
-    //    evt.currentTarget.className += " active";
 
 
-    //}
-    // document.getElementById("defaultOpen").click();
     $(function () {
+
+
 
 
 
@@ -5892,20 +4615,6 @@
         if (!$('body').children('#addNewClientModal').attr('id')) {
             $('#addNewClientModal').appendTo('body');
         }
-        //Nivedita- documentUploadProgramNewPopup - 06-04-2022
-        if (!$('body').children('#documentUploadProgramNewPopup').attr('id')) {
-            $('#documentUploadProgramNewPopup').appendTo('body');
-        }
-
-        //Nivedita- additionalInfoPopup - 06-04-2022
-        if (!$('body').children('#additionalInfoPopup').attr('id')) {
-            $('#additionalInfoPopup').appendTo('body');
-        }
-
-        //Aditya Prime 07042022
-        if (!$('body').children('#addNewPrimeModal').attr('id')) {
-            $('#addNewPrimeModal').appendTo('body');
-        }
 
         if (!$('body').children('#PdfViewerChangeorder').attr('id')) {
             $('#PdfViewerChangeorder').appendTo('body');
@@ -5941,7 +4650,6 @@
         $('.main-content-view').find('#PdfViewerContModification22').remove();//// Jignesh-08-02-2021
         $('.main-content-view').find('#addNewDocumentTypeModal').remove();//// Jignesh-AddNewDocModal-18-02-2021
         $('.main-content-view').find('#addNewClientModal').remove();//// Tanmay-AddNewDocModal-28/12/2021
-        $('.main-content-view').find('#addNewPrimeModal').remove // Aditya 07042022 Prime
 
         $('.main-content-view').find('#PdfViewerChangeorder').remove();
 
@@ -5954,11 +4662,6 @@
         // -------------------- View all modal in  contract Swapnil 22-01-2021 -------------------------------------
         $('.main-content-view').find('#DisplayAllDocumentsInContract').remove();
         //--------------------------------------------------------------------------------------------------
-        //Nivedita- documentUploadProgramNewPopup - 06-04-2022
-        $('.main-content-view').find('#documentUploadProgramNewPopup').remove();
-        //Nivedita- additionalInfoPopup - 15-04-2022
-        $('.main-content-view').find('#additionalInfoPopup').remove();
-
         $('#update_organization').unbind('click').on('click', function () {
             alert("");
         });
@@ -6298,18 +5001,6 @@
                 $("#ProgramModal").css({ "opacity": "1" });
             }
         });
-        //Aditya Prime 07042022
-        $('#addNewPrimeModalCancel').unbind('click').on('click', function () {
-            if (false) {
-                $("#addNewPrimeModal").css({ "opacity": "0.4" });
-                $("#ExitConfirmModal").appendTo('body');
-                $("#ExitConfirmModal").modal('toggle');
-            } else {
-                $("#addNewPrimeModal").modal('toggle');
-                $("#ProgramModal").css({ "opacity": "1" });
-                $(".modal-body #prime_dd").val('');
-            }
-        });
 
         $('#cancel_program_element_change_order_view_modal').unbind('click').on('click', function () {
             if (false) {
@@ -6331,52 +5022,6 @@
                 $("#ProgramElementModal").css({ "opacity": "1" });
             }
         });
-        //=============================================================================================================
-        //Nivedita - documentUploadProgramNewPopup - 06-04-2022
-        $('#cancel_documentUploadProgramNewPopup_x').unbind('click').on('click', function () {
-            if (false) {
-                $("#documentUploadProgramNewPopup").css({ "opacity": "0.4" });
-                $("#ExitConfirmModal").appendTo('body');
-                $("#ExitConfirmModal").modal('toggle');
-            } else {
-                $("#documentUploadProgramNewPopup").modal('toggle');
-                $("#ProgramModal").css({ "opacity": "1" });
-            }
-        });
-
-        $('#documentUploadProgramNewPopupCancel').unbind('click').on('click', function () {
-            if (false) {
-                $("#documentUploadProgramNewPopup").css({ "opacity": "0.4" });
-                $("#ExitConfirmModal").appendTo('body');
-                $("#ExitConfirmModal").modal('toggle');
-            } else {
-                $("#documentUploadProgramNewPopup").modal('toggle');
-                $("#ProgramModal").css({ "opacity": "1" });
-            }
-        });
-
-        //Nivedita - documentUploadProgramNewPopup - 06-04-2022
-        //$('#cancel_additionalInfoPopup_x').unbind('click').on('click', function () {
-        //    if (false) {
-        //        //$("#additionalInfoPopup").css({ "opacity": "0.4" });
-        //        $("#ExitConfirmModal").appendTo('body');
-        //        $("#ExitConfirmModal").modal('toggle');
-        //    } else {
-        //        $("#additionalInfoPopup").modal('toggle');
-        //        $("#ProgramModal").css({ "opacity": "1" });
-        //    }
-        //});
-
-        //$('#additionalInfoPopupCancel').unbind('click').on('click', function () {
-        //    if (false) {
-        //        //$("#additionalInfoPopup").css({ "opacity": "0.4" });
-        //        $("#ExitConfirmModal").appendTo('body');
-        //        $("#ExitConfirmModal").modal('toggle');
-        //    } else {
-        //        $("#additionalInfoPopup").modal('toggle');
-        //        $("#ProgramModal").css({ "opacity": "1" });
-        //    }
-        //});
         //=============================================================================================================
 
 
@@ -6561,17 +5206,6 @@
                 $("#ProjectModal").css({ "opacity": "1" });
             }
         });
-        //Aditya 070402022 Prime
-        $('#cancel_addNewPrimeModal_x').unbind('click').on('click', function () {
-            if (false) {
-                $("#addNewPrimeModal").css({ "opacity": "0.4" });
-                $("#ExitConfirmModal").appendTo('body');
-                $("#ExitConfirmModal").modal('toggle');
-            } else {
-                $("#addNewPrimeModal").modal('toggle');
-                $("#ProjectModal").css({ "opacity": "1" });
-            }
-        });
         $('#cancel_PdfViewerChangeorder_modal_xPrg').unbind('click').on('click', function () {
             if (false) {
                 $("#PdfViewerChangeorder").css({ "opacity": "0.4" });
@@ -6672,16 +5306,9 @@
 
         //	nhung ma ta
         $("#contextMenuDelete").bind("click", function () {
-            debugger;
             modal_mode = 'Update';
             $('#DeleteModal').appendTo('body').modal({ show: true, backdrop: 'static' });
         });
-        /*//----Vaishnavi 30-03-2022----//*/
-        $("#contextMenuClosed").bind("click", function () {
-            modal_mode = 'Update';
-            $('#ClosedModal').appendTo('body').modal({ show: true, backdrop: 'static' });
-        });
-        /* //----Vaishnavi 30-03-2022----//*/
         $("#contextMenuMap").unbind('click').on('click', function () {
             //console.log(wbsTree.getSelectedNode().organizationID);
             $(location).attr('href', '#/app/const-timeline');
@@ -6689,7 +5316,6 @@
             //uses local storage to retrieve organization
         });
         $("#DeleteModal").unbind().on('show.bs.modal', function () {
-            debugger;
             var type = $("#contextMenu").attr('contextType');
             console.log(type);
             console.debug("Before", $('#delete_message').text());
@@ -6737,60 +5363,6 @@
             }
             console.debug("after", $('#delete_message').text());
         });
-        /*//----Vaishnavi 30-03-2022----//*/
-        $("#ClosedModal").unbind().on('show.bs.modal', function () {
-            debugger;
-            var type = $("#contextMenu").attr('contextType');
-            console.log(type);
-            console.debug("Before", $('#delete_message').text());
-
-            if (type === "Root") {
-                //Ivan here
-                $("#DeleteModal").appendTo('body');
-                if (modal_mode == 'Create') {
-                    //Original: $('.modal-body #delete_message').text("Deleting a program will delete its program elements. Are you sure you want to continue?");
-                    //$('.modal-body #delete_message').text("Deleting a program will delete its projects. Are you sure you want to continue?");
-                    $('.modal-body #closed_message').text("Closing a contract will closes its projects. Are you sure you want to continue?");    //Manasi 20-07-2020
-                } else {
-                    $('.modal-body #closed_message').text("Closing an Organization will closes everything. Are you sure you want to continue?");
-                }
-                //$('#orgModal').css({"opacity": "0.4"});
-                var orgModal = $("#orgModal");
-                $(orgModal.parent().parent().parent()).css({ "opacity": "0.4" });
-            } else if (type === "Program") {
-                if (modal_mode == "Create") {
-                    //Original: $('.modal-body #delete_message').text("Deleting a Program Element will delete its projects. Are you sure you want to continue?");
-                    $('.modal-body #closed_message').text("Closing a Project will Closes its project elements. Are you sure you want to continue?");
-                } else {
-                    //Original: $('.modal-body #delete_message').text("Deleting a program will delete its program elements. Are you sure you want to continue?");
-                    $('.modal-body #closed_message').text("Closing a Contract will Closes its projects. Are you sure you want to continue?");
-                }
-
-            } else if (type === "ProgramElement") {
-                if (modal_mode == "Create") {
-                    $('.modal-body #closed_message').text("Closing a project will Closes its trends. Are you sure you want to continue?");
-                } else {
-                    //Original: $('.modal-body #delete_message').text("Deleting a Program Element will delete its projects. Are you sure you want to continue?");
-                    $('.modal-body #closed_message').text("Closing a Project will Closes its project elements. Are you sure you want to continue?");
-                }
-
-            } else if (type === "Project") {
-                if (modal_mode == "Create") {
-                    $('.modal-body #closed_message').text("All information related to this trend will be deleted. Are you sure you want to continue?");
-                } else {
-                    //$('.modal-body #delete_message').text("Deleting a project will delete its trends. Are you sure you want to continue?");
-                    $('.modal-body #closed_message').text("Closing an element will Closes its trends. Are you sure you want to continue?");   //Manasi
-                }
-
-            } else if (type === "FutureTrend") {
-                $('.modal-body #closed_message').text("All information related to this trend will be Closed. Are you sure you want to continue?");
-            }
-            else if (type === "PastTrend") {
-                $('.modal-body #closed_message').text("All information related to this trend will be Closed. Are you sure you want to continue?");
-            }
-            console.debug("after", $('#delete_message').text());
-        });
-        /*//----Vaishnavi 30-03-2022----//*/
         $("#delete_button").unbind('click').on('click', function () {
             $("#DeleteModal").modal('hide');
         });
@@ -7007,25 +5579,19 @@
     var displayMap = true;
     function toggle(x) {
         debugger;
-        var mode = localStorage.getItem('MODE');
-        if (mode == 'mindmap') displayMap = true
-        else displayMap = false
         displayMap = !displayMap;
         if (displayMap) {
             $('#mindmap').show();
             $('#selectProject').show();
             $('#wbsGridView').hide();
             $('#selectManagingDepartment').hide();
-            $('#closed,#approved,#unapproved,#contract,#project').show();
-            localStorage.setItem('MODE', 'mindmap');
             $('.toggle-btn i').attr('title', 'Go To GridView');
         } else {
             $('#mindmap').hide();
             $('#selectProject').hide();
             $('#wbsGridView').show();
             $('#selectManagingDepartment').show();
-            $('#closed,#approved,#unapproved,#contract,#project').hide();
-            localStorage.setItem('MODE', 'gridview');
+
             $('.toggle-btn i').attr('title', 'Go To TreeView');
         }
         x.classList.toggle("fa-sitemap");

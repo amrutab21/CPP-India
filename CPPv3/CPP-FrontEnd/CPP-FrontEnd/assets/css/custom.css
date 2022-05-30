@@ -1320,15 +1320,12 @@ option[value='-1'] {
 }
 input.control-group[type=radio] {margin: 4px 5px 0 0 !important;}
 
-.open > .multiselect-container {
+.open>.multiselect-container {
     position: absolute;
     list-style-type: none;
     margin: 0;
     padding: 0;
-    height: max-content;
+    height: 90px;
     overflow: auto;
     overflow-y: auto;
-    max-height: 150px;
-    width: inherit;
-    background: #fff;
 }

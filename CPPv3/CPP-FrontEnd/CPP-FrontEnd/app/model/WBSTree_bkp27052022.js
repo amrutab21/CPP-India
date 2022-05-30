@@ -3833,14 +3833,9 @@ WBSTree = (function ($) {
                     //}
                     
                     selectedNode.ProgramNote = $('#ProgramModal').find('.modal-body #txtprogramNotes').val();
-                    var isViewModeOn = true;
-                    isViewModeOn = $('#txtprogramNotes').is(':disabled');
                     var modifiedNotes = selectedNode.ProgramNote;
                     var isNotesModified = false;
-                    //if (orgNotes != modifiedNotes) {
-                    //    isNotesModified = true;
-                    //}
-                    if (!isViewModeOn) {
+                    if (orgNotes != modifiedNotes) {
                         isNotesModified = true;
                     }
                     //selectedNode.ClientPOC = $('#ProgramModal').find('.modal-body #program_client_poc').text();

@@ -3910,10 +3910,6 @@ angular.module('cpp.controllers').
                             localStorage.setItem('selectProjectCapitalProjectAssistantIDDash', null);
                             //dhtmlx('at #project_name  $http.get orgId:' + orgId + ' else...');
                         }
-/*
-                        usSpinnerService.stop('spinner-1');
-                        $scope.showSpinner = false;
-                        $('#spin').removeClass('fademe');*/
 
                     });
                 var sreachTxt = $('#txtQuickSearch').val();
@@ -4491,15 +4487,13 @@ angular.module('cpp.controllers').
                             setUserNode();
                             $rootScope.fromWBS = false;
                         }
-
-                        
                     }).
                     finally(function () {
                         console.log($rootScope);
                         // $rootScope.buttonDisabled =false;
-                       /* usSpinnerService.stop('spinner-1');
+                        usSpinnerService.stop('spinner-1');
                         $scope.showSpinner = false;
-                        $('#spin').removeClass('fademe');*/
+                        $('#spin').removeClass('fademe');
                     })
             }
 
