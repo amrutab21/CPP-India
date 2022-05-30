@@ -71,6 +71,11 @@ namespace WebAPI.Models
 		[ForeignKey("DocumentTypeID")]
         public virtual DocumentType DocumentType { get; set; }
 
+        //Nivedita 10022022
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
+
         public static List<DocumentView> GetDocument(String DocumentSet, int projectID)
         {
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
@@ -88,7 +93,7 @@ namespace WebAPI.Models
                     if (DocumentSet == "Project")
                     {
                         //documentList = ctx.Document.Where(a => a.Project == projectID).OrderBy(a => a.DocumentName).ToList();
-                        documentList = ctx.Document.Where(a => a.ProjectID == projectID).
+                        documentList = ctx.Document.Where(a => a.ProjectID == projectID && a.IsDeleted == false).
                                         Join(ctx.DocumentType, doc => doc.DocumentTypeID, docType => docType.DocumentTypeID, (doc, docType) => new { doc, docType }).
                                         OrderByDescending(a => a.doc.CreatedDate).
                                         //OrderBy(doc => doc.LastUpdatedDate).
@@ -121,7 +126,7 @@ namespace WebAPI.Models
                     else if (DocumentSet == "ProgramElement")
                     {
                         //documentList = ctx.Document.Where(a => a.Project == projectID).OrderBy(a => a.DocumentName).ToList();
-                        documentList = ctx.Document.Where(a => a.ProgramElementID == projectID).
+                        documentList = ctx.Document.Where(a => a.ProgramElementID == projectID && a.IsDeleted == false).
                                         Join(ctx.DocumentType, doc => doc.DocumentTypeID, docType => docType.DocumentTypeID, (doc, docType) => new { doc, docType }).
                                         OrderByDescending(a => a.doc.CreatedDate).
                                         //OrderBy(doc => doc.LastUpdatedDate).
@@ -154,7 +159,7 @@ namespace WebAPI.Models
                     else if (DocumentSet == "Program")
                     {
                         //documentList = ctx.Document.Where(a => a.Project == projectID).OrderBy(a => a.DocumentName).ToList();
-                        documentList = ctx.Document.Where(a => a.ProgramID == projectID).
+                        documentList = ctx.Document.Where(a => a.ProgramID == projectID && a.IsDeleted == false).
                                         Join(ctx.DocumentType, doc => doc.DocumentTypeID, docType => docType.DocumentTypeID, (doc, docType) => new { doc, docType }).
                                         OrderByDescending(a => a.doc.CreatedDate).
                                         //OrderBy(doc => doc.LastUpdatedDate).
@@ -187,7 +192,7 @@ namespace WebAPI.Models
                     else if (DocumentSet == "ProgramContract")
                     {
                         //documentList = ctx.Document.Where(a => a.Project == projectID).OrderBy(a => a.DocumentName).ToList();
-                        documentList = ctx.Document.Where(a => a.ContractID == projectID).
+                        documentList = ctx.Document.Where(a => a.ContractID == projectID && a.IsDeleted == false).
                                         Join(ctx.DocumentType, doc => doc.DocumentTypeID, docType => docType.DocumentTypeID, (doc, docType) => new { doc, docType }).
                                         OrderByDescending(a => a.doc.CreatedDate).
                                         //OrderBy(doc => doc.LastUpdatedDate).
@@ -220,7 +225,7 @@ namespace WebAPI.Models
                     else if (DocumentSet == "ProgramElementChangeOrder")
                     {
                         //documentList = ctx.Document.Where(a => a.Project == projectID).OrderBy(a => a.DocumentName).ToList();
-                        documentList = ctx.Document.Where(a => a.ChangeOrderID == projectID).
+                        documentList = ctx.Document.Where(a => a.ChangeOrderID == projectID && a.IsDeleted == false).
                                         Join(ctx.DocumentType, doc => doc.DocumentTypeID, docType => docType.DocumentTypeID, (doc, docType) => new { doc, docType }).
                                         OrderByDescending(a => a.doc.CreatedDate).
                                         //OrderBy(doc => doc.LastUpdatedDate).
@@ -255,7 +260,7 @@ namespace WebAPI.Models
                         documentList = (from a in ctx.Document
                                         join b in ctx.ProgramElement on a.ProgramElementID equals b.ProgramElementID
                                         join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                        where b.ProgramElementID == projectID
+                                        where b.ProgramElementID == projectID && a.IsDeleted == false
                                         select new DocumentView
                                         {
                                             DocumentID = a.DocumentID,
@@ -286,7 +291,7 @@ namespace WebAPI.Models
                                                  join d in ctx.ChangeOrder on b.ProgramElementID equals d.ProgramElementID
                                                  join a in ctx.Document on d.ChangeOrderID equals a.ChangeOrderID
                                                  join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                                 where b.ProgramElementID == projectID
+                                                 where b.ProgramElementID == projectID && a.IsDeleted == false
                                                  select new DocumentView
                                                  {
                                                      DocumentID = a.DocumentID,
@@ -317,7 +322,7 @@ namespace WebAPI.Models
                                                           join d in ctx.Project on b.ProgramElementID equals d.ProgramElementID
                                                           join a in ctx.Document on d.ProjectID equals a.ProjectID
                                                           join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                                          where b.ProgramElementID == projectID && a.TrendNumber == null
+                                                          where b.ProgramElementID == projectID && a.TrendNumber == null && a.IsDeleted == false
                                                           select new DocumentView
                                                           {
                                                               DocumentID = a.DocumentID,
@@ -350,7 +355,7 @@ namespace WebAPI.Models
                                                                    //join a in ctx.Document on e.TrendNumber equals a.TrendNumber.ToString() 
                                                                    join a in ctx.Document on new { X1 = e.TrendNumber, X2 = e.ProjectID.ToString() } equals new { X1 = a.TrendNumber.ToString(), X2 = a.ProjectID.ToString() }
                                                                    join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                                                   where b.ProgramElementID == projectID && a.TrendNumber != null
+                                                                   where b.ProgramElementID == projectID && a.TrendNumber != null && a.IsDeleted == false
                                                                    select new DocumentView
                                                                    {
                                                                        DocumentID = a.DocumentID,
@@ -384,7 +389,7 @@ namespace WebAPI.Models
                         documentList = (from a in ctx.Document
                                         join b in ctx.Program on a.ProgramID equals b.ProgramID
                                         join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                        where b.ProgramID == projectID
+                                        where b.ProgramID == projectID && a.IsDeleted == false
                                         select new DocumentView
                                         {
                                             DocumentID = a.DocumentID,
@@ -416,7 +421,7 @@ namespace WebAPI.Models
                                                  join b in ctx.ProgramElement on e.ProgramID equals b.ProgramID
                                                  join a in ctx.Document on b.ProgramElementID equals a.ProgramElementID
                                                  join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                                 where e.ProgramID == projectID
+                                                 where e.ProgramID == projectID && a.IsDeleted == false
                                                  select new DocumentView
                                                  {
                                                      DocumentID = a.DocumentID,
@@ -449,7 +454,7 @@ namespace WebAPI.Models
                                                           join f in ctx.ChangeOrder on b.ProgramElementID equals f.ProgramElementID
                                                           join a in ctx.Document on f.ChangeOrderID equals a.ChangeOrderID
                                                           join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                                          where e.ProgramID == projectID
+                                                          where e.ProgramID == projectID && a.IsDeleted == false
                                                           select new DocumentView
                                                           {
                                                               DocumentID = a.DocumentID,
@@ -482,7 +487,7 @@ namespace WebAPI.Models
                                                                    join f in ctx.Project on b.ProgramElementID equals f.ProgramElementID
                                                                    join a in ctx.Document on f.ProjectID equals a.ProjectID
                                                                    join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                                                   where e.ProgramID == projectID && a.TrendNumber == null
+                                                                   where e.ProgramID == projectID && a.TrendNumber == null && a.IsDeleted == false
                                                                    select new DocumentView
                                                                    {
                                                                        DocumentID = a.DocumentID,
@@ -517,7 +522,7 @@ namespace WebAPI.Models
                                                                             //join a in ctx.Document on d.TrendNumber equals a.TrendNumber.ToString()
                                                                             join a in ctx.Document on new { X1 = d.TrendNumber, X2 = d.ProjectID.ToString() } equals new { X1 = a.TrendNumber.ToString(), X2 = a.ProjectID.ToString() }
                                                                             join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                                                            where e.ProgramID == projectID && a.TrendNumber != null
+                                                                            where e.ProgramID == projectID && a.TrendNumber != null && a.IsDeleted == false
                                                                             select new DocumentView
                                                                             {
                                                                                 DocumentID = a.DocumentID,
@@ -553,7 +558,7 @@ namespace WebAPI.Models
                                                           from d in ctx.Project
                                                           join a in ctx.Document on d.ProjectID equals a.ProjectID
                                                           join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                                          where d.ProjectID == projectID && a.TrendNumber == null
+                                                          where d.ProjectID == projectID && a.TrendNumber == null && a.IsDeleted == false
                                                           select new DocumentView
                                                           {
                                                               DocumentID = a.DocumentID,
@@ -585,7 +590,7 @@ namespace WebAPI.Models
                                                                    //join a in ctx.Document on e.TrendNumber equals a.TrendNumber.ToString() 
                                                                    join a in ctx.Document on new { X1 = e.TrendNumber, X2 = e.ProjectID.ToString() } equals new { X1 = a.TrendNumber.ToString(), X2 = a.ProjectID.ToString() }
                                                                    join c in ctx.DocumentType on a.DocumentTypeID equals c.DocumentTypeID
-                                                                   where d.ProjectID == projectID && a.TrendNumber != null
+                                                                   where d.ProjectID == projectID && a.TrendNumber != null && a.IsDeleted == false
                                                                    select new DocumentView
                                                                    {
                                                                        DocumentID = a.DocumentID,
@@ -681,7 +686,7 @@ namespace WebAPI.Models
                 using (var ctx = new CPPDbContext())
                 {
                     //documentList = ctx.Document.Where(a => a.Project == projectID).OrderBy(a => a.DocumentName).ToList();
-                    document = ctx.Document.Where(a => a.DocumentID == documentID).FirstOrDefault();
+                    document = ctx.Document.Where(a => a.DocumentID == documentID && a.IsDeleted == false).FirstOrDefault();
 
                     //This is for new storage method, else legacy
                     if (document.DocumentBinaryData == null)
@@ -908,12 +913,20 @@ namespace WebAPI.Models
                         //Delete the document data records
                         for (int x = 0; x < retrievedDocumentDataList.Count; x++)
                         {
-                            ctx.DocumentData.Remove(retrievedDocumentDataList[x]);
+                            retrievedDocumentDataList[x].IsDeleted = true;
+                            retrievedDocumentDataList[x].DeletedDate = DateTime.Now;
+                            retrievedDocumentDataList[x].DeletedBy = document.DeletedBy;
+
+                            //ctx.DocumentData.Remove(retrievedDocumentDataList[x]);
                             ctx.SaveChanges();
                         }
 
                         //Delete the document record
-                        ctx.Document.Remove(retrievedDocument);
+                        retrievedDocument.IsDeleted = true;
+                        retrievedDocument.DeletedDate = DateTime.Now;
+                        retrievedDocument.DeletedBy = document.DeletedBy;
+
+                        //ctx.Document.Remove(retrievedDocument);
                         ctx.SaveChanges();
 
                         result += retrievedDocument.DocumentName + " has been deleted successfully.\n";

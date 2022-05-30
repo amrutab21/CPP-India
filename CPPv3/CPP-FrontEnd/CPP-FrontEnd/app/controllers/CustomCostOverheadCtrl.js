@@ -18,7 +18,8 @@ angular.module('cpp.controllers').
                 $scope.$close(param);
                 $scope.params.confirm = 'back';
             }
-            if (localStorageService.get('authorizationData').role === "Admin") {
+            //if (localStorageService.get('authorizationData').role === "Admin") {
+            if (localStorageService.get('authorizationData').role.indexOf('Admin') != -1) {
                 //$('#btnSaveCostOverhead').removeAttr('disabled');
                 $scope.disabledField = '';
                 //===== Jignesh-09-04-2021 ===================

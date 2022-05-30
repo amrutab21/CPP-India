@@ -36,6 +36,11 @@ namespace WebAPI.Models
         //not mapped
         [NotMapped]
         List<ProgramFund> programFundList { get; set; }
+        //Nivedita 10022022
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
+
         public static List<TrendFund> getTrendFund(int trendID, int projectID)
         {
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
@@ -174,7 +179,12 @@ namespace WebAPI.Models
                     if (retrievedTrendFund != null)
                     {
                         //Delete
-                        ctx.TrendFund.Remove(retrievedTrendFund);
+                        //Nivedita 10022022
+                        //ctx.CostLineItemTracker.Remove(costLineItem);
+                        retrievedTrendFund.IsDeleted = true;
+                        retrievedTrendFund.DeletedDate = DateTime.Now;
+                        retrievedTrendFund.DeletedBy = "";
+                        //ctx.TrendFund.Remove(retrievedTrendFund);
                         ctx.SaveChanges();
                         delete_result = "Success";
                     }

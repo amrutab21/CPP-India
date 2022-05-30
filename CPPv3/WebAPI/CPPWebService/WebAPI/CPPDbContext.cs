@@ -115,6 +115,14 @@ namespace WebAPI
             modelBuilder.Entity<ProjectType>().ToTable("project_type");
             modelBuilder.Entity<ProjectClass>().ToTable("project_class");
             modelBuilder.Entity<ServiceClass>().ToTable("services"); //services table
+            modelBuilder.Entity<Prime>().ToTable("primes"); //primes table
+
+            modelBuilder.Entity<CertifiedPayroll>().ToTable("certified_payroll");    //Vaishnavi 12-04-2022
+            modelBuilder.Entity<ProgramCertifiedPayroll>().ToTable("program_certifiedroll");
+            modelBuilder.Entity<ProgramPrevailingWage>().ToTable("program_prevailing_wage");
+            modelBuilder.Entity<Wrap>().ToTable("wrap");
+            modelBuilder.Entity<ProgramWrap>().ToTable("program_wrap");
+            modelBuilder.Entity<ProgramWarranty>().ToTable("program_warranty");    //Vaishnavi 12-04-2022
             //modelBuilder.Entity<ProjectClassPhase>().ToTable("project_class_phase");
             modelBuilder.Entity<ServiceToSubserviceMapping>().ToTable("project_class_phase");
 
@@ -158,6 +166,9 @@ namespace WebAPI
             modelBuilder.Entity<ModificationType>().ToTable("modification_type");
             modelBuilder.Entity<Versionmaster>().ToTable("versionmaster");
             modelBuilder.Entity<ProjectAccessControl>().ToTable("project_access_control"); // Jignesh-18-10-2021
+            modelBuilder.Entity<clientPOC>().ToTable("client_poc");   //Tanmay - 15/12/2021
+            modelBuilder.Entity<UserRoleRelation>().ToTable("user_role_relation");
+            modelBuilder.Entity<ProgramNotes>().ToTable("program_notes");
         }
 
         public DbSet<Program> Program { get; set; }
@@ -185,6 +196,7 @@ namespace WebAPI
         //public DbSet<ProjectScope> ProjectScope { get; set; }
         public DbSet<RandomToken> RandomToken { get; set; }
         public DbSet<User> User { get; set; }
+        
 
         public DbSet<ApprovalMatrix> ApprovalMatrix { get; set; }
         public DbSet<ProgramCategory> ProgramCategory { get; set; }
@@ -215,6 +227,13 @@ namespace WebAPI
         public DbSet<ProjectType> ProjectType { get; set; }
         public DbSet<ProjectClass> ProjectClass { get; set; }
         public DbSet<ServiceClass> ServiceClass { get; set; }
+        public DbSet<Prime> Prime { get; set; }
+        public DbSet<CertifiedPayroll> CertifiedPayroll { get; set; }    //Vaishnavi 12-04-2022
+        public DbSet<ProgramCertifiedPayroll> ProgramCertifiedPayroll { get; set; }
+        public DbSet<ProgramPrevailingWage> ProgramPrevailingWage { get; set; }
+        public DbSet<Wrap> Wrap { get; set; }
+        public DbSet<ProgramWrap> ProgramWrap { get; set; }
+        public DbSet<ProgramWarranty> ProgramWarranty { get; set; }     //Vaishnavi 12-04-2022
         public DbSet<Contract> Contract { get; set; }
         public DbSet<Milestone> Milestone { get; set; }
         public DbSet<ChangeOrder> ChangeOrder { get; set; }
@@ -222,6 +241,7 @@ namespace WebAPI
         //public DbSet<ProjectClassPhase> ProjectClassPhase { get; set; }
         public DbSet<ServiceToSubserviceMapping> ServiceToSubserviceMapping { get; set; }
         public DbSet<Client> Client { get; set; }
+        public DbSet<clientPOC> ClientPOC { get; set; }  //Tanmay - 15/12/2021
         public DbSet<Location> Location { get; set; }
         public DbSet<DocumentType> DocumentType { get; set; }
         public DbSet<Document> Document { get; set; }
@@ -268,7 +288,16 @@ namespace WebAPI
         public DbSet<Versionmaster> VersionMaster { get; set; }
         public DbSet<ProjectAccessControl> ProjectAccessControl { get; set; } // Jignesh-18-10-2021
 
+        public DbSet<NotificationDays> NotificationDays { get; set; }   // Narayan - 03-03-2022
 
+        public DbSet<UserRoleRelation> UserRoleRelation { get; set; }
+        public DbSet<ProgramNotes> ProgramNotes { get; set; }
+
+        public DbSet<PrelimnaryNotice> PrelimnaryNotices { get; set; }   // Narayan - 04-04-2022
+
+        public DbSet<ContractInsurance> ContractInsurances { get; set; }   // Narayan - 07-04-2022
+
+        public DbSet<ContractProjectManager> ContractProjectManagers { get; set; } // Narayan - 03-05-2022
 
     }
 

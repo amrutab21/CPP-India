@@ -42,6 +42,7 @@
                         $scope.loginData.UserID = users[x].UserID;
                         $scope.loginData.EmployeeID = users[x].EmployeeID;
                         $scope.loginData.ChangePasswordRequired = 0;
+                        $scope.loginData.DepartmentID = users[x].DepartmentID;
                     }
                 }
 
@@ -85,7 +86,7 @@
                 const regexPassword = /^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,20}$/;
                 if (!regexPassword.test($scope.loginData.newPassword)) {
                     dhtmlx.alert({
-                        text: "Enter valid password should be at least 8 characters long and should contain one number,one character and one special character.",
+                        text: "Enter valid password.<br/> Password should be at least 8 characters long, should contain atleast one number,one capital character and one special character.",
                         width: "300px"
                     });
                     return;

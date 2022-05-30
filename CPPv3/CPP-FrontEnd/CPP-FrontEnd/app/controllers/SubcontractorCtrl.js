@@ -102,9 +102,10 @@
 
                     $scope.subcontractorCollection[$scope.subcontractorCollection.length - 1].UniqueIdentityNumber = currentPoint;
                 }
-
+                $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
                 $timeout(function () {
                     console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                    
                     $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
                 }, 1);
 
@@ -125,7 +126,7 @@
 
                 }, {
                     field: 'SubcontractorName',
-                    name: 'Name',
+                    name: 'Name*',
                     width: 250
                 }, {
                     field: 'SubcontractorDescription',
@@ -133,7 +134,7 @@
                     width: 400
                 }, {
                     field: 'SubcontractorTypeName',
-                    name: 'Category',
+                    name: 'Category*',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
                     editDropdownValueLabel: 'SubcontractorTypeName', //code
                     editDropdownIdLabel: 'SubcontractorTypeName',    //phase
@@ -276,7 +277,9 @@
                         }
                     }
 
-                    if (value.SubcontractorDescription == "" || value.SubcontractorTypeID == "" || value.SubcontractorName == "" || value.UniqueIdentityNumber == ""
+                    if (
+                        //value.SubcontractorDescription == "" || // Aditya 3-2-2022
+                        value.SubcontractorTypeID == "" || value.SubcontractorName == "" || value.UniqueIdentityNumber == ""
                         ) {
                         dhtmlx.alert({
                             text: "Please fill data to all required fields before save (Row " + value.displayId + ")",

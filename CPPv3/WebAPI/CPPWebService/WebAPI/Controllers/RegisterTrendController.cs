@@ -53,7 +53,14 @@ namespace WebAPI.Controllers
                 status = WebAPI.Models.Trend.updateTrendDate(trend);
 
             }
-          
+            //----Vaishnavi 30-03-2022----//
+            if (trend.Operation == 6)
+            {
+                status = WebAPI.Models.Trend.closeTrend(trend);
+
+            }
+            //----Vaishnavi 30-03-2022----//
+
             var jsonNew = new
             {
                 result = status

@@ -10,6 +10,7 @@ namespace WebAPI.Models
     [Table("versionmaster")]
     public class Versionmaster : Audit
     {
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
@@ -40,6 +41,17 @@ namespace WebAPI.Models
                 versionDetails = ctx.VersionMaster.Where(x => x.OrganizationID == orgID).OrderByDescending(x => x.Id).ToList();
             }
                 return versionDetails;
+        }
+
+        public static List<Versionmaster> getVersionDetails()
+        {
+            List<Versionmaster> versionDetails = new List<Versionmaster>();
+            using (var ctx = new CPPDbContext())
+            {
+                
+                versionDetails = ctx.VersionMaster.OrderByDescending(x => x.Id).ToList();
+            }
+            return versionDetails;
         }
 
     }

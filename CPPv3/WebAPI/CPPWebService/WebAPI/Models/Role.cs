@@ -18,10 +18,13 @@ namespace WebAPI.Models
     public class UserRole
     {
         readonly static log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        
+        public int Id;
         public int Operation;
         public String Role;
         public String AccessControlList;
         public String DT_RowId;
+        public bool isSelected;
         UserRole(String role, String acl)
         { DT_RowId = role; Role = role; AccessControlList = acl;}
         public UserRole() { }
@@ -66,11 +69,12 @@ namespace WebAPI.Models
                     while (reader.Read())
                     {
                         UserRole RetreivedRole = new UserRole();
-                        RetreivedRole.Role = reader.GetValue(0).ToString().Trim();
+                        RetreivedRole.Id = reader.GetInt32(0);
+                        RetreivedRole.Role = reader.GetValue(1).ToString().Trim();
                         Object[] values = new Object[reader.FieldCount];
                         int fieldCount = reader.GetValues(values);
                         RetreivedRole.AccessControlList = null;
-                        for (int i = 1; i < fieldCount; i++)
+                        for (int i = 2; i < fieldCount; i++)
                             RetreivedRole.AccessControlList += reader.GetValue(i).ToString().Trim();
 
                         MatchedRoleList.Add(RetreivedRole);
@@ -111,6 +115,8 @@ namespace WebAPI.Models
         }
 
 
+
+
         public static String registerRole(String Role, String AccessControlList)
         {
 
@@ -129,8 +135,9 @@ namespace WebAPI.Models
                 //Check if PhaseCode already exists in system
                 String query = "SELECT Role from user_roles";
                 query += " WHERE 1=1";
-                query += " AND Role = '" + Role + "'";
+                query += " AND Role = @Role";
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@Role", Role);
                 logger.Debug(string.Format("Check if role already exist \n {0}", Role));
 
                 using (reader = command.ExecuteReader())
@@ -156,17 +163,48 @@ namespace WebAPI.Models
                 //PhaseCode does not already exist in system. Insert new PhaseCode row in 'phase_lookup' table
                 if (OKForRegister)
                 {
+                    string strAccessControlList = "";
                     //write to DB
                     query = "INSERT INTO user_roles VALUES";
                     query += " (";
-                    query += "'" + Role + "'";
-                    for (int i = 0; i < AccessControlList.Length; i++)
-                        query += " ," + AccessControlList[i];
-                    query += ")";
+                    query += "@Role,";
+                    query += "@ViewProgram,";
+                    query += "@ModifyProgram,";
+                    query += "@ViewProgramElement,";
+                    query += "@ModifyProgramElement,";
+                    query += "@ViewProject,";
+                    query += "@ModifyProject,";
+                    query += "@ViewTrend,";
+                    query += "@ModifyTrend,";
+                    query += "@ViewActivity,";
+                    query += "@ModifyActivity,";
+                    query += "@MemberManagement,";
+                    query += "@RoleManagement,";
+                    query += "@LookupsManagement,";
+                    query += "@ViewReports,";
+                    query += "@ViewCharts,";
+                    query += "@ViewLabor)";
 
                     logger.Debug(string.Format("Query to insert new role \n {0}", query));
 
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@Role", Role);
+                    command.Parameters.AddWithValue("@ViewProgram", Convert.ToBoolean(Convert.ToInt32(AccessControlList[0].ToString())));
+                    command.Parameters.AddWithValue("@ModifyProgram", Convert.ToBoolean(Convert.ToInt32(AccessControlList[1].ToString())));
+                    command.Parameters.AddWithValue("@ViewProgramElement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[2].ToString())));
+                    command.Parameters.AddWithValue("@ModifyProgramElement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[3].ToString())));
+                    command.Parameters.AddWithValue("@ViewProject", Convert.ToBoolean(Convert.ToInt32(AccessControlList[4].ToString())));
+                    command.Parameters.AddWithValue("@ModifyProject", Convert.ToBoolean(Convert.ToInt32(AccessControlList[5].ToString())));
+                    command.Parameters.AddWithValue("@ViewTrend", Convert.ToBoolean(Convert.ToInt32(AccessControlList[6].ToString())));
+                    command.Parameters.AddWithValue("@ModifyTrend", Convert.ToBoolean(Convert.ToInt32(AccessControlList[7].ToString())));
+                    command.Parameters.AddWithValue("@ViewActivity", Convert.ToBoolean(Convert.ToInt32(AccessControlList[8].ToString())));
+                    command.Parameters.AddWithValue("@ModifyActivity", Convert.ToBoolean(Convert.ToInt32(AccessControlList[9].ToString())));
+                    command.Parameters.AddWithValue("@MemberManagement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[10].ToString())));
+                    command.Parameters.AddWithValue("@RoleManagement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[11].ToString())));
+                    command.Parameters.AddWithValue("@LookupsManagement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[12].ToString())));
+                    command.Parameters.AddWithValue("@ViewReports", Convert.ToBoolean(Convert.ToInt32(AccessControlList[13].ToString())));
+                    command.Parameters.AddWithValue("@ViewCharts", Convert.ToBoolean(Convert.ToInt32(AccessControlList[14].ToString())));
+                    command.Parameters.AddWithValue("@ViewLabor", Convert.ToBoolean(Convert.ToInt32(AccessControlList[15].ToString())));
                     command.ExecuteNonQuery();
 
                     register_result += Role + " has been created successfully.\n";
@@ -219,8 +257,9 @@ namespace WebAPI.Models
                 //Check if program exists in system
                 String query = "SELECT Role from user_roles";
                 query += " WHERE 1=1";
-                query += " AND Role = '" + Role + "'";
+                query += " AND Role = @Role";
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@Role", Role);
                 using (reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -244,28 +283,45 @@ namespace WebAPI.Models
                     conn.Open();
                     query = "UPDATE user_roles Set";
                     //query += " Role = " + Role + ",";
-                    query += " ViewProgram = " + AccessControlList[0] + ",";
-                    query += " ModifyProgram = " + AccessControlList[1] + ",";
-                    query += " ViewProgramElement = " + AccessControlList[2] + ",";
+                    query += " ViewProgram = @ViewProgram,";// + AccessControlList[0] + ",";
+                    query += " ModifyProgram = @ModifyProgram,";// + AccessControlList[1] + ",";
+                    query += " ViewProgramElement = @ViewProgramElement,";// + AccessControlList[2] + ",";
 
-                    query += " ModifyProgramElement = " + AccessControlList[3] + ",";
-                    query += " ViewProject = " + AccessControlList[4] + ",";
-                    query += " ModifyProject = " + AccessControlList[5] + ",";
+                    query += " ModifyProgramElement = @ModifyProgramElement,";// + AccessControlList[3] + ",";
+                    query += " ViewProject = @ViewProject,";// + AccessControlList[4] + ",";
+                    query += " ModifyProject = @ModifyProject,";// + AccessControlList[5] + ",";
 
-                    query += " ViewTrend = " + AccessControlList[6] + ",";
-                    query += " ModifyTrend = " + AccessControlList[7] + ",";
-                    query += " ViewActivity = " + AccessControlList[8] + ",";
+                    query += " ViewTrend = @ViewTrend,";// + AccessControlList[6] + ",";
+                    query += " ModifyTrend = @ModifyTrend,";// + AccessControlList[7] + ",";
+                    query += " ViewActivity = @ViewActivity,";// + AccessControlList[8] + ",";
 
-                    query += " ModifyActivity = " + AccessControlList[9] + ",";
-                    query += " MemberManagement = " + AccessControlList[10] + ",";
-                    query += " RoleManagement = " + AccessControlList[11] + ",";
+                    query += " ModifyActivity = @ModifyActivity,";// + AccessControlList[9] + ",";
+                    query += " MemberManagement = @MemberManagement,";// + AccessControlList[10] + ",";
+                    query += " RoleManagement = @RoleManagement,";// + AccessControlList[11] + ",";
 
-                    query += " LookupsManagement = " + AccessControlList[12] + ",";
-                    query += " ViewReports = " + AccessControlList[13] + ",";
-                    query += " ViewCharts = " + AccessControlList[14] + ",";
-                    query += " ViewLabor = " + AccessControlList[15];
-                    query += " where role = '" + Role + "'";
+                    query += " LookupsManagement = @LookupsManagement,";// + AccessControlList[12] + ",";
+                    query += " ViewReports = @ViewReports,";// + AccessControlList[13] + ",";
+                    query += " ViewCharts = @ViewCharts,";// + AccessControlList[14] + ",";
+                    query += " ViewLabor = @ViewLabor";// + AccessControlList[15];
+                    query += " where role = @Role";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@ViewProgram", Convert.ToBoolean(Convert.ToInt32(AccessControlList[0].ToString())));
+                    command.Parameters.AddWithValue("@ModifyProgram", Convert.ToBoolean(Convert.ToInt32(AccessControlList[1].ToString())));
+                    command.Parameters.AddWithValue("@ViewProgramElement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[2].ToString())));
+                    command.Parameters.AddWithValue("@ModifyProgramElement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[3].ToString())));
+                    command.Parameters.AddWithValue("@ViewProject", Convert.ToBoolean(Convert.ToInt32(AccessControlList[4].ToString())));
+                    command.Parameters.AddWithValue("@ModifyProject", Convert.ToBoolean(Convert.ToInt32(AccessControlList[5].ToString())));
+                    command.Parameters.AddWithValue("@ViewTrend", Convert.ToBoolean(Convert.ToInt32(AccessControlList[6].ToString())));
+                    command.Parameters.AddWithValue("@ModifyTrend", Convert.ToBoolean(Convert.ToInt32(AccessControlList[7].ToString())));
+                    command.Parameters.AddWithValue("@ViewActivity", Convert.ToBoolean(Convert.ToInt32(AccessControlList[8].ToString())));
+                    command.Parameters.AddWithValue("@ModifyActivity", Convert.ToBoolean(Convert.ToInt32(AccessControlList[9].ToString())));
+                    command.Parameters.AddWithValue("@MemberManagement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[10].ToString())));
+                    command.Parameters.AddWithValue("@RoleManagement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[11].ToString())));
+                    command.Parameters.AddWithValue("@LookupsManagement", Convert.ToBoolean(Convert.ToInt32(AccessControlList[12].ToString())));
+                    command.Parameters.AddWithValue("@ViewReports", Convert.ToBoolean(Convert.ToInt32(AccessControlList[13].ToString())));
+                    command.Parameters.AddWithValue("@ViewCharts", Convert.ToBoolean(Convert.ToInt32(AccessControlList[14].ToString())));
+                    command.Parameters.AddWithValue("@ViewLabor", Convert.ToBoolean(Convert.ToInt32(AccessControlList[15].ToString())));
+                    command.Parameters.AddWithValue("@Role", Role);
                     command.ExecuteNonQuery();
 
                     update_result += Role + " has been updated successfully.\n";
@@ -306,8 +362,9 @@ namespace WebAPI.Models
                 //Check if program exists in system
                 String query = "SELECT Role from user_roles";
                 query += " WHERE 1=1";
-                query += " AND Role = '" + Role + "'";
+                query += " AND Role = @Role";
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@Role", Role);
                 using (reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -329,8 +386,9 @@ namespace WebAPI.Models
                     //write to DB
                     query = "DELETE FROM user_roles";
                     query += " WHERE";
-                    query += " Role = '" + Role + "'";
+                    query += " Role = @Role";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@Role", Role);
                     command.ExecuteNonQuery();
                     delete_result += Role + " has been deleted successfully.\n";
                     isCaughtException = false;

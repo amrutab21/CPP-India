@@ -77,7 +77,7 @@ function (UserName, authService, $scope, $rootScope, $location, localStorageServ
                 const regexPassword = /^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,20}$/;
                 if (!regexPassword.test($scope.info.password)) {
                     dhtmlx.alert({
-                        text: "Enter valid password should be at least 8 characters long and should contain one number,one character and one special character.",
+                        text: "Enter valid password.<br/> Password should be at least 8 characters long, should contain atleast one number,one capital character and one special character.",
                         width: "300px"
                     });
                     return;

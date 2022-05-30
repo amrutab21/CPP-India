@@ -45,11 +45,22 @@ namespace WebAPI.Controllers
             }
             else if (program.Operation == 3) //Delete Program
             {
-                status = WebAPI.Models.Program.deleteProgram(program.ProgramID);
+                status = WebAPI.Models.Program.deleteProgram(program);
             }
+            //----Vaishnavi 30-03-2022----//
+            else if (program.Operation == 5) //Delete Program
+            {
+                status = WebAPI.Models.Program.closeProgram(program);
+            }
+            //----Vaishnavi 30-03-2022----//
             else if (program.Operation == 4)
             {
                 status = "Success";
+            }
+            else if (program.Operation == 6) // Update Additional Program Details
+            {
+                status = WebAPI.Models.Program.UpdateAdditionalProgramDetails(program);
+
             }
 
 

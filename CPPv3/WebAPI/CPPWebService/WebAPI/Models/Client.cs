@@ -20,6 +20,13 @@ namespace WebAPI.Models
         public int ClientID { get; set; }
         public String ClientName { get; set; }
         public String ClientDescription { get; set; }
+        public String ClientPhone{ get; set; }                //Tanmay - 15/12/2021
+        public String ClientEmail { get; set; }
+        public String ClientAddressLine1 { get; set; }
+        public String ClientAddressLine2 { get; set; }
+        public String ClientCity { get; set; }
+        public String ClientState { get; set; }
+        public String ClientPONo { get; set; }
         public String UniqueIdentityNumber { get; set; }
         //public DateTime CreatedDate { get; set; }
         //public DateTime UpdatedDate { get; set; }
@@ -38,11 +45,18 @@ namespace WebAPI.Models
                 using (var ctx = new CPPDbContext())
                 {
                     clientList = ctx.Client.OrderBy(a => a.UniqueIdentityNumber).ToList();
+                    foreach (var i in clientList)
+                    {
+                        if (i.ClientPhone != null)
+                            i.ClientPhone = i.ClientPhone.Replace("-", "");
+                    }
+
                 }
 
             }
             catch (Exception ex)
             {
+                var innerEX = ex.InnerException.ToString();         //Tanmay - 15/12/2021
                 var stackTrace = new StackTrace(ex, true);
                 var line = stackTrace.GetFrame(0).GetFileLineNumber();
                 Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
@@ -150,8 +164,6 @@ namespace WebAPI.Models
                 var stackTrace = new StackTrace(ex, true);
                 var line = stackTrace.GetFrame(0).GetFileLineNumber();
                 Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
-
-
             }
             finally
             {
@@ -161,7 +173,7 @@ namespace WebAPI.Models
 
             return result;
 
-        }
+        } 
         public static String deleteClient(Client client)
         {
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);

@@ -259,7 +259,7 @@ angular.module('xenon.ViewProgramElementGanttController', []).
             }];
 
             var projectMaxId = "";
-                //(Math.max.apply(Math, delayedData[1].result.map(function (a) { return a.PhaseID })) + 1) * 1000;
+            //(Math.max.apply(Math, delayedData[1].result.map(function (a) { return a.PhaseID })) + 1) * 1000;
             var programElementMaxId = (Math.max.apply(Math, delayedData[2].result.map(function (a) { return a.ProjectID })) + 1) * 1000;
 
             //API call to get a list of unitypes
@@ -8172,6 +8172,7 @@ angular.module('xenon.ViewProgramElementGanttController', []).
                 }
                 return newproject;
             }
+            
 
             var phases = delayedData[1].result;   //List of Phases
 
@@ -8239,16 +8240,16 @@ angular.module('xenon.ViewProgramElementGanttController', []).
                     trendTotalValueActual += phaseTotalCostActualForecast;
 
                     phase["ProjectID"] = phases[j].ProjectID;
-
+                    $scope.schedule.data.push(phase);
                     phaseArray.push(phase);
                     viewPhaseArray.push(phase);
                 }
                 $scope.trendTotalValue = parseFloat(trendTotalValue);
-                while (phaseArray.length > 0) {
-                    var phasePush = phaseArray[0];
-                    phaseArray.splice(0, 1);
-                    $scope.schedule.data.push(phasePush);
-                }
+                //while (phaseArray.length > 0) {
+                //    var phasePush = phaseArray[0];
+                //    phaseArray.splice(0, 1);
+                //    $scope.schedule.data.push(phasePush);
+                //}
                 return viewPhaseArray;
             }
 

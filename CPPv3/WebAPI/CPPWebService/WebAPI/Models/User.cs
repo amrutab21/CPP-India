@@ -18,7 +18,7 @@ using System.Security.Cryptography;
 using WebAPI.Helper;
 
 namespace WebAPI.Models
-{
+{ 
     [Table("user")]
     public class User
     {
@@ -28,7 +28,11 @@ namespace WebAPI.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public String FullName { get; set; }
+        
         public String Role { get; set; }
+        [NotMapped]
+        public string[] RoleList { get; set; }
+
         [NotMapped]
         public String AccessControlList { get; set; }
         [NotMapped]
@@ -43,6 +47,7 @@ namespace WebAPI.Models
         public String Threshold { get; set; }
 
         public int EmployeeID { get; set; }
+        public int DepartmentID { get; set; }
 
         public Boolean PasswordChangeRequired { get; set; }
 
@@ -50,7 +55,14 @@ namespace WebAPI.Models
         [ForeignKey("EmployeeID")]
         public virtual Employee Employee { get; set; }
 
-        public User(String auth, String fName, String mName, String lName, String email, String userid, int id, String loginPassword, int employeeid)
+        [NotMapped]
+        public List<UserRoleRelation> lstUserRoleRelation { get; set; }
+
+        [NotMapped]
+        public List<UserRole> lstUserRole { get; set; }
+
+        
+        public User(String auth, String fName, String mName, String lName, String email, String userid, int id, String loginPassword, int employeeid, int departmentid)
         {
             Role = auth;
             FirstName = fName;
@@ -59,19 +71,22 @@ namespace WebAPI.Models
             Email = email;
             UserID = userid;
             EmployeeID = employeeid;
+            DepartmentID = departmentid;
             Id = id;
             LoginPassword = loginPassword;
         }
 
        public User()
         {
-            Role = "Not Authorized";
+            //Role = "Not Authorized";
+            Role = "";
             FirstName = "N/A";
             MiddleName = "N/A";
             LastName = "N/A";
             Email = "N/A";
             UserID = "N/A";
             EmployeeID = 0;
+            DepartmentID = 0;
             Id = 0;
         }
 
@@ -221,9 +236,33 @@ namespace WebAPI.Models
                                     user.Threshold = approvalMatrix.Cost.ToString();
                                 }
 
-                                String query = "SELECT * FROM user_roles";
-                                query += " WHERE Role = '" + user.Role + "'";
+                                //Nivedita changes in rolemenurelation
+
+                                List<UserRoleRelation> userRoleRelation = ctx.UserRoleRelation.Where(u => u.UserId == user.Id).ToList();
+
+                                //String RoleList = string.Join(",", userRoleRelation.Select(a => a.UserRoleId.ToString()).ToArray());
+                                List<string> RoleList = new List<string>();
+                                String query1 = "select Role from user_roles where Id in ( select UserRoleId from user_role_relation";
+                                query1 += " WHERE UserId = @UserId)";
+                                MySqlCommand command1 = new MySqlCommand(query1, conn);
+                                command1.Parameters.AddWithValue("@UserId", user.Id);
+                                user.Role = null;
+                                using (reader = command1.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        RoleList.Add(reader.GetValue(0).ToString().Trim());
+                                        //user.Role += string.Join(",",reader.GetValue(0).ToString().Trim());
+                                        //user.Role += reader.GetValue(0).ToString().Trim() + ',';
+                                    }
+                                    
+                                }
+                                user.Role = string.Join(",", RoleList);
+                                String query = "get_AccessControlList";
                                 MySqlCommand command = new MySqlCommand(query, conn);
+                                command.CommandType = CommandType.StoredProcedure;
+                                //command.Parameters.AddWithValue("@Role", user.Role);
+                                command.Parameters.AddWithValue("_userId", user.Id);
                                 using (reader = command.ExecuteReader())
                                 {
                                     while (reader.Read())
@@ -231,7 +270,7 @@ namespace WebAPI.Models
                                         Object[] values = new Object[reader.FieldCount];
                                         int fieldCount = reader.GetValues(values);
                                         user.AccessControlList = null;
-                                        for (int i = 1; i < fieldCount; i++)
+                                        for (int i = 0; i < fieldCount; i++)
                                             user.AccessControlList += reader.GetValue(i).ToString().Trim();
 
                                     }
@@ -251,9 +290,10 @@ namespace WebAPI.Models
             }
             catch (Exception ex)
             {
+                
                 var stackTrace = new StackTrace(ex, true);
                 var line = stackTrace.GetFrame(0).GetFileLineNumber();
-                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.InnerException.ToString(), line.ToString(), Logger.logLevel.Exception);
             }
             finally
             {
@@ -367,6 +407,29 @@ namespace WebAPI.Models
                     for(int x = 0; x < userList.Count; x++)
                     {
                         userList[x].LoginPassword = "";
+                        userList[x].lstUserRole = WebAPI.Models.UserRole.getRole(null);
+
+                        int id = userList[x].Id;
+                    userList[x].lstUserRoleRelation = ctx.UserRoleRelation.Where(u => u.UserId == id).ToList();
+                        List<string> lstRole = new List<string>();
+                        for (int i = 0; i < userList[x].lstUserRole.Count; i++)
+                        {
+                            for (int j = 0; j < userList[x].lstUserRoleRelation.Count; j++)
+                            {
+                                if (userList[x].lstUserRoleRelation[j].UserRoleId == userList[x].lstUserRole[i].Id)
+                                {
+                                    userList[x].lstUserRole[i].isSelected = true;
+                                    lstRole.Add(userList[x].lstUserRole[i].Role);
+                                    break;
+                                }
+                                else
+                                    userList[x].lstUserRole[i].isSelected = false;
+                            }
+                            
+
+                        }
+                        userList[x].RoleList = lstRole.ToArray();
+
                     }
                 }
             }
@@ -553,6 +616,30 @@ namespace WebAPI.Models
 
                         ctx.User.Add(user);
                         ctx.SaveChanges();
+
+                        //List<String> RoleList = new List<string>(user.Role.Split(','));
+                        List<UserRole> selectedUserRole = new List<UserRole>();
+                        selectedUserRole = user.lstUserRole.Where(a => a.isSelected == true).ToList();
+                        //foreach (var item in user.RoleList)
+                        //{
+                        //    selectedUserRole.Add(ctx.Where(a => item.Contains(a.Role)));
+                        //}
+
+                        for (int i = 0; i < selectedUserRole.Count; i++)
+                        {
+                            // user.lstUserRole = WebAPI.Models.UserRole.getRole(RoleList[i]);
+                            //if (user.lstUserRole[i].isSelected == true)
+                            //{
+                                UserRoleRelation userRoleRelation = new UserRoleRelation();
+                                userRoleRelation.UserId = user.Id;
+                                userRoleRelation.UserRoleId = selectedUserRole[i].Id;
+                                ctx.UserRoleRelation.Add(userRoleRelation);
+                                ctx.SaveChanges();
+                            //}
+                            
+                        }
+                        
+                        
                         result += user.UserID + " has been created successfully.\n";
                     }
                     else
@@ -711,7 +798,49 @@ namespace WebAPI.Models
                         //user.EmployeeID = retreivedUser.EmployeeID;      //Manasi
                         CopyUtil.CopyFields<User>(user, retreivedUser);
 
+                        var newRoleIds = new List<int> { };
+                        if (user.lstUserRole != null)
+                        {
+                            for (int i = 0; i < user.lstUserRole.Count; i++)
+                            {
+                                if (user.lstUserRole[i].isSelected == true)
+                                {
+                                    newRoleIds.Add(user.lstUserRole[i].Id);
+                                }
 
+                            }
+                        }
+                        
+
+                        //var struser = ctx.User.Include("UserRoleRelation").Single(u => u.Id == user.Id);
+                        List<UserRoleRelation> userRoleRelation = new List<UserRoleRelation>();
+                        userRoleRelation = ctx.UserRoleRelation.Where(u => u.UserId == user.Id).ToList();
+
+
+                        //retreiveduserRoleRelation = ctx.UserRoleRelation.Where(r => newRoleIds.Contains(r.UserRoleId) && r.UserId == user.Id).ToList();
+                        if (newRoleIds.Count > 0)
+                        {
+                            foreach (var item in userRoleRelation)
+                            {
+                                ctx.UserRoleRelation.Remove(item);
+                            }
+                            ctx.SaveChanges();
+                        }
+                        
+
+                        
+                        
+                        foreach (var item in newRoleIds)
+                        {
+                            UserRoleRelation retreiveduserRoleRelation = new UserRoleRelation();
+                            retreiveduserRoleRelation.UserId = user.Id;
+                            retreiveduserRoleRelation.UserRoleId = item;
+                            ctx.UserRoleRelation.Add(retreiveduserRoleRelation);
+                            ctx.SaveChanges();
+                        }
+                        
+                        
+                        
                         if (!(tempGivenPassword == null || tempGivenPassword == ""))
                         {
                             hashPassword = SimpleHash.ComputeHash(tempGivenPassword, "MD5", null);
@@ -857,6 +986,16 @@ namespace WebAPI.Models
                     {
                         ctx.User.Remove(retreivedUser);
                         ctx.SaveChanges();
+                        
+                        List<UserRoleRelation> userRoleRelation = new List<UserRoleRelation>();
+                        userRoleRelation = ctx.UserRoleRelation.Where(u => u.UserId == retreivedUser.Id).ToList();
+                        foreach (var item in userRoleRelation)
+                        {
+                            ctx.UserRoleRelation.Remove(item);
+                            ctx.SaveChanges();
+                        }
+                        
+                            
                         result = user.UserID + " has been deleted successfully.\n";
                     }
                     else

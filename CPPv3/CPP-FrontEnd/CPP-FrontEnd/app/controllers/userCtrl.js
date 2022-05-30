@@ -1,16 +1,50 @@
 angular.module('cpp.controllers').
     //User Controller
-    controller('UserCtrl', ['$state', '$http', '$uibModal', 'User', '$rootScope', '$scope', 'Page', 'ProjectTitle', 'TrendStatus', '$location', 'AllEmployee', '$timeout',
-        function ($state, $http, $uibModal, User, $rootScope, $scope, Page, ProjectTitle, TrendStatus, $location, AllEmployee, $timeout) {
+    controller('UserCtrl', ['$state', '$http', '$uibModal', 'User', '$rootScope', '$scope', 'Page', 'ProjectTitle', 'TrendStatus', '$location', 'AllEmployee', 'ProjectClass', '$timeout',
+        function ($state, $http, $uibModal, User, $rootScope, $scope, Page, ProjectTitle, TrendStatus, $location, AllEmployee, ProjectClass, $timeout) {
             Page.setTitle('Users');
             ProjectTitle.setTitle('');
             TrendStatus.setStatus('');
+            var empArray = [];
+            var dptArray = []; //Narayan - 03/08/22 
+            $scope.rolesArrayList = [];
+            $scope.rolesArray = [];
+            $scope.example14settings = {
+                scrollableHeight: '100px', scrollable: true,
+                enableSearch: false
+            };
+
             $http.get(serviceBasePath + 'request/role').then(function (response) {
                 $scope.RoleCollection = response.data.result;
-
-                $scope.gridOptions.columnDefs[6].editDropdownOptionsArray = response.data.result;
+                for (i in $scope.RoleCollection) {
+                    $scope.rolesArrayList.push($scope.RoleCollection[i].Role);
+                }
+                
+                angular.forEach($scope.rolesArrayList, function (item) {
+                    //$scope.positionArray.push({ ID: item.Id, value: item.PositionDescription });
+                    //$rootScope.positionArray.push({ ID: item.Id, value: item.PositionDescription });
+                    $scope.rolesArray.push(item);
+                    $scope.rolesArray11 = $scope.rolesArray.concat(item);
+                }
+                );
+                console.log($scope.rolesArray11);
+               /* angular.forEach($scope.rolesArrayList, function (value, key) {
+                    debugger;
+                    $scope.rolesArray = $scope.rolesArray.concat(value);
+                });*/
+                //$scope.gridOptions.columnDefs[6].editDropdownOptionsArray = response.data.result;
+                //$scope.gridOptions.columnDefs[6].editDropdownOptionsArray = $scope.rolesArrayList;
+                
                 console.log($scope.RoleCollection);
             })
+
+
+            //$http.get(serviceBasePath + 'Request/ProjectClass').then(function (response) {
+            //    $scope.DeparmentCollection = response.data.result;
+
+            //    $scope.gridOptions.columnDefs[7].editDropdownOptionsArray = response.data.result;
+            //    console.log($scope.RoleCollection);
+            //})//added by vaishnavi
             var newOrEdit = "";
             var url = serviceBasePath + "response/user";
             $scope.$on('ngGridEventEndCellEdit', function (data) {
@@ -28,13 +62,46 @@ angular.module('cpp.controllers').
                     employee.EmployeeName = employee.Name; //here
                 });
 
-                $scope.gridOptions.columnDefs[7].editDropdownOptionsArray = $scope.employeeCollection;
+
+                angular.forEach(employees.result, function (item) {
+                    //$scope.positionArray.push({ ID: item.Id, value: item.PositionDescription });
+                    //$rootScope.positionArray.push({ ID: item.Id, value: item.PositionDescription });
+                    empArray.push({ ID: item.ID, value: item.Name });
+                }
+                );
+
+                //$scope.gridOptions.columnDefs[7].editDropdownOptionsArray = $scope.employeeCollection;
 
                 console.log($scope.employeeCollection);
 
 
                 console.log(AllEmployee);
                 console.log(User);
+
+                // Narayan - 03/08/22 - Get all department api call
+                ProjectClass.get({}, function (departments) {
+                    $scope.departmentsData = departments.result;
+                    console.log(departments.result);
+
+                    angular.forEach($scope.departmentsData, function (department) {
+                        department.DepartmentName = department.ProjectClassName;
+                    });
+
+
+                    angular.forEach(departments.result, function (item) {
+                        //$scope.positionArray.push({ ID: item.Id, value: item.PositionDescription });
+                        //$rootScope.positionArray.push({ ID: item.Id, value: item.PositionDescription });
+                        dptArray.push({ ID: item.ProjectClassID, value: item.ProjectClassName });
+                    }
+                    );
+
+                    //$scope.gridOptions.columnDefs[7].editDropdownOptionsArray = $scope.employeeCollection;
+
+                    console.log($scope.departmentsData);
+
+
+                    console.log(dptArray);
+                    console.log(User);
 
                 //Get all Users
                 User.get({}, function (Users) {
@@ -49,13 +116,33 @@ angular.module('cpp.controllers').
 
                     //Declare true false dropdown list
                     $scope.trueFalseDropDown = [{ PasswordChangeRequiredName: "True" }, { PasswordChangeRequiredName: "False" }];
-                    $scope.gridOptions.columnDefs[8].editDropdownOptionsArray = $scope.trueFalseDropDown;
+                    $scope.gridOptions.columnDefs[9].editDropdownOptionsArray = $scope.trueFalseDropDown; // Narayan - 03/08/22 - change index of password col 
 
                     addIndex($scope.userCollection);
                     angular.forEach($scope.userCollection, function (item, index) {
                         $scope.checkList[index + 1] = false;
                         item.checkbox = false;
+                        
+                       // var role[];
+                        //var role_classDropdown = $('#uiSelect').find('#role_class');
+                        //for (var i = 0; i < item.lstUserRole.length; i++) {
+                        //    role_classDropdown.append('<option value=' + item.lstUserRole[i].Id + '>' + item.lstUserRole[i].Role + '</option>');
+                        //    //if (item.lstUserRole[i].isSelected == true) {
+                        //    //    item.RoleList.push(item.lstUserRole[i].Role);
+                        //    //}
+                        //}
+                        //$('#role_class').multiselect({
+                        //    // columns: 5,
+                        //    clearButton: true,
+                        //    search: false,
+                        //    selectAll: false,
+                        //    // rebuild : true,
+                        //    nonSelectedText: '-- Select --',
+                        //    numberDisplayed: 1
 
+                        //});
+                        //role_classDropdown.val(item.lstUserRole.RoleList);
+                        //role_classDropdown.multiselect('refresh');
                         //Find password change name
                         if (item.PasswordChangeRequired) {
                             item.PasswordChangeRequiredName = "True";
@@ -68,12 +155,26 @@ angular.module('cpp.controllers').
                             console.log($scope.employeeCollection[x].ID, item.EmployeeID);
                             if ($scope.employeeCollection[x].ID == item.EmployeeID) {
                                 item.EmployeeName = $scope.employeeCollection[x].Name;
+                                //$scope.userCollection.EmployeeID = item.EmployeeID;
+                                //$scope.userCollection.EmployeeName = item.EmployeeName;
                             }
                         }
+                        
+                            
+                        //Find Department
+                        for (var i = 0; i < $scope.departmentsData.length; i++) {
+                            if ($scope.departmentsData[i].ProjectClassID == item.DepartmentID) {
+                                item.DepartmentName = $scope.departmentsData[i].DepartmentName;
+                            }
+                        }
+
                     });
+                    
+                    
                     $scope.gridOptions.data = $scope.userCollection;
                     console.log($scope.userCollection);
                 });
+            });
             });
 
             var addIndex = function (data) {
@@ -86,7 +187,7 @@ angular.module('cpp.controllers').
                     }
                 });
             }
-            $scope.cellInputEditableTemplate = '<input ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-blur="updateEntity(row)" />';
+            //$scope.cellInputEditableTemplate = '<input ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-blur="updateEntity(row)" />';
             $scope.cellPasswordEditableTemplate = '<input type = "password" ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-blur="updateEntity(row)" />';
             $scope.cellSelectEditableTemplate = '<select ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-click = "test(COL_FIELD)" ng-options="role.Role for role in RoleCollection" />';
             $scope.mySelections = [];
@@ -112,9 +213,12 @@ angular.module('cpp.controllers').
                     MiddleName: '',
                     LastName: '',
                     Email: '',
-                    Role: 'Click to Select',
+                    lstUserRole:'Click to Select',
+                    //Role: 'Click to Select',
                     EmployeeID: '',
                     PasswordChangeRequired: '',
+                    DepartmentID: '',
+                    DepartmentName: '',
                     EmployeeName: '',
                     Password: '',
                     checkbox: false,
@@ -122,16 +226,18 @@ angular.module('cpp.controllers').
                 });
 
                 console.log($scope.userCollections);
-
+                $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
                 $timeout(function () {
+
                     $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
                 }, 1);
             }
 
             $scope.gridOptions = {
-                enableColumnMenus :false,
+                enableColumnMenus: false,
                 enableCellEditOnFocus: true,
                 enableFiltering: true,
+                enableAutoFitColumns: false,
                 /*data: 'userCollection',
                 enableRowSelection: false,
                 enableCellSelection: true,
@@ -160,69 +266,110 @@ angular.module('cpp.controllers').
 
                 }, {
                     field: 'UserID',
-                    name: 'User Id'
+                    name: 'User Id*'
                     /*enableCellEditOnFocus: true,
                     editableCellTemplate: $scope.cellInputEditableTemplate*/
 
                 }, {
                     field: 'FirstName',
-                    name: 'First Name'
+                    name: 'First Name*'
                     /*enableCellEditOnFocus: true,
                     editableCellTemplate: $scope.cellInputEditableTemplate*/
 
 
                 },
-                    {
-                        field: 'MiddleName',
-                        name: 'Middle Name'
-                       /* enableCellEditOnFocus: true,
-                        editableCellTemplate: $scope.cellInputEditableTemplate*/
+                {
+                    field: 'MiddleName',
+                    name: 'Middle Name'
+                    /* enableCellEditOnFocus: true,
+                     editableCellTemplate: $scope.cellInputEditableTemplate*/
 
 
-                    },
-                    {
-                        field: 'LastName',
-                        name: 'Last Name'
-                        /*enableCellEditOnFocus: true,
-                        editableCellTemplate: $scope.cellInputEditableTemplate*/
+                },
+                {
+                    field: 'LastName',
+                    name: 'Last Name*'
+                    /*enableCellEditOnFocus: true,
+                    editableCellTemplate: $scope.cellInputEditableTemplate*/
 
 
-                    },
-                    {
-                        field: 'Email',
-                        name: 'Email',
-                        /*enableCellEditOnFocus: true,
-                        editableCellTemplate: $scope.cellInputEditableTemplate,*/
-                        width: 200
+                },
+                {
+                    field: 'Email',
+                    name: 'Email*',
+                    /*enableCellEditOnFocus: true,
+                    editableCellTemplate: $scope.cellInputEditableTemplate,*/
+                    width: 200
 
 
-                    },
-                    {
+                },
+                {
+                    field: 'RoleList',
+                    name: 'Role*',
+                    width: 200,
+                    cellClass: 'roleListCol',
+                   //cellTemplate: 'multiCell',
+                   // editableCellTemplate: 'uiSelect',
+                    //editableCellTemplate: 'ui-grid/dropdownEditor',
+                    cellTemplate: 'multiCell',
+                    editableCellTemplate: 'uiSelect',
+                    //editDropdownValueLabel: 'Role',
+                    //editDropdownIdLabel: 'RoleId',
+                    //editDropDownChange: 'test',
+                    editDropdownOptionsArray: $scope.rolesArray,
+                  //  cellTemplate: 'multiCell',
+                  //  editableCellTemplate: 'ui-grid/dropdownEditor',
+                    //  editDropdownOptionsArray :
+                    /* enableCellEditOnFocus: true,
+                     editableCellTemplate: $scope.cellSelectEditableTemplate,*/
+                    //cellFilter: 'mapRole',
+                    
+                }
+                    ,
+                /*    {
                         field: 'Role',
-                        name: 'Role',
+                        name: 'Role*',
                         editableCellTemplate: 'ui-grid/dropdownEditor',
                         editDropdownValueLabel: 'Role',
-                        editDropdownIdLabel: 'Role',
+                        editDropdownIdLabel: 'RoleId',
                         editDropDownChange: 'test',
                        /* enableCellEditOnFocus: true,
-                        editableCellTemplate: $scope.cellSelectEditableTemplate,*/
+                        editableCellTemplate: $scope.cellSelectEditableTemplate,
                         cellFilter: 'mapRole',
                         width: 200
-                    }
-                    ,
+                    },*/
+                    {
+                        field: 'DepartmentName',
+                        name: 'Department*',
+                        editableCellTemplate: 'ui-grid/dropdownEditor',
+                        //editDropdownValueLabel: 'ProjectClassName',
+                        //editDropdownIdLabel: 'ProjectClassName',
+                        editDropdownIdLabel: 'ID',
+                        editDropdownValueLabel: 'value',
+                        editDropdownOptionsArray: dptArray,
+                        //editDropDownChange: 'test',
+                        /* enableCellEditOnFocus: true,
+                         editableCellTemplate: $scope.cellSelectEditableTemplate,*/
+                        cellFilter: 'customFilter:this',
+                        cellClass: 'c-col-Num',
+                        width: 200
+                    },
                     {
                         field: 'EmployeeName',
-                        name: 'Employee',
+                        name: 'Employee*',
                         editableCellTemplate: 'ui-grid/dropdownEditor',
-                        editDropdownValueLabel: 'EmployeeName',
-                        editDropdownIdLabel: 'EmployeeName',
-                        editDropDownChange: 'test',
-                        cellFilter: 'mapRole',
+                        editDropdownIdLabel: 'ID',
+                        editDropdownValueLabel: 'value',
+                        editDropdownOptionsArray: empArray,
+                        //editDropDownChange: 'test',
+                        //cellFilter: 'mapRole',
+                        cellFilter: 'customFilter:this',
+                        cellClass: 'c-col-Num',  
                         width: 200
                     },
                     {
                         field: 'PasswordChangeRequiredName',
-                        name: 'Pwd Change',
+                        name: 'Pwd Change*',
                         editableCellTemplate: 'ui-grid/dropdownEditor',
                         editDropdownValueLabel: 'PasswordChangeRequiredName',
                         editDropdownIdLabel: 'PasswordChangeRequiredName',
@@ -231,26 +378,26 @@ angular.module('cpp.controllers').
                         width: 120
                     }
                     ,
-                    {
-                        field: 'LoginPassword',
-                        name: 'Password',
-                        type: 'password',
-                        validators: {
-                            required: false
-                        },
-                        /*enableCellEditOnFocus: true,
-                        editableCellTemplate: true,*/
-                        width: 200
+                {
+                    field: 'LoginPassword',
+                    name: 'Password',
+                    type: 'password',
+                    validators: {
+                        required: false
                     },
-                    {
-                        field: 'checkBox',
-                        name: '',
-                        enableCellEdit: false,
-                        enableFiltering: false,
-                        width: 35,
-                        cellTemplate: '<input type="checkbox" ng-model="checkList[row.entity.displayId]" class = "c-col-check" ng-click="grid.appScope.check(row,col)" style="text-align: center;vertical-align: middle;">'
+                    /*enableCellEditOnFocus: true,
+                    editableCellTemplate: true,*/
+                    width: 200
+                },
+                {
+                    field: 'checkBox',
+                    name: '',
+                    enableCellEdit: false,
+                    enableFiltering: false,
+                    width: 35,
+                    cellTemplate: '<input type="checkbox" ng-model="checkList[row.entity.displayId]" class = "c-col-check" ng-click="grid.appScope.check(row,col)" style="text-align: center;vertical-align: middle;">'
 
-                    }
+                }
                 ]
             }
             $scope.gridOptions.onRegisterApi = function (gridApi) {
@@ -260,8 +407,10 @@ angular.module('cpp.controllers').
                     $('div.ui-grid-cell form').find('input').css('height', '40px');
                     $('div.ui-grid-cell form').find('select').css('height', '40px');
                     $('div.ui-grid-cell form').css('margin', '0px');
-                    $('div.ui-grid-cell form').find('input').putCursorAtEnd();
-                    $('div.ui-grid-cell form').find('select').putCursorAtEnd();
+                    //$('div.ui-grid-cell form').find('ui-select').putCursorAtEnd();
+                    
+                    //$('div.ui-grid-cell form').find('input').putCursorAtEnd();
+                    //$('div.ui-grid-cell form').find('select').putCursorAtEnd();
                     $('div.ui-grid-cell form').find('select').focus();
                     //    .on("focus", function () { // could be on any event
                     //    //$('div.ui-grid-cell form').find('input').putCursorAtEnd();
@@ -320,7 +469,7 @@ angular.module('cpp.controllers').
             $scope.check = function (row, col) {
                 if (row.entity.checkbox == false) {
                     row.entity.checkbox = true;
-                    row.config.enableRowSelection = true;
+                    //row.config.enableRowSelection = true;
                 } else {
                     row.entity.checkbox = false;
                 }
@@ -337,16 +486,80 @@ angular.module('cpp.controllers').
                 var isChanged = true;
                 var isFilled = true;
                 var listToSave = [];
+                debugger;
                 console.log($scope.userCollection, $scope.orgUserCollection);
                 angular.forEach($scope.userCollection, function (user, key) {
                     console.log(user);
-
                     //Find employee id for a user
                     for (var x = 0; x < $scope.employeeCollection.length; x++) {
-                        if ($scope.employeeCollection[x].Name == user.EmployeeName) {
+                        if ($scope.employeeCollection[x].ID == user.EmployeeName) {
                             user.EmployeeID = $scope.employeeCollection[x].ID;
+                            user.EmployeeName = $scope.employeeCollection[x].Name;
+                            break;
                         }
                     }
+                    
+                    //debugger;
+                    $scope.roleId = [];
+
+                   // for (var x = 0; x < $scope.RoleCollection.length; x++) {
+                        
+                   //     //angular.forEach(user.Role, function (item) { 
+                   //         if (user.Role.includes($scope.RoleCollection[x].Role)) {
+                   //             //$scope.roleId.push($scope.RoleCollection[x].Id);
+                   //             //user.RoleList.push($scope.RoleCollection[x].Id);
+                                
+                   //         //break;
+                   //     }
+                        
+                   //// });
+                    // }
+                    $scope.lstRole = $scope.RoleCollection;
+                   
+                    if (user.new === true)
+                    {
+                        angular.forEach($scope.lstRole, function (item) {
+                            
+                            item.isSelected = false;
+                            if (user.RoleList.includes(item.Role)) {
+                                item.isSelected = true;
+                            }
+                            
+                        });
+                    }
+                    else {
+                        //angular.forEach(user.lstUserRole, function (item) {
+                        //    item.isSelected = false;
+                        //    if (user.Role.includes(item.Role)) {
+                        //        item.isSelected = true;
+                        //    }
+                        //});
+
+                        angular.forEach(user.lstUserRole, function (item) {
+                            item.isSelected = false;
+                            if (user.RoleList.includes(item.Role)) {
+                                item.isSelected = true;
+                            }
+                        });
+                    }
+                        //for (var x = 0; x < $scope.employeeCollection.length; x++) {
+                        //    if ($scope.employeeCollection[x].Name == user.EmployeeName) {
+                        //        user.EmployeeID = $scope.employeeCollection[x].ID;
+                        //    }
+                        //}
+
+                    //Find Department id for user
+                    for (var i = 0; i < $scope.departmentsData.length; i++) {
+                        if ($scope.departmentsData[i].ProjectClassID == user.DepartmentName) {
+                            user.DepartmentID = $scope.departmentsData[i].ProjectClassID;
+                            user.DepartmentName = $scope.departmentsData[i].DepartmentName;
+                            break;
+                        }
+                    }
+                        
+                    
+                    
+                    
                     
                     console.log(user.PasswordChangeRequired);
                     //Find password change required for a user
@@ -357,35 +570,56 @@ angular.module('cpp.controllers').
                     }
                     console.log(user.PasswordChangeRequired);
 
-                    
+
                     //Detech change
                     isChanged = true;
                     angular.forEach($scope.orgUserCollection, function (orgUser) {
                         console.log(user.PasswordChangeRequired === orgUser.PasswordChangeRequired);
+                      
                         if (user.Id === orgUser.Id &&
                             user.UserID === orgUser.UserID &&
                             user.FirstName === orgUser.FirstName &&
                             user.MiddleName === orgUser.MiddleName &&
                             user.LastName === orgUser.LastName &&
-                            user.Role === orgUser.Role &&
                             user.EmployeeID === orgUser.EmployeeID &&
+                            user.DepartmentID === orgUser.DepartmentID &&
                             user.LoginPassword === orgUser.LoginPassword &&
+                            orgUser.RoleList.length == user.RoleList.length &&
                             user.Email === orgUser.Email &&
                             user.PasswordChangeRequired === orgUser.PasswordChangeRequired) {
                             isChanged = false;
+
+                            angular.forEach(orgUser.RoleList, function (item) {
+
+                                if (user.RoleList.includes(item)) {
+
+                                }
+                                else {
+                                    isChanged = true;
+                                }
+                            });
                         }
+                        
+                        
+                        //angular.forEach(user.lstUserRole, function (item) {
+                        //    item.isSelected = false;
+                        //    if (user.RoleList.includes(item.Role)) {
+                        //        item.isSelected = true;
+                        //    }
+                        //});
                     });
 
                     if (isChanged && user.Id == undefined && (user.UserID == "" || user.UserID == null
-                                                              || user.LoginPassword == "" || user.LoginPassword == null
-                                                              || user.FirstName == "" || user.FirstName == null
-                                                              || user.LastName == "" || user.LastName == null
-                                                              || user.Email == "" || user.Email == null
-                                                              || user.Role == "" || user.Role == null
-                                                              || user.EmployeeID == "" || user.EmployeeID == null
-                                                              || user.PasswordChangeRequired == undefined || user.PasswordChangeRequired == null)) {
+                        || user.LoginPassword == "" || user.LoginPassword == null
+                        || user.FirstName == "" || user.FirstName == null
+                        || user.LastName == "" || user.LastName == null
+                        || user.Email == "" || user.Email == null
+                        || user.RoleList.length == 0 || user.RoleList.length == null 
+                        || user.DepartmentID == "" || user.DepartmentID == null
+                        || user.EmployeeID == "" || user.EmployeeID == null
+                        || user.PasswordChangeRequired == undefined || user.PasswordChangeRequired == null)) {
                         dhtmlx.alert({
-                            text: "UserID, First Name, Last Name, Email, Role, Employee, and Password cannot be empty (Row " + user.displayId + ")",
+                            text: "UserID, First Name, Last Name, Email, Role, Employee, Department and Password cannot be empty (Row " + user.displayId + ")",
                             width: "300px"
                         });
                         isFilled = false;
@@ -412,15 +646,15 @@ angular.module('cpp.controllers').
 
 
                     const regexPassword = /^(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,20}$/;
-                    if (isChanged && !regexPassword.test(user.LoginPassword)) {
+                    if (isChanged && !regexPassword.test(user.LoginPassword) && user.LoginPassword != "") {
                         dhtmlx.alert({
-                            text: "Enter valid password should be at least 8 characters long and should contain one number,one character and one special character (Row " + user.displayId + ")",
+                            text: "Enter valid password.<br/> Password should be at least 8 characters long, should contain atleast one number,one capital character and one special character. (Row " + user.displayId + ")",
                             width: "300px"
                         });
                         isFilled = false;
                         return;
                     }
-//------------------------------------------------------------------------------------------------------------------------
+                    //------------------------------------------------------------------------------------------------------------------------
                     if (user.new === true) {
                         var dataObj = {
                             Operation: '1',
@@ -429,16 +663,20 @@ angular.module('cpp.controllers').
                             MiddleName: user.MiddleName,
                             LastName: user.LastName,
                             Email: user.Email,
-                            Role: user.Role,
+                            //Role: user.Role,
                             EmployeeID: user.EmployeeID,
                             LoginPassword: user.LoginPassword,
-                            PasswordChangeRequired: user.PasswordChangeRequired
+                            PasswordChangeRequired: user.PasswordChangeRequired,
+                            DepartmentID: user.DepartmentID, // addded by vaishnavi
+                            lstUserRole: $scope.lstRole
                         }
+                        debugger;
                         listToSave.push(dataObj);
                     }
                     else {
 
                         if (isChanged) {
+                            debugger;
                             isChanged = true;
                             if (typeof user.Role == 'string') {
                                 temp = user.Role;
@@ -457,13 +695,15 @@ angular.module('cpp.controllers').
                                 Email: user.Email,
                                 EmployeeID: user.EmployeeID,
                                 PasswordChangeRequired: user.PasswordChangeRequired,
-                                Role: temp
+                                DepartmentID: user.DepartmentID,
+                                lstUserRole: user.lstUserRole
 
                             }
 
                             //
                             if (!(user.LoginPassword === "" || user.LoginPassword == null))
                                 dataObj.LoginPassword = user.LoginPassword;
+                            debugger;
                             listToSave.push(dataObj);
 
 
@@ -475,19 +715,21 @@ angular.module('cpp.controllers').
                 });
 
                 angular.forEach($scope.listToDelete, function (item) {
+                    debugger;
                     listToSave.push(item);
                 });
 
                 if (isFilled == false) {
                     return;
                 } else {
+                    debugger;
                     console.log(listToSave)
                     $http({
                         url: url,
                         //url: 'http://localhost:29986/api/response/phasecode',
                         method: "POST",
                         data: JSON.stringify(listToSave),
-                        headers: {'Content-Type': 'application/json'}
+                        headers: { 'Content-Type': 'application/json' }
                     }).then(function success(response) {
                         response.data.result.replace(/[\r]/g, '\n');
 
@@ -513,11 +755,33 @@ angular.module('cpp.controllers').
                                 for (var x = 0; x < $scope.employeeCollection.length; x++) {
                                     if ($scope.employeeCollection[x].ID == item.EmployeeID) {
                                         item.EmployeeName = $scope.employeeCollection[x].Name;
+                                        //$scope.userCollection.EmployeeID = item.EmployeeID;
+                                        //$scope.userCollection.EmployeeName = item.EmployeeName;
                                     }
                                 }
 
+                                //Find Department
+                                for (var i = 0; i < $scope.departmentsData.length; i++) {
+                                    if ($scope.departmentsData[i].ProjectClassID == item.DepartmentID) {
+                                        item.DepartmentName = $scope.departmentsData[i].DepartmentName;
+                                    }
+                                }
+
+
+                                //Find role for a user
+                                
+                                //for (var x = 0; x < $scope.roleCollection.length; x++) {
+                                //    debugger;
+                                //    if ($scope.roleCollection[x].RoleId == item.Role) {
+                                //        item.Role = $scope.roleCollection[x].Role;
+                                //        //$scope.userCollection.EmployeeID = item.EmployeeID;
+                                //        //$scope.userCollection.EmployeeName = item.EmployeeName;
+                                //    }
+                                //}
+
+
                                 //Find required password change
-                                if(item.PasswordChangeRequired) {
+                                if (item.PasswordChangeRequired) {
                                     item.PasswordChangeRequiredName = "True";
                                 } else {
                                     item.PasswordChangeRequiredName = "False";
@@ -528,7 +792,7 @@ angular.module('cpp.controllers').
                             console.log($scope.userCollection);
                         });
 
-                    },function error(response){
+                    }, function error(response) {
                         dhtmlx.alert("Failed to save. Information missing!");
                         console.log("Failed to save");
                     });
@@ -538,7 +802,7 @@ angular.module('cpp.controllers').
 
 
 
-        }
+            }
             $scope.delete = function () {
                 var isChecked = false;
                 var unSavedChanges = false;
@@ -566,7 +830,8 @@ angular.module('cpp.controllers').
                                 Role: item.Role,
                                 EmployeeID: item.EmployeeID,
                                 PasswordChangeRequired: item.PasswordChangeRequired,
-                                displayId : item.displayId
+                                displayId: item.displayId,
+                                DepartmentID: item.DepartmentID
 
                             }
                             listToSave.push(dataObj);
@@ -578,8 +843,8 @@ angular.module('cpp.controllers').
                 if (!selectedRow) {
                     dhtmlx.alert("Please select a record to delete.");
                 }
-                if(newList.length != 0){
-                    for(var i = 0; i < newList.length; i++) {
+                if (newList.length != 0) {
+                    for (var i = 0; i < newList.length; i++) {
                         var ind = -1;
                         angular.forEach($scope.userCollection, function (item, index) {
                             if (item.displayId == newList[i].displayId) {
@@ -588,16 +853,16 @@ angular.module('cpp.controllers').
                                 ind = index;
                             }
                         });
-                        if(ind != -1){
-                            $scope.checkList.splice(newList[i].displayId,1);
-                            $scope.userCollection.splice(ind,1);
+                        if (ind != -1) {
+                            $scope.checkList.splice(newList[i].displayId, 1);
+                            $scope.userCollection.splice(ind, 1);
                         }
                     }
 
                 }
-                if(listToSave.length != 0) {
+                if (listToSave.length != 0) {
 
-                    for(var i = 0; i < listToSave.length; i++) {
+                    for (var i = 0; i < listToSave.length; i++) {
                         var ind = -1;
                         angular.forEach($scope.userCollection, function (item, index) {
                             if (item.displayId == listToSave[i].displayId) {
@@ -606,106 +871,106 @@ angular.module('cpp.controllers').
                                 ind = index;
                             }
                         });
-                        if(ind != -1){
-                            $scope.checkList.splice(listToSave[i].displayId,1);
-                            $scope.userCollection.splice(ind,1);
+                        if (ind != -1) {
+                            $scope.checkList.splice(listToSave[i].displayId, 1);
+                            $scope.userCollection.splice(ind, 1);
                         }
                     }
                 }
 
             }
 
-        //$scope.setUser = function(u){
-        //    $scope.userItem = u;
-        //}
-        //
-        //$scope.newUser = function(){
-        //
-        //    newOrEdit = 'new';
-        //    var scope = $rootScope.$new();
-        //    $scope.userItem = null;
-        //    scope.params = {userItem : $scope.userItem, newOrEdit:newOrEdit}
-        //    $rootScope.modalInstance = $uibModal.open({
-        //        scope: scope,
-        //        controller: "UserModalCtrl",
-        //        templateUrl : "app/views/modal/users_modal.html",
-        //        size : "md"
-        //    } );
-        //    $rootScope.modalInstance.result.then(function(response){
-        //        User.get({},function(Users){
-        //            $scope.userCollection = Users.result;
-        //            console.log($scope.userCollection);
-        //        })
-        //    });
-        //}
-        //$scope.editUser = function(){
-        //
-        //    newOrEdit = 'edit';
-        //    var scope = $rootScope.$new();
-        //    scope.params = {userItem : $scope.userItem, newOrEdit : newOrEdit}
-        //    $rootScope.modalInstance = $uibModal.open({
-        //       scope:scope,
-        //        templateUrl : "app/views/modal/users_modal.html",
-        //        size : 'md',
-        //        controller : 'UserModalCtrl'
-        //    });
-        //
-        //    $rootScope.modalInstance.result.then(function(response){
-        //        User.get({},function(Users){
-        //            $scope.userCollection = Users.result;
-        //            console.log($scope.userCollection);
-        //        })
-        //    });
-        //}
-        //$scope.deleteUser = function(){
-        //    var scope = $rootScope.$new();
-        //    $scope.confirm = "";
-        //    scope.params={confirm:$scope.confirm};
-        //    $rootScope.modalInstance = $uibModal.open({
-        //        scope:scope,
-        //        templateUrl :'app/views/Modal/confirmation_dialog.html',
-        //        controller : 'ConfirmationCtrl',
-        //        size : 'sm'
-        //    });
-        //    $rootScope.modalInstance.result.then(function(data){
-        //        if(scope.params.confirm ==='yes'){
-        //            var dataObj = {
-        //                'Operation': '3',
-        //                'FullName' : "",
-        //                'UserID' : $scope.userItem.UserID,
-        //                'AccessControlList' : "",
-        //                'LoginPassword' : "",
-        //                'Email': $scope.userItem.Email
-        //
-        //            }
-        //
-        //            var index = $scope.userCollection.indexOf($scope.userItem);
-        //            $http.post(url,dataObj).then(function(response){
-        //                if(response.data.result==="Success"){
-        //                    //refresh on delete
-        //                    User.get({},function(Users){
-        //                        $scope.userCollection = Users.result;
-        //                        console.log($scope.userCollection);
-        //                    })
-        //                    if(index !== -1){
-        //                        $scope.userCollection.splice(index,1);
-        //                        $scope.userItem = null;
-        //                    }
-        //
-        //                }
-        //                else{
-        //                    alert("Delete Failed");
-        //                }
-        //
-        //            });
-        //        }
-        //    });
-        //}
+            //$scope.setUser = function(u){
+            //    $scope.userItem = u;
+            //}
+            //
+            //$scope.newUser = function(){
+            //
+            //    newOrEdit = 'new';
+            //    var scope = $rootScope.$new();
+            //    $scope.userItem = null;
+            //    scope.params = {userItem : $scope.userItem, newOrEdit:newOrEdit}
+            //    $rootScope.modalInstance = $uibModal.open({
+            //        scope: scope,
+            //        controller: "UserModalCtrl",
+            //        templateUrl : "app/views/modal/users_modal.html",
+            //        size : "md"
+            //    } );
+            //    $rootScope.modalInstance.result.then(function(response){
+            //        User.get({},function(Users){
+            //            $scope.userCollection = Users.result;
+            //            console.log($scope.userCollection);
+            //        })
+            //    });
+            //}
+            //$scope.editUser = function(){
+            //
+            //    newOrEdit = 'edit';
+            //    var scope = $rootScope.$new();
+            //    scope.params = {userItem : $scope.userItem, newOrEdit : newOrEdit}
+            //    $rootScope.modalInstance = $uibModal.open({
+            //       scope:scope,
+            //        templateUrl : "app/views/modal/users_modal.html",
+            //        size : 'md',
+            //        controller : 'UserModalCtrl'
+            //    });
+            //
+            //    $rootScope.modalInstance.result.then(function(response){
+            //        User.get({},function(Users){
+            //            $scope.userCollection = Users.result;
+            //            console.log($scope.userCollection);
+            //        })
+            //    });
+            //}
+            //$scope.deleteUser = function(){
+            //    var scope = $rootScope.$new();
+            //    $scope.confirm = "";
+            //    scope.params={confirm:$scope.confirm};
+            //    $rootScope.modalInstance = $uibModal.open({
+            //        scope:scope,
+            //        templateUrl :'app/views/Modal/confirmation_dialog.html',
+            //        controller : 'ConfirmationCtrl',
+            //        size : 'sm'
+            //    });
+            //    $rootScope.modalInstance.result.then(function(data){
+            //        if(scope.params.confirm ==='yes'){
+            //            var dataObj = {
+            //                'Operation': '3',
+            //                'FullName' : "",
+            //                'UserID' : $scope.userItem.UserID,
+            //                'AccessControlList' : "",
+            //                'LoginPassword' : "",
+            //                'Email': $scope.userItem.Email
+            //
+            //            }
+            //
+            //            var index = $scope.userCollection.indexOf($scope.userItem);
+            //            $http.post(url,dataObj).then(function(response){
+            //                if(response.data.result==="Success"){
+            //                    //refresh on delete
+            //                    User.get({},function(Users){
+            //                        $scope.userCollection = Users.result;
+            //                        console.log($scope.userCollection);
+            //                    })
+            //                    if(index !== -1){
+            //                        $scope.userCollection.splice(index,1);
+            //                        $scope.userItem = null;
+            //                    }
+            //
+            //                }
+            //                else{
+            //                    alert("Delete Failed");
+            //                }
+            //
+            //            });
+            //        }
+            //    });
+            //}
 
-        $scope.checkForChanges = function () {
-            var unSavedChanges = false;
-            var originalCollection = $scope.orgUserCollection;
-            var currentCollection = $scope.userCollection;
+            $scope.checkForChanges = function () {
+                var unSavedChanges = false;
+                var originalCollection = $scope.orgUserCollection;
+                var currentCollection = $scope.userCollection;
 
             if (currentCollection.length != originalCollection.length) {
                 unSavedChanges = true;
@@ -724,6 +989,7 @@ angular.module('cpp.controllers').
                                 originalObject.LastName !== currentObject.LastName ||
                                 originalObject.Email !== currentObject.Email ||
                                 originalObject.EmployeeID !== currentObject.EmployeeID ||
+                                originalObject.DepartmentID !== currentObject.DepartmentID ||
                                 originalObject.Role !== currentObject.Role) {
                                 // alert if a change has not been saved
                                 //alert("unsaved change on line" + currentCollection.displayId);
@@ -738,37 +1004,58 @@ angular.module('cpp.controllers').
             return unSavedChanges;
             };
 
-        onRouteChangeOff = $scope.$on('$locationChangeStart', function (event) {
-            var newUrl = $location.path();
-            if (!$scope.checkForChanges()) return;    //luan here
-            $scope.confirm = "";
-            var scope = $rootScope.$new();
-            scope.params = {confirm: $scope.confirm};
-            $rootScope.modalInstance = $uibModal.open({
-                scope: scope,
-                templateUrl: 'app/views/Modal/exit_confirmation_modal.html',
-                controller: 'exitConfirmation',
-                size: 'md',
-                backdrop: true
+            onRouteChangeOff = $scope.$on('$locationChangeStart', function (event) {
+                var newUrl = $location.path();
+                if (!$scope.checkForChanges()) return;    //luan here
+                $scope.confirm = "";
+                var scope = $rootScope.$new();
+                scope.params = { confirm: $scope.confirm };
+                $rootScope.modalInstance = $uibModal.open({
+                    scope: scope,
+                    templateUrl: 'app/views/Modal/exit_confirmation_modal.html',
+                    controller: 'exitConfirmation',
+                    size: 'md',
+                    backdrop: true
+                });
+                $rootScope.modalInstance.result.then(function (data) {
+                    console.log(scope.params.confirm);
+                    if (scope.params.confirm === "exit") {
+                        onRouteChangeOff();
+                        $location.path(newUrl);
+                    }
+                    else if (scope.params.confirm === "save") {
+                        isTest = true;
+                        $scope.save();
+                        //    onRouteChangeOff();
+                        //    $location.path(newUrl);
+                    }
+                    else if (scope.params.confirm === "back") {
+                        //do nothing
+                    }
+                });
+                event.preventDefault();
             });
-            $rootScope.modalInstance.result.then(function (data) {
-                console.log(scope.params.confirm);
-                if (scope.params.confirm === "exit") {
-                    onRouteChangeOff();
-                    $location.path(newUrl);
-                }
-                else if (scope.params.confirm === "save") {
-                    isTest = true;
-                    $scope.save();
-                //    onRouteChangeOff();
-                //    $location.path(newUrl);
-                }
-                else if (scope.params.confirm === "back") {
-                    //do nothing
-                }
-            });
-            event.preventDefault();
-        });
 
-}])
-;
+        }])
+    .directive('uiSelectWrap', uiSelectWrap)
+    ;
+//.angular.module('app', ['ui.grid', 'ui.grid.edit', 'ui.select'])
+uiSelectWrap.$inject = ['$document', 'uiGridEditConstants']; //uiGridEditConstants
+function uiSelectWrap($document, uiGridEditConstants) {
+    return function link($scope, $elm, $attr) {
+        
+        
+        //$scope.$parent.col.grid.options.rowHeight=100;
+        $document.on('click', docClick);
+        //var target = $(event.target);
+        function docClick(evt) {
+           // $scope.$parent.col.grid.options.rowHeight = 40;
+            if ($(evt.target).closest('.ui-select-container').size() === 0) {
+                $scope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
+               
+                $document.off('click', docClick);
+               
+            }
+        }
+    };
+}

@@ -55,6 +55,32 @@ namespace WebAPI.Models
             return serviceClassList;
         }
 
+        public static ServiceClass getServiceById(int serviceId)
+        {
+            ServiceClass serviceClass = null;
+            try
+            {
+
+                using (var ctx = new CPPDbContext())
+                {
+                    serviceClass = ctx.ServiceClass.Where(x => x.ID == serviceId).FirstOrDefault();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+            }
+            finally
+            {
+            }
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Exit Point", Logger.logLevel.Debug);
+
+            return serviceClass;
+        }
+
         public static String registerServiceClass(ServiceClass serviceclass)
         {
 
@@ -67,7 +93,8 @@ namespace WebAPI.Models
                 {
                     ServiceClass retreivedServiceClass = new ServiceClass();
                     retreivedServiceClass = ctx.ServiceClass.Where(u => u.Description == serviceclass.Description
-                                                                        || u.ID == serviceclass.ID).FirstOrDefault();
+                                                                        || u.ID == serviceclass.ID || u.Code==serviceclass.Code).FirstOrDefault();
+                    
 
                     if (retreivedServiceClass == null)
                     {
@@ -78,7 +105,7 @@ namespace WebAPI.Models
                     }
                     else
                     {
-                        result += serviceclass.Description + "' failed to be created, duplicate division or line item # is not allowed.\n";
+                        result += serviceclass.Description + "' failed to be created, duplicate Service is not allowed.\n";
                     }
                 }
 
@@ -112,7 +139,9 @@ namespace WebAPI.Models
                     retreivedServiceClass = ctx.ServiceClass.Where(u => u.ID == serviceclass.ID).FirstOrDefault();
 
                     ServiceClass duplicateserviceClass = ctx.ServiceClass.Where(a => (a.ID != serviceclass.ID
-                                                                                  && (a.Description == serviceclass.Description))).FirstOrDefault();
+                                                                                  && (a.Description == serviceclass.Description))
+                                                                                  || (a.ID != serviceclass.ID
+                                                                                  && (a.Code == serviceclass.Code))).FirstOrDefault();
                                                                                   
 
                     if (retreivedServiceClass != null && retreivedServiceClass.ID!=serviceclass.ID)
@@ -121,7 +150,7 @@ namespace WebAPI.Models
                     }
                     else if (duplicateserviceClass != null)
                     {
-                        result += serviceclass.Description + " failed to be updated, duplicate of services will be created.\n";
+                        result += serviceclass.Description + " failed to be updated, duplicate of services is not allowed.\n";
                     }
                     else if (retreivedServiceClass != null)
                     {

@@ -85,9 +85,10 @@ angular.module('cpp.controllers').
 
                 	$scope.positionCollection[$scope.positionCollection.length - 1].UniqueIdentityNumber = currentPoint;
                 }
-
+                $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
                 $timeout(function () {
                     console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                    
                     $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
                 }, 1);
             }
@@ -136,7 +137,7 @@ angular.module('cpp.controllers').
                     {
                     field: 'PositionDescription',
                     /*displayName: 'Position Description',*/
-                        name: 'Position Description',
+                        name: 'Position Description*',
                         enableCellEdit: true,
                         width: 350
                         /*editableCellTemplate: $scope.cellInputEditableTemplate,
@@ -163,7 +164,7 @@ angular.module('cpp.controllers').
                 //},
                 {
                     field:'CurrentHourlyRate',
-                    name:'Current Hourly Rate',
+                    name:'Current Hourly Rate*',
                     enableCellEdit: true,
                     cellFilter: 'currency',
                     cellClass: 'c-col-Num' //Manasi

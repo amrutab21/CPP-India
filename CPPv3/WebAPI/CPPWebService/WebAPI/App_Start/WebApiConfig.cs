@@ -402,6 +402,11 @@ namespace WebAPI
                 defaults: new { controller = "RequestActivityID", ActivityID = RouteParameter.Optional }
             );
 
+            config.Routes.MapHttpRoute(                                              //Tanmay - 15/12/2021
+                name: "RequestClientDetailsByID",
+                routeTemplate: "Request/RequestClientDetailsByID/{ClientId}",
+                defaults: new { controller = "RequestClientController"}
+            );
             config.Routes.MapHttpRoute(
                name: "Request Purchase Order Number",
                routeTemplate: "Request/RequestNewPurchaseOrderNumber/{ProjectID}",
@@ -447,13 +452,15 @@ namespace WebAPI
 
             config.Routes.MapHttpRoute(
             name: "RequestWBS",
-            routeTemplate: "Request/WBS/{uId}/{OrganizationID}/{ProgramID}/{ProgramElementID}/{ProjectID}/{TrendNumber}/{PhaseCode}/{ActivityID}/{BudgetCategory}/{BudgetSubCategory}/{SearchText}/{AllData}",
+            routeTemplate: "Request/WBS/{uId}/{OrganizationID}/{ProgramID}/{ProgramElementID}/{ProjectID}/{TrendNumber}/{PhaseCode}/{ActivityID}/{BudgetCategory}/{BudgetSubCategory}/{SearchText}/{AllData}/{DeptID}",
 
             //Returns: Complex/Nested JSON Object. NOTE: use string.replace("\\","") before parsing the returned JSON
             defaults: new { controller = "RequestWBS", OrganizationID = RouteParameter.Optional, ProgramID = RouteParameter.Optional, ProgramElementID = RouteParameter.Optional, ProjectID = RouteParameter.Optional,
                 TrendNumber = RouteParameter.Optional, PhaseCode = RouteParameter.Optional, ActivityID = RouteParameter.Optional,
                 BudgetCategory = RouteParameter.Optional, BudgetSubCategory = RouteParameter.Optional, SearchText = RouteParameter.Optional,
-                AllData = RouteParameter.Optional }
+                AllData = RouteParameter.Optional,
+                DeptID = RouteParameter.Optional
+            }
         );
 
             config.Routes.MapHttpRoute(
@@ -500,6 +507,28 @@ namespace WebAPI
             {
                 controller = "RequestCost",
                 ProjectID = RouteParameter.Optional,
+                TrendNumber = RouteParameter.Optional,
+                PhaseCode = RouteParameter.Optional,
+                ActivityID = RouteParameter.Optional,
+                Granularity = RouteParameter.Optional,
+                ViewLabor = RouteParameter.Optional,
+                BudgetID = RouteParameter.Optional,
+                BudgetCategory = RouteParameter.Optional,
+                BudgetSubCategory = RouteParameter.Optional
+
+            }
+            );
+            config.Routes.MapHttpRoute(
+            name: "RequestGanttViewCost",
+            routeTemplate: "Request/GanttViewCost/{ContractID}/{ProjectID}/{ElementID}/{TrendNumber}/{PhaseCode}/{ActivityID}/{Granularity}/{ViewLabor}/{BudgetID}/{BudgetCategory}/{BudgetSubCategory}",
+            //Returns: 
+
+            defaults: new
+            {
+                controller = "RequestGanttViewCost",
+                ContractID = RouteParameter.Optional,
+                ProjectID = RouteParameter.Optional,
+                ElementID = RouteParameter.Optional,
                 TrendNumber = RouteParameter.Optional,
                 PhaseCode = RouteParameter.Optional,
                 ActivityID = RouteParameter.Optional,
@@ -930,7 +959,31 @@ namespace WebAPI
                 routeTemplate: "Request/WorkBreakdownStructureAdminReport",
                 defaults: new { controller = "RequestWorkBreakdownStructureAdminReport" }
                 );
+
+            config.Routes.MapHttpRoute( //luan here - Procurement Report
+               name: "ProcurementReport",
+               routeTemplate: "Request/ProcurementReport",
+               defaults: new { controller = "RequestProcurementReport" }
+               );
+
+            config.Routes.MapHttpRoute( //luan here - Availability Report
+           name: "ResourceAvailabilityReport",
+           routeTemplate: "Request/ResourceAvailabilityReport",
+           defaults: new { controller = "RequestResourceAvailabilityReport" }
+           );
+
+            config.Routes.MapHttpRoute( //luan here - Billing Exception Report
+              name: "BillingExceptionReport",
+              routeTemplate: "Request/BillingExceptionReport",
+              defaults: new { controller = "RequestBillingExceptionReport" }
+              );
             #endregion
+
+            config.Routes.MapHttpRoute( //luan here - Work Breakdown Structure Admin Report
+              name: "ContractReport",
+              routeTemplate: "Request/ContractReport",
+              defaults: new { controller = "RequestContractReport" }
+              );
 
             config.Routes.MapHttpRoute(
                 name: "RequestProjectDurationAndCost",
@@ -1364,22 +1417,71 @@ namespace WebAPI
              );
 
             config.Routes.MapHttpRoute(
+                  name: "RequestProjectClassByProgramId",
+                  routeTemplate: "Request/ProjectClassByProgramId/{programID}",
+                 defaults: new { controller = "RequestProjectClassByProgramId" }
+             );
+
+            config.Routes.MapHttpRoute(
+                  name: "RequestProjectClassByProgramElemId",
+                  routeTemplate: "Request/ProjectClassByProgramElemId/{programElemID}",
+                 defaults: new { controller = "RequestProjectClassByProgramElemId" }
+             );
+
+            config.Routes.MapHttpRoute(
                  name: "RegisterProjectClass",
                  routeTemplate: "Response/ProjectClass",
                  defaults: new { controller = "RegisterProjectClass" }
              );
+            //Prime
+            config.Routes.MapHttpRoute(
+                  name: "RequestPrime",
+                  routeTemplate: "Request/prime",
+                  defaults: new { controller = "RequestPrime" }
+             );
+            config.Routes.MapHttpRoute(
+                  name: "RegisterPrime",
+                  routeTemplate: "Response/prime",
+                  defaults: new { controller = "RegisterPrime" }
+            );
 
             //Services Class
             config.Routes.MapHttpRoute(
                   name: "RequestServiceClass",
                   routeTemplate: "Request/ServiceClass",
-                 defaults: new { controller = "RequestServiceClass" }
+                  defaults: new { controller = "RequestServiceClass" }
              );
             config.Routes.MapHttpRoute(
                 name: "RegisterServiceClass",
                 routeTemplate: "Response/ServiceClass",
                 defaults: new { controller = "RegisterServiceClass" }
             );
+
+            //certified Payroll
+
+            config.Routes.MapHttpRoute(         //Vaishnavi 12-04-2022
+                name: "RequestCertifiedPayroll",
+                routeTemplate: "Request/CertifiedPayroll",
+               defaults: new { controller = "RequestCertifiedPayroll" }
+           );
+            config.Routes.MapHttpRoute(
+                name: "RegisterCertifiedPayroll",
+                routeTemplate: "Response/CertifiedPayroll",
+                defaults: new { controller = "RegisterCertifiedPayroll" }
+            );
+
+            //Wrap
+
+            config.Routes.MapHttpRoute(
+                name: "RequestWrap",
+                routeTemplate: "Request/Wrap",
+               defaults: new { controller = "RequestWrap" }
+           );
+            config.Routes.MapHttpRoute(
+                name: "RegisterWrap",
+                routeTemplate: "Response/Wrap",
+                defaults: new { controller = "RegisterWrap" }
+            );    //Vaishnavi 12-04-2022
 
             //Project Class Phase
             config.Routes.MapHttpRoute(
@@ -1417,6 +1519,16 @@ namespace WebAPI
                  name: "RegisterClient",
                  routeTemplate: "Response/Client",
                  defaults: new { controller = "RegisterClient" }
+             );
+            config.Routes.MapHttpRoute(                                     //Tanmay - 15/12/2021
+                  name: "RequestClientPOC",
+                  routeTemplate: "Request/ClientPOC",
+                 defaults: new { controller = "RequestClientPOC" }
+             );
+            config.Routes.MapHttpRoute(
+                 name: "RegisterClientPOC",
+                 routeTemplate: "Response/ClientPOC",
+                 defaults: new { controller = "RegisterClientPOC" }
              );
 
             //Location
@@ -1673,6 +1785,12 @@ namespace WebAPI
            defaults: new { controller = "RequestExportCostCodeToExcel" }
             );
 
+            config.Routes.MapHttpRoute(
+    name: "RequestExportInsperityCostCodeToExcel",
+    routeTemplate: "Request/ExportInsperityCostCodeToExcel",
+    defaults: new { controller = "RequestExportInsperityCostCodeToExcel" }
+     );
+
             ////Swapnil 20-10-2020
             config.Routes.MapHttpRoute(
            name: "RegisterImportCoAdData",
@@ -1701,8 +1819,8 @@ namespace WebAPI
             //Jignesh 28-10-2020
             config.Routes.MapHttpRoute(
                  name: "GetContractModification",
-                 routeTemplate: "contractModification/getContractModificationData/{programId}",
-                 defaults: new { controller = "ContractModification", action = "Get", programId = RouteParameter.Optional }
+                 routeTemplate: "contractModification/getContractModificationData/{programId}/{modId}",
+                 defaults: new { controller = "ContractModification", action = "Get", programId = RouteParameter.Optional, modId = RouteParameter.Optional }
              );
             //Jignesh 05-11-2020
             config.Routes.MapHttpRoute(
@@ -1716,7 +1834,49 @@ namespace WebAPI
                 routeTemplate: "Request/ImportCoAdFile",
                 defaults: new { controller = "CoAdImport", action = "Post" }
             );
+            //Narayan - 22/04/2022
+            config.Routes.MapHttpRoute(
+                 name: "ContractWarranty",
+                 routeTemplate: "contractWarranty/saveContractWarranty",
+                 defaults: new { controller = "ContractWarranty", action = "Post" }
+             );
 
+            //Narayan - 22/04/2022
+            config.Routes.MapHttpRoute(
+                 name: "GetContractWarranty",
+                 routeTemplate: "contractWarranty/getContractWarranty/{programId}",
+                 defaults: new { controller = "ContractWarranty", action = "Get", programId = RouteParameter.Optional }
+             );
+            //Narayan - 04/04/2022
+            config.Routes.MapHttpRoute(
+                 name: "PrelimnaryNotice",
+                 routeTemplate: "prelimnaryNotice/savePrelimnaryNotice",
+                 defaults: new { controller = "PrelimnaryNotice", action = "Post" }
+             );
+
+            //Narayan - 04/04/2022
+            config.Routes.MapHttpRoute(
+                 name: "GetPrelimnaryNotice",
+                 routeTemplate: "prelimnaryNotice/getPrelimnaryNotice/{programId}",
+                 defaults: new { controller = "PrelimnaryNotice", action = "Get", programId = RouteParameter.Optional}
+             );
+            //Narayan - 08/04/2022
+            config.Routes.MapHttpRoute(
+                 name: "ContractInsurance",
+                 routeTemplate: "contractInsurance/saveContractInsurance",
+                 defaults: new { controller = "ContractInsurance", action = "Post" }
+             );
+            //Narayan - 08/04/2022
+            config.Routes.MapHttpRoute(
+                 name: "GetContractInsurance",
+                 routeTemplate: "contractInsurance/getContractInsurance/{programId}",
+                 defaults: new { controller = "ContractInsurance", action = "Get", programId = RouteParameter.Optional }
+             );
+            config.Routes.MapHttpRoute(
+                 name: "RequestProgramNotes",
+                 routeTemplate: "Request/ProgramNotes/{programId}",
+                 defaults: new { controller = "RequestProgramNotes", action = "Get", programId = RouteParameter.Optional }
+             );
             config.Routes.MapHttpRoute(
               name: "DataMigration",
               routeTemplate: "Request/Migration",
@@ -1841,6 +2001,27 @@ namespace WebAPI
                  routeTemplate: "Response/RegisterUserLicenseMapping",
                  defaults: new { controller = "RegisterUserLicenseMapping" }
              );
+
+            //Poject Element changes by Amruta
+
+            config.Routes.MapHttpRoute(
+                 name: "RegisterProgramElementOnChangeOrder",
+                 routeTemplate: "Request/ProjectEndDateChangeOrder/{projectId}/{ProjectEndDate}",
+                 defaults: new { controller = "RequestProgramElementOnChangeOrder", projectId = RouteParameter.Optional, ProjectEndDate = RouteParameter.Optional }
+             );
+
+            config.Routes.MapHttpRoute(
+                 name: "ProgramAdditionalInfo",
+                 routeTemplate: "RegisterProgram/UpdateAdditionalProgramDetails",
+                 defaults: new { controller = "RegisterProgram", action = "Post" }
+             );
+            config.Routes.MapHttpRoute(
+               name: "RequestAdditionalInfo",
+                    routeTemplate: "Request/AdditionalInfo/{ProgramID}",
+               //Returns: DT_RowId, ProgramID, ProgramName, ProgramManager, ProgramSponsor		                 //Returns: DT_RowId, ProgramID, ProgramName, ProgramManager, ProgramSponsor
+               defaults: new { controller = "RequestAdditionalInfo",ProgramID = RouteParameter.Optional}
+             );
+
         }
     }
 }

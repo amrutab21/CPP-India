@@ -20,5 +20,8 @@ namespace WebAPI.Models
         public DateTime UpdateDate { get; set; }
         public string UpdatedBy { get; set; }
 
+        [NotMapped]
+        public int UserId { get; set; }
+
     }
 }

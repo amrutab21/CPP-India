@@ -206,7 +206,7 @@ namespace WebAPI.Models
                                                                                 && (s.SubCategoryID == activity.SubCategoryID
                                                                                 || s.SubCategoryDescription == activity.SubCategoryDescription)
                                                                                 && s.OrganizationID == activity.OrganizationID
-                                                                                //&& s.Phase == activity.Phase 
+                                                                                //&& s.Phase == activity.Phase Subtask
                                                                                 && s.VersionId == activity.VersionId).FirstOrDefault();
 
                     if (retrievedActivityCategory == null)
@@ -217,7 +217,7 @@ namespace WebAPI.Models
                     ctx.ActivityCategory.Add(activity);
                         ctx.SaveChanges();
                         //register_result += "Subcategory ID " + activity.SubCategoryID + " has been created successfully.\n";    //front end relying the word "successfully"
-                        register_result += "Subtask ID " + activity.SubCategoryID + " has been created successfully.\n";    //front end relying the word "successfully" updated by Manasi
+                        register_result += "SubCategory ID " + activity.SubCategoryID + " has been created successfully.\n";    /*Tanmay - 01/12/2021*/
                     }
                     else
                     {
@@ -228,7 +228,7 @@ namespace WebAPI.Models
                             //                + " for Category ID " + activity.CategoryID + " - " + activity.CategoryDescription 
                             //                + " failed to be created, it already exist.\n";
 
-                            register_result += "Subtask " + activity.SubCategoryID + " - " + activity.SubCategoryDescription
+                            register_result += "Subtask " + activity.SubCategoryID + " - " + activity.SubCategoryDescription 
                                             + " for Task ID " + activity.CategoryID + " - " + activity.CategoryDescription
                                             + " failed to be created, it already exist.\n"; // Manasi
                         }
@@ -290,7 +290,7 @@ namespace WebAPI.Models
                         ctx.ActivityCategory.Add(activity);
                         ctx.SaveChanges();
                         //register_result += "Subcategory ID " + activity.SubCategoryID + " has been created successfully.\n";    //front end relying the word "successfully"
-                        register_result += "Subtask ID " + activity.SubCategoryID + " has been created successfully.\n";    //front end relying the word "successfully" updated by Manasi
+                        register_result += "SubCategory " + activity.SubCategoryID + " has been created successfully.\n";    //front end relying the word "successfully" updated by Manasi
                     }
                     else
                     {

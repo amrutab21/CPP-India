@@ -65,9 +65,10 @@ angular.module('cpp.controllers').
                 new : true
             });
             console.log($scope.unitTypeCollections);
-
+            $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
             $timeout(function () {
                 console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                
                 $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
             }, 1);
         }
@@ -108,7 +109,7 @@ angular.module('cpp.controllers').
                 ,
                 {
                 field: 'UnitName',
-                name: 'Unit Type',
+                name: 'Unit Type*',
                     enableCellEditOnFocus : true,
                  //   enableCellEdit :true,
               //  editableCellTemplate: $scope.cellInputEditableTemplate,
@@ -116,7 +117,7 @@ angular.module('cpp.controllers').
 
             },{
                 field: 'UnitAbbr',
-                name: 'Unit Abbreviation',
+                name: 'Unit Abbreviation*',
 
               //  editableCellTemplate: $scope.cellInputEditableTemplate,
                 //cellFilter :'mapStatus'

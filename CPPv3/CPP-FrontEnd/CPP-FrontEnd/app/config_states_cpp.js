@@ -113,7 +113,7 @@ angular.module('xenon-app').config(function($stateProvider, $httpProvider, $urlR
                         isBaseline = false;
                     }
 
-                    return $q.all([ActivityData.$promise, PhaseData.$promise, Project.$promise, $stateParams.TrendNumber, isBaseline, $stateParams.OrganizationID, Materials.$promise, Employees.$promise, ProgramElement.$promise, Program.$promise]);  //, CostOverhead.$promise
+                    return $q.all([ActivityData.$promise, PhaseData.$promise, Project.$promise, $stateParams.TrendNumber, isBaseline, $stateParams.OrganizationID, Materials.$promise, Employees.$promise, ProgramElement.$promise, Program.$promise, $stateParams.ProgramID]);  //, CostOverhead.$promise
                 }
             }
         }).
@@ -328,6 +328,11 @@ angular.module('xenon-app').config(function($stateProvider, $httpProvider, $urlR
             templateUrl: appHelper.templatePath('admin/report'),
             controller: 'AdminReportManagerCtrl'
         }).
+        state('app.user-report', {
+            url: '/user-report',
+            templateUrl: appHelper.templatePath('userReports'),
+            controller: 'UserReportManagerCtrl'
+        }).
         state('app.admin-odc-type', {
             url: '/admin-odc-type',
             templateUrl: appHelper.templatePath('admin/odc-type'),
@@ -373,6 +378,16 @@ angular.module('xenon-app').config(function($stateProvider, $httpProvider, $urlR
             templateUrl: appHelper.templatePath('admin/service-class'),
             controller: 'ServiceClassCtrl'
         }).
+        state('app.admin-certified-payroll', {    //Vaishnavi 12-04-2022
+            url: '/admin-certified-payroll',
+            templateUrl: appHelper.templatePath('admin/certified-payroll'),
+            controller: 'CertifiedPayrollCtrl'
+        }).
+        state('app.admin-wrap', {
+            url: '/admin-wrap',
+            templateUrl: appHelper.templatePath('admin/wrap'),
+            controller: 'WrapCtrl'
+        }).       //Vaishnavi 12-04-2022
         state('app.admin-project-class-phase', {
             url: '/admin-project-class-phase',
             templateUrl: appHelper.templatePath('admin/project-class-phase'),
@@ -388,6 +403,12 @@ angular.module('xenon-app').config(function($stateProvider, $httpProvider, $urlR
             url: '/admin-client',
             templateUrl: appHelper.templatePath('admin/client'),
             controller: 'ClientCtrl'
+        }).
+        //  Tanmay - 07/12/2021
+        state('app.admin-clientPOC', {
+            url: '/admin-clientPOC',
+            templateUrl: appHelper.templatePath('admin/clientPOC'),
+            controller: 'ClientPOCCtrl'
         }).
         state('app.admin-document-type', {
             url: '/admin-document-type',
@@ -419,12 +440,16 @@ angular.module('xenon-app').config(function($stateProvider, $httpProvider, $urlR
             templateUrl: appHelper.templatePath('admin/inventory'),
             controller: 'InventoryCtrl'
         }).
-         state('app.admin-location', {
-             url: '/admin-location',
-             templateUrl: appHelper.templatePath('admin/territory'),
-             controller: 'TerritoryCtrl'
+         //state('app.admin-location', {
+         //    url: '/admin-location',
+         //    templateUrl: appHelper.templatePath('admin/territory'),
+         //    controller: 'TerritoryCtrl'
+         //}).
+        state('app.admin-prime', {
+            url: '/admin-prime',
+            templateUrl: appHelper.templatePath('admin/prime'),
+            controller: 'PrimeCtrl'
          }).
-
          state('app.admin-agilegrid', {
              url: '/admin-agilegrid',
              templateUrl: appHelper.templatePath('admin/agilegrid'),

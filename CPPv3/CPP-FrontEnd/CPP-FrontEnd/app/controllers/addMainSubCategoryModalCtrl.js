@@ -81,27 +81,27 @@
 
                 if ($scope.category.CategoryDescription == undefined || $scope.category.CategoryDescription == null || $scope.category.CategoryDescription == '') {
                     //dhtmlx.alert('Please enter main category');
-                    dhtmlx.alert('Please enter main task'); //Manasi
+                    dhtmlx.alert('Please enter main category'); /*Tanmay - 01/12/2021*/
                     return;
                 }
 
                 if (!Number.isInteger(parseFloat($scope.category.CategoryID)) || parseFloat($scope.category.CategoryID) < 0
                     || $scope.category.CategoryID.length < 4 || $scope.category.CategoryID.indexOf('.') >= 0) {
                     //dhtmlx.alert('Category ID must be integer values greater than or equal to 0. Length greater than or equal to 4.');
-                    dhtmlx.alert('Task ID must be integer values greater than or equal to 0. Length greater than or equal to 4.'); //Manasi
+                    dhtmlx.alert('Category ID must be integer values greater than or equal to 0. Length greater than or equal to 4.'); /*Tanmay - 01/12/2021*/
                     return;
                 }
 
                 if ($scope.category.SubCategoryDescription == undefined || $scope.category.SubCategoryDescription == null || $scope.category.SubCategoryDescription == '') {
                     //dhtmlx.alert('Please enter a sub category');
-                    dhtmlx.alert('Please enter a sub task'); //Manasi
+                    dhtmlx.alert('Please enter a sub category'); /*Tanmay - 01/12/2021*/
                     return;
                 }
 
                 if (!Number.isInteger(parseFloat($scope.category.SubCategoryID)) || parseFloat($scope.category.SubCategoryID) < 0
                     || $scope.category.SubCategoryID.length < 4 || $scope.category.SubCategoryID.indexOf('.') >= 0) {
                     //dhtmlx.alert('SubCategory ID must be integer values greater than or equal to 0. Length greater than or equal to 4.');
-                    dhtmlx.alert('SubTask ID must be integer values greater than or equal to 0. Length greater than or equal to 4.'); //Manasi
+                    dhtmlx.alert('SubCategory ID must be integer values greater than or equal to 0. Length greater than or equal to 4.'); /*Tanmay - 01/12/2021*/
                     return;
                 }
 

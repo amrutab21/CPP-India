@@ -181,6 +181,11 @@ namespace WebAPI.Models.ExportToMPP
                         else
                         {
                             yd.data.Add(null);
+                            //-- Narayan 19-05-2022 --
+                            yd.label = "ETC"; 
+                            yd.fill = false;
+                            yd.borderColor = "orange";
+                            //-- -- -- -- -- -- -- -- -- --
                             yd.spanGaps = true;
                         }
                     }
@@ -210,6 +215,11 @@ namespace WebAPI.Models.ExportToMPP
                         else
                         {
                             yd.data.Add(null);
+                            //-- Narayan 19-05-2022 --
+                            yd.label = "BTC";
+                            yd.fill = false;
+                            yd.borderColor = "red";
+                            //-- -- -- -- -- -- -- -- -- --
                             yd.spanGaps = true;
                         }
                     }

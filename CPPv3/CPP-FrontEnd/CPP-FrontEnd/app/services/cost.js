@@ -11,6 +11,12 @@ angular.module('cpp.services').
         return $resource(serviceBasePath + "Request/Cost/:ProjectID/:TrendNumber/:PhaseCode/:ActivityID/:Granularity/:ViewLabor/:BudgetID");
       // return $resource("http://localhost:29986/api/Request/Cost/:ProjectID/:TrendNumber/:Phasecode/:ActivityID");
     }).
+    factory('GanttViewCost', ['$resource', function ($resource) {
+        //return $resource(serviceBasePath + "Request/Cost/:ProjectID/:TrendNumber/:Phasecode/:ActivityID/:Granularity/:ViewLabor");
+        //return $resource(serviceBasePath + "Request/Cost/:ProjectID/:TrendNumber/:PhaseCode/:ActivityID/:Granularity/:BudgetID/:BudgetCategory/:BudgetSubCategory/:ViewLabor");
+        return $resource(serviceBasePath + "Request/GanttViewCost/:ContractID/:ProjectID/:ElementID/:TrendNumber/:PhaseCode/:ActivityID/:Granularity/:ViewLabor/:BudgetID");
+        // return $resource("http://localhost:29986/api/Request/Cost/:ProjectID/:TrendNumber/:Phasecode/:ActivityID");
+    }]).
     factory('FTEPositionCost', ['$resource', function ($resource) {
         return $resource(serviceBasePath+"Request/FTEPosition/:Id");
        //return $resource("http://localhost:29986/api/FTEPosition/:PositionID");

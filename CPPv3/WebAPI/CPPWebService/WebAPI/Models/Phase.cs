@@ -50,15 +50,15 @@ namespace WebAPI.Models
                 query += " WHERE 1=1";
                 if (ProjectID != "null")
                 {
-                    query += " AND ProjectID = '" + ProjectID + "'";
+                    query += " AND ProjectID = @ProjectID";
                 }
                 if (TrendNumber != "null")
                 {
-                    query += " AND TrendNumber = " + TrendNumber;
+                    query += " AND TrendNumber = @TrendNumber " ;
                 }
                 if (PhaseCode != "null")
                 {
-                    query += " AND PhaseCode = '" + PhaseCode + "'";
+                    query += " AND PhaseCode = @PhaseCode ";
                 }
                 /*if (PhaseStartDate != "null")
                 {
@@ -72,7 +72,9 @@ namespace WebAPI.Models
 
                 
                 MySqlCommand command = new MySqlCommand(query, conn);
-
+                command.Parameters.AddWithValue("@ProjectID", ProjectID);
+                command.Parameters.AddWithValue("@TrendNumber", TrendNumber);
+                command.Parameters.AddWithValue("@PhaseCode", PhaseCode);
 
                 using (reader = command.ExecuteReader())
                 {
@@ -112,9 +114,9 @@ namespace WebAPI.Models
                             pretrend_query += " FROM";
                             pretrend_query += " vcosts vc, trend t";
                             pretrend_query += " WHERE 1=1";
-                            pretrend_query += " AND vc.ProjectID = '" + RetreivedPhase.ProjectID + "'";
-                            pretrend_query += " AND t.PreviousApprovedTrend = " + RetreivedPhase.TrendNumber;
-                            pretrend_query += " AND vc.PhaseCode = '" + RetreivedPhase.PhaseCode + "'";
+                            pretrend_query += " AND vc.ProjectID = @ProjectID";
+                            pretrend_query += " AND t.PreviousApprovedTrend =  @TrendNumber";
+                            pretrend_query += " AND vc.PhaseCode = @PhaseCode";
                             pretrend_query += " AND vc.ProjectID = t.ProjectID";
                             /*if (PhaseStartDate != "null")
                             {
@@ -128,7 +130,9 @@ namespace WebAPI.Models
                             pretrend_conn = ConnectionManager.getConnection();
                             pretrend_conn.Open();
                             MySqlCommand pretrend_command = new MySqlCommand(pretrend_query, pretrend_conn);
-
+                            pretrend_command.Parameters.AddWithValue("@ProjectID", RetreivedPhase.ProjectID);
+                            pretrend_command.Parameters.AddWithValue("@TrendNumber", RetreivedPhase.TrendNumber);
+                            pretrend_command.Parameters.AddWithValue("@PhaseCode", RetreivedPhase.PhaseCode);
                             using (pretrend_reader = pretrend_command.ExecuteReader())
                             {
                                 if (pretrend_reader.HasRows)
@@ -201,9 +205,12 @@ namespace WebAPI.Models
                 //Check if phase already exists in system for this project and this trend
                 String query = "SELECT PhaseCode from project";
                 query += " WHERE 1=1";
-                query += " AND ProjectID = '" + ProjectID + "'";
-                query += " AND TrendNumber = '" + TrendNumber + "'";
+                query += " AND ProjectID = @ProjectID";
+                query += " AND TrendNumber = @TrendNumber";
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@ProjectID", ProjectID);
+                command.Parameters.AddWithValue("@TrendNumber", TrendNumber);
+                
                 using (reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -222,13 +229,18 @@ namespace WebAPI.Models
                     //write to DB
                     query = "INSERT INTO phase (ProjectID, TrendNumber, PhaseCode, PhaseStartDate, PhaseEndDate) VALUES";
                     query += " (";
-                    query += "'" + ProjectID + "', ";
-                    query += "'" + TrendNumber + "', ";
-                    query += "'" + PhaseCode + "', ";
-                    query += "'" + PhaseStartDate + "', ";
-                    query += "'" + PhaseEndDate + "'";
+                    query += "@ProjectID, ";
+                    query += "@TrendNumber, ";
+                    query += "@PhaseCode, ";
+                    query += "@PhaseStartDate, ";
+                    query += "@PhaseEndDate";
                     query += ")";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@ProjectID", ProjectID);
+                    command.Parameters.AddWithValue("@TrendNumber", TrendNumber);
+                    command.Parameters.AddWithValue("@PhaseCode", PhaseCode);
+                    command.Parameters.AddWithValue("@PhaseStartDate", PhaseStartDate);
+                    command.Parameters.AddWithValue("@PhaseEndDate", PhaseEndDate);
                     command.ExecuteNonQuery();
                     register_result = "Success";
                 }
@@ -280,10 +292,13 @@ namespace WebAPI.Models
                 //Check if program exists in system
                 String query = "SELECT ProjectID, TrendNumber, PhaseCode from phase";
                 query += " WHERE 1=1";
-                query += " AND ProjectID = '" + ProjectID + "'";
-                query += " AND TrendNumber = " + TrendNumber;
-                query += " AND PhaseCode = '" + PhaseCode + "'";
+                query += " AND ProjectID = @ProjectID";
+                query += " AND TrendNumber = @TrendNumber";
+                query += " AND PhaseCode = @PhaseCode";
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@ProjectID", ProjectID);
+                command.Parameters.AddWithValue("@TrendNumber", TrendNumber);
+                command.Parameters.AddWithValue("@PhaseCode", PhaseCode);
                 using (reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -304,10 +319,13 @@ namespace WebAPI.Models
                     //write to DB
                     query = "DELETE FROM phase";
                     query += " WHERE";
-                    query += " ProjectID = '" + ProjectID + "'";
-                    query += " AND TrendNumber = " + TrendNumber;
-                    query += " AND PhaseCode = '" + PhaseCode + "'";
+                    query += " ProjectID = @ProjectID";
+                    query += " AND TrendNumber = @TrendNumber";
+                    query += " AND PhaseCode = @PhaseCode";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@ProjectID", ProjectID);
+                    command.Parameters.AddWithValue("@TrendNumber", TrendNumber);
+                    command.Parameters.AddWithValue("@PhaseCode", PhaseCode);
                     command.ExecuteNonQuery();
                     delete_result = "Success";
                 }

@@ -349,38 +349,12 @@ angular.module('xenon.controllers', []).
              }
 
 
-       /* $scope.logout = function () {
+        $scope.logout = function () {
 
             console.log("logout function: controllers.js");
             authService.logOut();
             $location.path('/login');
-        };*/
-
-            $scope.logout = function () {
-
-
-
-                console.log("logout function: controllers.js");
-                var getlic_key = localStorage.getItem("lckey").toString();
-                var auth = localStorageService.get("authorizationData");
-                var userName = auth.userName;
-                console.log(getlic_key);
-                authService.releaselicense(userName,getlic_key).then(function (responseData) {
-                    console.log("success");
-                    console.log(responseData);
-                    authService.logOut();
-                    $location.path('/login');
-                   // localStorage.removeItem("lckey");
-
-                },
-                    function (error) {
-                        console.log(error);
-                    }
-                );
-              /*  authService.logOut();
-                $location.path('/login');*/
-
-            };
+        };
 
         $scope.changePassword = function () {
             console.log('change password function: controllers.js');
@@ -445,6 +419,7 @@ angular.module('xenon.controllers', []).
     controller('SidebarMenuCtrl', function ($scope, $rootScope, $menuItems, $timeout, $location, $state, $layout, $transitions) {
 
         // Menu Items
+        
         $scope.collapse= function(item){
           console.log($('#main-menu').find('li:eq(1)').hasClass('expanded'));
             var isExpanded = $('#main-menu').find('li:eq(1)').hasClass('expanded');

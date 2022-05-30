@@ -118,19 +118,19 @@
                         <div class="btn-group  btn-group-sm" ng-init="scheduleScale='week'" style="width:100%;">
 
                             <button id="weekBtn" class="btn  btn-black"
-                                    style="background-color: black;width:30%;padding-left:9%;padding-right:9%;text-align:center;"
+                                    style="background-color: black;width:30%;padding-left:9%;padding-right:9%;text-align:center;margin:0;border:0;"
                                     ng-click="setWeek()"
                                     ng-class="{'active' : scheduleScale == 'week'}">
                                 W
                             </button> <!--width:33.33%;-->
                             <button id="monthBtn" class="btn  btn-black"
-                                    style="background-color: black;width:30%;padding-left:9%;padding-right:9%;text-align:center;"
+                                    style="background-color: black;width:30%;padding-left:9%;padding-right:9%;text-align:center;margin:0;border:0;"
                                     ng-click="setMonth()"
                                     ng-class="{'active' : scheduleScale == 'month'}">
                                 M
                             </button><!--width:33.33%;-->
                             <button id="yearBtn" class="btn  btn-black"
-                                    style="background-color: black;width:30%;padding-left:9%;padding-right:9%;text-align:center;"
+                                    style="background-color: black;width:30%;padding-left:9%;padding-right:9%;text-align:center;margin:0;border:0;"
                                     ng-click="setYear()"
                                     ng-class="{'active' : scheduleScale == 'year'}">
                                 Y
@@ -139,28 +139,65 @@
                     </div>
                 </div>
 
-                <!--<div class="col-sm-10 col-sm-height vcenter" style="margin-top:-20px;">
+                <div class="col-sm-10 col-sm-height vcenter" style="margin-top:-20px;">
                     <div class="phase-widget">
-                       
+                        <!--<h5>Phase</h5>-->
+
                         <div ng-init="schedulePhase='ALL'" style="width:100%;">
-                            <div class="col-md-1">
-                                <label>Phase : </label>
+                            <!--<div class="col-md-1">
+                                <label>Subservice : </label>
                             </div>
                             <div class="col-md-3">
                                 <select style="margin-top:-5px;" class="form-control" ng-model="schedulePhase" ng-change="filterPhase()" data-ng-options="phase.Order as phase.PhaseDescription for phase in phases">
                                     <option value="" ng-show="true">All</option>
 
                                 </select>
+                            </div>-->
+                            <!--<div class="col-md-6">
+
+                            </div>-->
+                            <!--<div class="col-md-1">
+                                <label style="font-size: 12px">Status Code: </label>
                             </div>
-                            <div id="approvalProgressBar" class="">
+                            <div class="col-md-3">
+                                <select style="margin-top:-5px;" class="form-control" ng-model="trendStatusCode" ng-change="updateTrendStatusCode(trendStatusCode, '{{trendStatusCode.TrendStatusCodeID}}')" ng-options="(trendStatusCode.TrendStatusCodeNumber + ' - ' + trendStatusCode.TrendStatusCodeName) for trendStatusCode in trendStatusCodes track by trendStatusCode.TrendStatusCodeID">
+                                </select>
+                            </div>-->
+                            <!--approval progress bar-->
+                            <!--<div id="approvalProgressBar" class="">
+                                <span style="color: #09b609;">Luan Khong</span> --&gt;
+                                <span>Drew Summy</span> --&gt;
+                                <span>Approved</span>
+                            </div>-->
+                            <!-- <button class="btn btn-black" ng-click="schedulePhase = 'all'" style="width:4.75%;margin-right:0.25%"
+                                     ng-class="{'active' : schedulePhase == 'all'}">All
+                             </button>
+                             <button class="btn btn-black" ng-click="schedulePhase = 'pln'" style="width:17.5%;margin-left:0.25%;margin-right:0.25%;"
+                                     ng-class="{'active' : schedulePhase == 'pln'}">Planning
+                             </button>
+                             <button class="btn" ng-click="schedulePhase = 'sd'"
+                                     style="width:17.5%;margin-left:0.25%;margin-right:0.25%;background-color:gray;color:white;"
+                                     ng-class="{'active' : schedulePhase == 'sd'}">Schematic Design
+                             </button>
+                             <button class="btn btn-black" ng-click="schedulePhase = 'des'" style="width:17.5%;margin-left:0.25%;margin-right:0.25%;"
+                                     ng-class="{'active' : schedulePhase == 'des'}">Design & Bidding
+                             </button>
+                             <button class="btn btn-black" ng-click="schedulePhase = 'con'"
+                                     style="width:17.5%;margin-left:0.25%;margin-right:0.25%;background-color:gray;color:white;"
+                                     ng-class="{'active' : schedulePhase == 'con'}">Construction
+                             </button>
+                             <button class="btn btn-black" ng-click="schedulePhase = 'clo'" style="width:17.5%;margin-left:0.25%;"
+                                     ng-class="{'active' : schedulePhase == 'clo'}">Closeout
+                             </button>-->
                         </div>
                     </div>
                 </div>
 
 
-                <div class="col-sm-1 col-sm-height vcenter " style="margin-top:-20px;">
+                <!--<div class="col-sm-1 col-sm-height vcenter " style="margin-top:-20px;">
 
                     <select style="margin-top:-5px;width:140%;" class="form-control" ng-model="selectedFilterTrend" ng-change="filterTrend(selectedFilterTrend)">
+
                         <option ng-class="{'green' : tr.TrendStatusID === 1, 'yellow' : tr.TrendStatusID === 3}"
                                 value="{{tr.TrendNumber}}" data-ng-repeat="tr in trends">
                             {{tr.TrendDescription}}
@@ -168,8 +205,8 @@
                     </select>
 
 
-                </div>
-            </div>-->
+                </div>-->
+            </div>
             <!--Third ROW-->
             <div ng-if="!isBaseline" style="margin-bottom: 10px" class="row">
                 <div class=" col-sm-1"></div>
@@ -271,28 +308,81 @@
         <div class="panel panel-default" style="padding-top:10px;">
             <div class="panel-body" style="padding-top:5px;">
                 <div id="schedule-gantt" style='width:100%; height:300px;'></div>
-                <div id="cost-gantt" style='width:100%; height:350px;'></div>
-                <div class="row" id="buttonRow" style="margin-top:0.3%;">
+                <!--==========Manasi 30-04-2021   Filter on cost line items   Version 2========================-->
+                <div style=" display:inline-block;margin:10px 0;">
+                    <!--<h6 style='margin-top:15px;color: black; font-weight: 600; opacity: .75; padding-bottom: 5px;display:inline-block;'>Cost Line Items</h6>-->
+                    <!--<div class="phase-widget" style="display:inline-block;margin-left:30px;">
+                        <div ng-init="CostType = 'ALL'" class="form-inline">
+                            <div class="form-group">
+                                <label>Cost Type : </label>
+                                <select style="margin-top:-5px;width:250px;" class="form-control" ng-model="CostType" ng-change="filterCostType()" data-ng-options="option.value as option.name for option in FilterCostType">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Cost Type Category : </label>
+                                <select style="margin-top:-5px;width:250px;" class="form-control" ng-model="CostCategory" data-ng-options="option.name as option.name for option in CostTypeCategory" ng-change="filterCostTypeCategory()">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Name : </label>
+                                <select style="margin-top:-5px;width:250px;" class="form-control" ng-model="CostCategoryName" ng-change="filterCostTypeCategoryName()" data-ng-options="option.name as option.name for option in CostCategoryTypeName">
+                                </select>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+                <!--================================================================================================================-->
+                <div id="cost-gantt" style='width:100%;'></div>
+                <div class="row" id="buttonRow" style="margin-top:20px;">
 
                     <!--<div class="" style="display: inline-block; text-align: left; margin-left:1%">
                         <button id="saveCost" class="btn btn-black" ng-click="saveCost()" style="width:90px;margin:0px;">Save</button>
 
                     </div>-->
-                    <div class="" id="bfc-container" style="display: inline-block; text-align:left; margin-left: 27%; padding-right:0%">
+                    <!--shweta -3-9-2021-->
+                    <div ng-show="trend.TrendNumber!=1000" class="pl39p" id="bfc-container" style="display: inline-block;">
                         <label id="total_label" style="font-weight:bold;"> Total: </label>
-                        <label id="total_cost" ng-model="allCostTotal" style="border:none;font-weight:bold;">{{allCostTotal|currency:'$':(allCostTotal %1 >0)?2:0}}</label>
+                        <label id="total_cost" ng-model="allCostTotal" style="border:none;font-weight:bold;">{{allCostTotal|currency}} </label> <!--:'$':(allCostTotal %1 >0)?2:0-->
                     </div>
-
+                    <div ng-show="trend.TrendNumber==1000" class="pl42p" id="bfc-container" style="display: inline-block;">
+                        <label id="total_label" style="font-weight:bold;"> Total: </label>
+                        <label id="total_cost" ng-model="allCostTotal" style="border:none;font-weight:bold;">{{allCostTotal|currency}} </label> <!--:'$':(allCostTotal %1 >0)?2:0-->
+                        <label id="total_cost" ng-model="allEACTotalNew" style="border:none;font-weight:bold;">| {{allEACTotalNew|currency}}</label>
+                    </div>
+                    <!--shweta -3-9-2021-->
+                    <!-- Manasi 01-04-2021
                     <div style="background-color: #73c9db; width: 25px; border: 1px solid #000000; height:12px; margin-left: 100px; display:inline-block"></div><span id="budget" style="font-weight:bold;"> : Budget</span>
                     <div style="background-color: #98FB98; width: 25px; border: 1px solid #000000; height:12px; margin-left: 30px; display:inline-block"></div><span id="actual" style="font-weight:bold;"> : Actual</span>
                     <div style="background-color: #FFDAB9; width: 25px; border: 1px solid #000000; height:12px; margin-left: 30px; display:inline-block"></div><span id="forecast" style="font-weight:bold;"> : Forecast</span>
-
-                   <!--<div id="loading" style="display:none;"></div> 
+                    -->
+                    <div id="loading" style="display:none;"></div> <!--Manasi  -->
                     <div class="pull-right" style="display: inline-block; text-align: right; margin-right:1%">
-                        <button id="ExportToMPP" style="width:160px;margin:0px;" class="btn btn-black" ng-click="ExportToMPP()">Export to MS Project</button>
-                        <button ng-show="trend.TrendNumber==1000" id="PurchaseOrderID" class="btn btn-black" ng-click="getPurchaseOrder()" style="width:140px;margin:0px; display:none;">Purchase Order</button>
-                        <button ng-show="trend.TrendNumber!=1000" id="customCostOverhead" class="btn btn-black" ng-click="customCostOverhead()" style="width:190px;margin:0px;">Custom Cost Overhead</button>  
-                        <button id="reportManagerBtn" class="btn btn-black" ng-click="openReports()" style="width:140px;margin:0px;">Report Manager</button>
+                        <!--Shweta  -->
+                        <!--<button id="ExportToMPP" style="width:160px;margin:0px;" class="btn btn-black" ng-click="ExportToMPP()">Export to MS Project</button>
+                        <div class="dropdown" style="display:inline-block;">
+
+                            <button ng-show="trend.TrendNumber==1000" id="PurchaseOrderID" class="btn btn-black dropdown-toggle"
+                                    data-toggle="dropdown" style="width:140px;margin:0px;">
+                                Purchase Order
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu" style="width:140px;margin:0px;">
+                                <li><a ng-click="addPurchaseOrder()">Add</a></li>
+                                <li><a ng-click="getPurchaseOrder()">View List</a></li>
+
+                            </ul>
+
+                        </div>
+
+
+
+                        <button ng-show="trend.TrendNumber!=1000" id="customCostOverhead" class="btn btn-black" ng-click="customCostOverhead()" style="width:190px;margin:0px;">Custom Cost Overhead</button>-->
+                        <!--Manasi 22-07-2020-->
+                        <!--<button id="actualButton" class="btn btn-black" ng-click="createActual()" style="width:90px;margin:0px;">Actual</button>
+                        <button id="estimateButton" class="btn btn-black" ng-click="createEstimate()" style="width:90px;margin:0px;">Estimate</button>-->
+                        <!--Swapnil 18-09-2020------------------------------------------------------------------------------->
+                        <!--<button id="reportManagerBtn" ng-show="trend.TrendNumber!= 2000 && trend.TrendNumber!= 3000" class="btn btn-black" ng-click="openReports()" style="width:140px;margin:0px;">Report Manager</button>
                         <span id="spnSubmitForApproval" title="">
                             <button id="submitForApproval" data-toggle="tooltip" data-placement="left" class="btn btn-black"
                                     ng-click="submitForApproval()" title="" style="width:90px;margin:0px;">
@@ -307,7 +397,7 @@
                                 <span ng-model="approvalLabel">Approve</span>
                             </button>
                         </span>-->
-                       
+                        <!---------------------------------------------------------------------------------------------->
                         <button id="exit" class="btn btn-red" ng-click="exit()" style="width:90px;margin:0px;">Exit</button>
                     </div>
                 </div>

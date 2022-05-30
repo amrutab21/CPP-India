@@ -1,6 +1,7 @@
 
 <div>
-    <script type="text/ng-template" id="modal-3">
+    <script>$('#closed,#approved,#unapproved,#contract,#project').hide();</script>
+    <script type="text/ng-template" id="modal-3">        
         <div class="modal-header">
             <h4 class="modal-title">Confirm Modal</h4>
         </div>
@@ -349,12 +350,12 @@
                     <!--shweta -3-9-2021-->
                     <div ng-show="trend.TrendNumber!=1000" class="pl39p" id="bfc-container" style="display: inline-block;">
                         <label id="total_label" style="font-weight:bold;"> Total: </label>
-                        <label id="total_cost" ng-model="allCostTotal" style="border:none;font-weight:bold;">{{allCostTotal|currency}} </label> <!--:'$':(allCostTotal %1 >0)?2:0-->
+                        <label id="total_cost" ng-model="allCostTotal" style="border:none;font-weight:bold;">{{allCostTotal|currency : "$" : 0}} </label> <!--:'$':(allCostTotal %1 >0)?2:0-->
                     </div>
                     <div ng-show="trend.TrendNumber==1000" class="pl42p" id="bfc-container" style="display: inline-block;">
                         <label id="total_label" style="font-weight:bold;"> Total: </label>
-                        <label id="total_cost" ng-model="allCostTotal" style="border:none;font-weight:bold;">{{allCostTotal|currency}} </label> <!--:'$':(allCostTotal %1 >0)?2:0-->
-                        <label id="total_cost" ng-model="allEACTotalNew" style="border:none;font-weight:bold;">| {{allEACTotalNew|currency}}</label>
+                        <label id="total_cost" ng-model="allCostTotal" style="border:none;font-weight:bold;">{{allCostTotal|currency : "$" : 0}} </label> <!--:'$':(allCostTotal %1 >0)?2:0-->
+                        <label id="total_cost" ng-model="allEACTotalNew" style="border:none;font-weight:bold;">| {{allEACTotalNew|currency : "$" : 0}}</label>
                     </div>
                     <!--shweta -3-9-2021-->
                     <!-- Manasi 01-04-2021

@@ -21,8 +21,8 @@ namespace WebAPI.Controllers
         public HttpResponseMessage Get(String OrganizationID = "null",  String ProgramID = "null", String KeyStroke = "null")
         {
 
-            // List<Program> ProgramList = WebAPI.Models.Program.getProgram(OrganizationID, ProgramID, KeyStroke);
-            List<Program> ProgramList = WebAPI.Models.Program.getProgramLookup(OrganizationID, ProgramID, KeyStroke);
+            List<Program> ProgramList = WebAPI.Models.Program.getProgram(OrganizationID, ProgramID, KeyStroke);
+            //List<Program> ProgramList = WebAPI.Models.Program.getProgramLookup(OrganizationID, ProgramID, KeyStroke);
 
 
             var jsonNew = new

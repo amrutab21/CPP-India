@@ -41,6 +41,14 @@ namespace WebAPI.Models
         public string Reason { get; set; } // Jignesh-ChangeOrderPopUpChanges
         public int? ModificationTypeId { get; set; } // Jignesh-ChangeOrderPopUpChanges
 
+        // Added by Amruta
+        [NotMapped]
+        public DateTime ProjectEndDateCO { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
+
         public static List<ChangeOrder> getChangeOrder()
 		{
 			Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
@@ -79,6 +87,7 @@ namespace WebAPI.Models
                     //                    ToList();
 
                     var students = (from left in ctx.ChangeOrder
+                                    where left.IsDeleted == false
                                     join right in ctx.Document on left.ChangeOrderID equals right.ChangeOrderID into joinedList
                                     from sub in joinedList.DefaultIfEmpty()
                                     orderby left.ChangeOrderID descending
@@ -271,6 +280,17 @@ namespace WebAPI.Models
 
                                 ctx.SaveChanges();
 
+                                //Added by Amruta for saving the project end date on change order creation
+                                ProgramElement programElement = ctx.ProgramElement.Where(p => p.ProgramElementID == ChangeOrder.ProgramElementID).FirstOrDefault();
+                                if (programElement != null)
+                                {
+                                    programElement.ProjectPEndDate = ChangeOrder.ProjectEndDateCO;
+                                    ctx.SaveChanges();
+                                }
+
+
+                                //var FileUploadCtrl =new WebAPI.Controllers.FilesUploadController();
+                                //_ = FileUploadCtrl.Post("", 0, 0, 0, 0, ChangeOrder.ChangeOrderID, 0);
                                 result = "Success," + ChangeOrder.ChangeOrderID;
                             }
                             else if(retreivedChangeOrder != null)
@@ -363,6 +383,9 @@ namespace WebAPI.Models
                             }
                             ctx.Entry(retreivedChangeOrder).State = System.Data.Entity.EntityState.Modified;
                             ctx.SaveChanges();
+
+                            WebAPI.Models.ProgramElement.updatePojectEndDateOnChangeOrder(ChangeOrder.ProgramElementID.GetValueOrDefault(), ChangeOrder.ProjectEndDateCO);
+
                             result = ChangeOrder.ChangeOrderName + " has been updated successfully.\n";
                         }
                         else
@@ -409,13 +432,20 @@ namespace WebAPI.Models
 
 						for (int x = 0; x < documentList.Count; x++)
 						{
+                            documentList[x].DeletedBy = ChangeOrder.DeletedBy;
 							Document.deleteDocument(documentList[x]);
 						}
 
-						ctx.ChangeOrder.Remove(retreivedChangeOrder);
-						ctx.SaveChanges();
+                        retreivedChangeOrder.IsDeleted = true;
+                        retreivedChangeOrder.DeletedDate = DateTime.Now;
+                        retreivedChangeOrder.DeletedBy = ChangeOrder.DeletedBy;
+                        
+                        //ctx.ChangeOrder.Remove(retreivedChangeOrder);
+                        ctx.SaveChanges();
 
-						result = ChangeOrder.ChangeOrderName + " has been deleted successfully.\n";
+                        WebAPI.Models.ProgramElement.updatePojectEndDateOnChangeOrder(ChangeOrder.ProgramElementID.GetValueOrDefault(), ChangeOrder.ProjectEndDateCO);
+
+                        result = ChangeOrder.ChangeOrderName + " has been deleted successfully.\n";
 					}
 					else
 					{

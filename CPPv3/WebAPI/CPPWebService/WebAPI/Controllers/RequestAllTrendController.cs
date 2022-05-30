@@ -20,13 +20,24 @@ namespace WebAPI.Controllers
             }
 
             List<Trend> TrendList = WebAPI.Models.Trend.getAllTrendsByProjectID(ProjectID);
+            //Nivedita22-12-2021
+            Trend TrendBaseline = TrendList.Where(a => a.TrendDescription == "Baseline" && a.TrendNumber == "0").FirstOrDefault();
+            int BaselineTrendStatusID = TrendBaseline.TrendStatusID;
 
             //Manasi 09-11-2020
             foreach (var item in TrendList)
             {
                 if (item.TrendDescription == "Current" && item.TrendNumber == "1000")
                 {
-                    item.TrendDescription = "Budget vs Actual";
+                    if (BaselineTrendStatusID == 1)
+                    {
+                        item.TrendDescription = "Budget vs Actual";
+                    }
+                    else
+                    {
+                        TrendList.Remove(item);
+                    }
+                    break;
                 }
             }
 

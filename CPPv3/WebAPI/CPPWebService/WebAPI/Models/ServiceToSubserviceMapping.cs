@@ -132,13 +132,18 @@ namespace WebAPI.Models
                     retreivedProjectClassPhase = ctx.ServiceToSubserviceMapping.Where(u => u.ID == serviceToSubservices.ID).FirstOrDefault();
                     ServiceClass sc = new ServiceClass();
 
+                    //ServiceToSubserviceMapping duplicateProjectClassPhase = ctx.ServiceToSubserviceMapping.Where(a => (a.ProjectClassID == serviceToSubservices.ProjectClassID
+                    //                                                              && a.PhaseID == serviceToSubservices.PhaseID
+                    //                                                              && a.ID != serviceToSubservices.ID)
+                    //                                                              //|| (a.ProjectClassID == projectClassPhase.ProjectClassID
+                    //                                                              && (a.ProjectClassID == serviceToSubservices.ProjectClassID    //Manasi 14-07-2020
+                    //                                                              && a.Order == serviceToSubservices.Order
+                    //                                                              && a.ID != serviceToSubservices.ID)).FirstOrDefault();
+
                     ServiceToSubserviceMapping duplicateProjectClassPhase = ctx.ServiceToSubserviceMapping.Where(a => (a.ProjectClassID == serviceToSubservices.ProjectClassID
-                                                                                  && a.PhaseID == serviceToSubservices.PhaseID
-                                                                                  && a.ID != serviceToSubservices.ID)
-                                                                                  //|| (a.ProjectClassID == projectClassPhase.ProjectClassID
-                                                                                  && (a.ProjectClassID == serviceToSubservices.ProjectClassID    //Manasi 14-07-2020
-                                                                                  && a.Order == serviceToSubservices.Order
-                                                                                  && a.ID != serviceToSubservices.ID)).FirstOrDefault();
+                                                                                  && a.PhaseID == serviceToSubservices.PhaseID && a.ID != serviceToSubservices.ID)
+                                                                                  ||(a.ProjectClassID == serviceToSubservices.ProjectClassID    //vaishnavi
+                                                                                  && a.Order == serviceToSubservices.Order && a.ID != serviceToSubservices.ID)).FirstOrDefault();
 
                     ServiceClass serviceClass = ctx.ServiceClass.Where(p => p.ID == serviceToSubservices.ProjectClassID).FirstOrDefault();
                     PhaseCode phaseCode = ctx.PhaseCode.Where(p => p.PhaseID == serviceToSubservices.PhaseID).FirstOrDefault();
@@ -146,7 +151,7 @@ namespace WebAPI.Models
 
                     if (duplicateProjectClassPhase != null)
                     {
-                        result += serviceClass.Description + " - " + phaseCode.PhaseDescription + " failed to be updated, non-unique entry will be created.\n";
+                        result += serviceClass.Description + " - " + phaseCode.PhaseDescription + " failed to be updated,entry must be unique.\n";
                     }
                     else if (retreivedProjectClassPhase != null)
                     {

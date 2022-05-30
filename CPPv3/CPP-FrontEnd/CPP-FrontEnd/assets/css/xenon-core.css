@@ -5354,7 +5354,7 @@ label.cbr-inline {
     .btn.btn-black {
         background-color: #222;
         color: #fff;
-        width: 100px;
+        width: 80px;
     }
 
         .btn.btn-black:hover {
@@ -6607,7 +6607,7 @@ blockquote small {
         }
 
     .modal .modal-dialog .modal-content .modal-body {
-        padding: 10px 0
+        padding: 5px 0
     }
 
     .modal .modal-dialog .modal-content .modal-footer {

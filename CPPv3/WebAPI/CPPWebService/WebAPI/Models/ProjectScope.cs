@@ -26,6 +26,11 @@ namespace WebAPI.Models
         public String ImpactType { get; set; }
         public String ImpactDescription { get; set; }
         public String Asset { get; set; }
+
+        //Nivedita 10022022
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
         //[ForeignKey("ProjectID")]
         //public virtual Project project { get; set; }
 

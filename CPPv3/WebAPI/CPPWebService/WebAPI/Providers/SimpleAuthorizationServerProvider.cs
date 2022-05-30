@@ -48,6 +48,7 @@ namespace WebAPI.Providers
             var props = new AuthenticationProperties(new Dictionary<string, string>
                 {
                     { "userName", user.UserID },
+                    { "userId", user.Id.ToString() },
                     { "role", user.Role },
                     { "acl", user.AccessControlList },
                     { "threshold", user.Threshold },

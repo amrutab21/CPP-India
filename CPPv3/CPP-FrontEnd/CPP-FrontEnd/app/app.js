@@ -2,21 +2,13 @@
 
 //var serviceBasePath = 'http://localhost:1832/';
 //var serviceBasePath = 'http://192.168.0.19:1832/';
-var serviceBasePath = 'http://localhost:29980/api/';
-//var license4jPath = 'http://cpp.birdi-inc.io:8091/license4j-1.0/'; //test server
-var license4jPath = 'http://localhost:8080/'; //local
-var premiseActivation = false;
-var isBrowserClosed = false;
+var serviceBasePath = 'http://localhost:29985/api/';
+var license4jPath = 'http://172.31.45.102:8091/';
 //var serviceBasePath = 'http://localhost/CPP_API/';
 //var serviceBasePath = 'http://dev.birdi-inc.com/CPP_API/';
 //var serviceBasePath = 'http://birdi-dev02/CPP_API/';
 
-var tabCount = parseInt(localStorage.getItem("tabCount"));
-tabCount = Number.isNaN(tabCount) ? 1 : ++tabCount;
-if (tabCount <= 0)
-    tabCount = 1;
-localStorage.setItem('tabCount', tabCount.toString());
-
+var idleTime = 1800;
 /*ENABLE THIS IN PROD*/
 //console.log = function () { };
 //console.debug = function () { };
@@ -61,115 +53,13 @@ var app = angular.module('xenon-app', [
 
 ]);
 
-var isBrowserClosed = false;
-
-app.run(function ($rootScope, localStorageService, authService) {
+app.run(function ($rootScope) {
     // Page Loading Overlay
     public_vars.$pageLoadingOverlay = jQuery('.page-loading-overlay');
 
-
-
     jQuery(window).load(function () {
         public_vars.$pageLoadingOverlay.addClass('loaded');
-    });
-
-
-
-    
-
-
-    window.addEventListener("beforeunload", function (event) {
-
-        console.log("Unload on sign out tab/browser closed===");
-        console.log(event.returnValue);
-
-        var auth = localStorageService.get("authorizationData");
-        var userName = "";
-        if (auth != null) {
-            userName = auth.userName;
-        }
-        var getlic_key = localStorage.getItem("lckey").toString();
-        debugger;
-        var pageReloaded = window.performance
-            .getEntriesByType('navigation')
-            .map((nav) => nav.type)
-            .includes('reload');
-        if (pageReloaded)
-            //return;
-            dhtmlx.alert(pageReloaded);
-        if (!pageReloaded) { // The pageReloaded boolean we set earlier
-
-            var localStorageTime = parseInt(localStorage.getItem('storageTime'));
-            //to be used to detect browser close
-            if (localStorageTime === null || isNaN(localStorageTime) || localStorageTime == "undefined"
-                || (localStorageTime - new Date().getTime()) > 1000) {
-                console.log(new Date().getTime());
-                localStorage.setItem("storageTime", new Date().getTime());
-            }
-            //end
-
-            //dhtmlx.alert(pageReloaded);
-            var tbCount = parseInt(localStorage.getItem('tabCount'));
-            --tbCount;
-            localStorage.setItem('tabCount', tbCount.toString());
-
-            //for browser close
-            var localStorageTime1 = parseInt(localStorage.getItem('storageTime'));
-            var currentTime = new Date().getTime();
-            var timeDifference = currentTime - localStorageTime1;
-            // updating condition
-            debugger;
-            if (tbCount == 0) {
-                localStorage.removeItem('tabCount');
-                navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
-
-                authService.logOut();
-            }
-
-      /*      if (tbCount == 0 || timeDifference < 8000000) {
-                dhtmlx.alert("Time diff==>");
-                navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
-                
-                authService.logOut();
-                //$location.path('/login');
-                //isBrowserClosed = false;
-            }*/
-
-          
-
-        }
-        /*if (event.returnValue === '') {
-          
-            console.log("Close on sign out tab/browser closed===");
-            dhtmlx.alert("Close on sign out tab/browser closed===");  
-            isBrowserClosed = true;
-
-        }*/
-
-
-    });
-   /* document.addEventListener('visibilitychange', function logData() {
-        debugger;
-        console.log("Signed out tab/browser closed===");
-        console.log(localStorageService);
-        console.log(localStorageService);
-        var auth = localStorageService.get("authorizationData");
-        var userName = "";
-        if (auth != null) {
-            userName = auth.userName;
-        }
-        var getlic_key = localStorage.getItem("lckey").toString();
-        console.log(getlic_key);
-
-        if (document.visibilityState === 'hidden' && isBrowserClosed) {
-
-            navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
-            authService.logOut();
-            $location.path('/login');
-            isBrowserClosed = false;
-
-        }
-    });*/
+    })
 
 
 });
@@ -178,9 +68,21 @@ app.config(function (IdleProvider, KeepaliveProvider, $httpProvider, $locationPr
     // configure Idle settings
     //IdleProvider.idle(72000); // in seconds
     //IdleProvider.timeout(30); // in seconds
-    IdleProvider.idle(120);
+
+    //Manu
+    //IdleProvider.idle(120);
+    //IdleProvider.timeout(60);
+    //KeepaliveProvider.interval(1); // in seconds
+    //--------------------------------------
+    //Nivedita
+    IdleProvider.idle(idleTime);
     IdleProvider.timeout(60);
-    KeepaliveProvider.interval(1); // in seconds
+    KeepaliveProvider.interval(1); 
+    
+    IdleProvider.interrupt('keydown wheel mousedown touchstart touchmove scroll');
+
+    
+
 
     //IdleProvider.idle(5); // in seconds
     //IdleProvider.timeout(5); // in seconds
@@ -266,64 +168,99 @@ app.factory('httpInterceptor', function ($q, $rootScope, $log, $timeout, usSpinn
         }
     };
 });
-app.run(function ($location, authService, $rootScope, Idle, $timeout, Session, localStorageService) {
+app.run(function ($location, authService, $rootScope, Idle, $timeout, Session) {
+   
+    var lastAccessApp = new Date();
+    //$rootScope.$watch(function watchIdleInterval() {
+        
+    //    var path = $location.path();
+    //    console.log(path);
+    //    if (path == "/password-recovery" || path == "/signup" || path == "/login") {
+    //    }
+    //    else if (path == "/login")
+    //    {
+    //        lastAccessApp = new Date();
+    //    }
+    //    else {
+    //        if ($(".dhtmlx_modal_box").is(":visible") == false) {
+    //            var date = new Date();
+    //            var minutes = Math.abs(date.getTime() - lastAccessApp.getTime()) / 36e5 * 60;
+    //            if (minutes > 3) {
+    //                authService.logOut();
+    //                $location.path('/login');
+    //                //TODO: Remove all cookies, cash form apps.
+    //                //TODO: Redirect to login page.           
+    //            }
+    //            //lastAccessApp = date;
+    //        }
+    //    }
+        
+        
+    //});
 
     Idle.watch();
     $rootScope.$on('IdleStart', function () {
         var path = $location.path();
         console.log(path);
+        
         if (path == "/password-recovery" || path == "/signup" || path == "/login") {
-
+            lastAccessApp = new Date();
         }
         else {
-            if ($(".dhtmlx_modal_box").is(":visible") == false) {
-                //var sec = 30;
-                var sec = 60;
-                dhtmlx.confirm({
-                    title: "Session Timeout Warning",
-                    type: "confirm-warning",
-                    width: "650px",
-                    ok: "Yes",
-                    cancel: "No",
-                    text: "<span>Your session is about to expire! You will be logged out in <span id='time' ng-model ='ct'>60</span> seconds.Do you want to stay signed in?</span>",
-                    callback: function (response) {
-                        console.log(response);
-                        if (response == false) {
-                            console.log("Signed out auto===");
-                           // $scope.logout();
-                            var getlic_key = localStorage.getItem("lckey").toString();
-                            var auth = localStorageService.get("authorizationData");
-                            var userName = auth.userName;
-                            console.log(getlic_key);
-                            navigator.sendBeacon(license4jPath + 'releaselicense/' + userName + '/' + getlic_key);
-                       /*     authService.releaselicense(userName, getlic_key).then(function (responseData) {
-                                console.log("success");
-                                console.log(responseData);
-                                // localStorage.removeItem("lckey");
 
-                            },
-                                function (error) {
-                                    console.log(error);
-                                }*/
-                            //);
-                            authService.logOut();
-                            $location.path('/login');
+            var date = new Date();
+            //var minutes = Math.abs(date.getTime() - lastAccessApp.getTime()) / 36e5 * 60;
+           // if (minutes > 30) {
+                if ($(".dhtmlx_modal_box").is(":visible") == false) {
+                    //var sec = 30;
+                   // var sec = 60;
+                    dhtmlx.confirm({
+                        title: "Session Timeout Warning",
+                        type: "confirm-warning",
+                        width: "650px",
+                        ok: "Yes",
+                        cancel: "No",
+                        text: "<span>Your session is about to expire! You will be logged out in <span id='time' ng-model ='ct'>60</span> seconds.Do you want to stay signed in?</span>",
+                        callback: function (response) {
+                            console.log(response);
+                            if (response == false) {
+                                
+                                $(".dhtmlx_modal_box").css("visibility", "hidden");
+                                $(".dhtmlx_modal_box").css("display", "none");
+                                $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').remove();
+                                $(".modal fade").css("visibility", "hidden");
+                                $(".modal fade").css("display", "none");
+                                authService.logOut();
+                               window.location.reload();
+                                //$location.path('/login');
+                               
+                                $(".dhx_modal_cover").css("display", "none");
+                                
+                            
 
-                        } else {
-                            //Request something to stay logged in
-                            Session.extend().get({}, function (response) {
-                                console.log(response);
-                            });
+                            } else {
+                                //Request something to stay logged in
+                                lastAccessApp = new Date();
+                                Session.extend().get({}, function (response) {
+                                    console.log(response);
+                                });
+                            }
+                            Idle.watch();
+
                         }
-                        Idle.watch();
+                    });
 
-                    }
-                });
-
-                setTimeOut(60);
+                    setTimeOut(60);
 
 
-            }
+                }
+                //authService.logOut();
+                //$location.path('/login');
+                //TODO: Remove all cookies, cash form apps.
+                //TODO: Redirect to login page.           
+           // }
+
+            
 
         }
 
@@ -335,26 +272,13 @@ app.run(function ($location, authService, $rootScope, Idle, $timeout, Session, l
                     //setTimeOut(i);
                     $(".dhtmlx_yes_button").click();
                     $(".dhtmlx_modal_box").css("visibility", "hidden");
+                    $(".dhtmlx_modal_box").css("display", "none");
                     $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').remove();
-                    console.log("Signed out after timeout===");
-                    //$scope.logout();
-                    var getlic_key = localStorage.getItem("lckey").toString();
-                    var auth = localStorageService.get("authorizationData");
-                    var userName = auth.userName;
-                    console.log(getlic_key);
-                    authService.releaselicense(userName, getlic_key).then(function (responseData) {
-                        console.log("success");
-                        console.log(responseData);
-                        // localStorage.removeItem("lckey");
-
-                    },
-                        function (error) {
-                            console.log(error);
-                        }
-                    );
                     authService.logOut();
-                    $location.path('/login');
-                    $(".dhx_modal_cover").css("display", "none");
+                    window.location.reload();
+                    
+                   // $location.path('/login');
+		    $(".dhx_modal_cover").css("display", "none");
                     Idle.watch();
                 }
                 var time = $("#time");
@@ -370,13 +294,19 @@ app.run(function ($location, authService, $rootScope, Idle, $timeout, Session, l
             }, 1000);
 
         }
-        /* Display modal warning or sth */
-    });
-    $rootScope.$on('IdleTimeout', function () {
+//        /* Display modal warning or sth */
+});
+    $rootScope.$on('IdleTimeout', function ()
+    {
         //$scope.logOut();
         Idle.watch();
         /* Logout user */
     });
+    $rootScope.$on('IdleEnd', function () {
+        // the user has come back from AFK and is doing stuff
+       
+    });
+   
 
 });
 

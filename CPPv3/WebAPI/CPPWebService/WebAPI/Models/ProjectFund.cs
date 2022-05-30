@@ -43,8 +43,9 @@ namespace WebAPI.Models
                 conn.Open();
                 String query = "SELECT * FROM project_fund";
                 query += " WHERE 1=1";
-                query += " AND ProjectID = " + projectID;
+                query += " AND ProjectID = @projectID";
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@projectID", projectID);
 
                 IFormatProvider yyyymmddFormat = new System.Globalization.CultureInfo(String.Empty, false);
                 using (reader = command.ExecuteReader())
@@ -107,11 +108,13 @@ namespace WebAPI.Models
                 //Check if user already exists in system
                 String query = "SELECT FundName FROM project_fund";
                 query += " WHERE 1=1";
-                query += " AND FundName = '" + projectFund.FundName + "'";
-                query += " And ProjectID = " + projectFund.ProjectID;
+                query += " AND FundName = @FundName";
+                query += " And ProjectID = @ProjectID" ;
 
 
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@FundName", projectFund.FundName);
+                command.Parameters.AddWithValue("@ProjectID", projectFund.ProjectID);
                 using (reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -129,12 +132,16 @@ namespace WebAPI.Models
                     //write to DB
                     query = "INSERT INTO project_fund ( FundName, FundAmount, AppliedDate, ProjectID) VALUES";
                     query += " (";
-                    query += "'" + projectFund.FundName + "', ";
-                    query += "" + projectFund.FundAmount + ", ";
-                    query += "'" + todayDate + "',";
-                    query += "" + projectFund.ProjectID;
+                    query += "@FundName, ";
+                    query += "@FundAmount, ";
+                    query += "@todayDate,";
+                    query += "@ProjectID";
                     query += ")";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@FundName", projectFund.FundName);
+                    command.Parameters.AddWithValue("@FundAmount", projectFund.FundAmount);
+                    command.Parameters.AddWithValue("@todayDate", todayDate);
+                    command.Parameters.AddWithValue("@ProjectID", projectFund.ProjectID);
                     command.ExecuteNonQuery();
             
 
@@ -192,8 +199,9 @@ namespace WebAPI.Models
                 //Check if FTE Position exists in system
                 String query = "SELECT Id from project_fund";
                 query += " WHERE 1=1";
-                query += " AND Id = " + projectFund.Id;
+                query += " AND Id = @Id";
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@Id", projectFund.Id);
                 using (reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -213,13 +221,18 @@ namespace WebAPI.Models
                 {
                     //write to DB
                     query = "UPDATE project_fund SET";
-                    query += " FundName = '" + projectFund.FundName + "',";
-                    query += " FundAmount = '" + projectFund.FundAmount + "',";
-                    query += " AppliedDate = '" + todayDate + "',";
-                    query += " ProjectID = '" + projectFund.ProjectID + "'";
+                    query += " FundName = @FundName,";
+                    query += " FundAmount = @FundAmount,";
+                    query += " AppliedDate = @todayDate,";
+                    query += " ProjectID = @ProjectID";
                     query += " WHERE";
-                    query += " Id = " + projectFund.Id;
+                    query += " Id = @Id";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@FundName", projectFund.FundName);
+                    command.Parameters.AddWithValue("@FundAmount", projectFund.FundAmount);
+                    command.Parameters.AddWithValue("@todayDate", todayDate);
+                    command.Parameters.AddWithValue("@ProjectID", projectFund.ProjectID);
+                    command.Parameters.AddWithValue("@Id", projectFund.Id);
                     command.ExecuteNonQuery();
                     update_result = "Success";
                 }
@@ -263,8 +276,9 @@ namespace WebAPI.Models
                 //Check if FTE Position exists in system
                 String query = "SELECT Id from project_fund";
                 query += " WHERE 1=1";
-                query += " AND Id = " + projectFund.Id;
+                query += " AND Id = @Id";
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@Id", projectFund.Id);
                 using (reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -286,8 +300,9 @@ namespace WebAPI.Models
                     query = "DELETE FROM project_fund";
                     query += " WHERE";
                     query += " 1 = 1";
-                    query += " And Id = " + projectFund.Id;
+                    query += " And Id = @Id ";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@Id", projectFund.Id);
                     command.ExecuteNonQuery();
                     delete_result = "Success";
                 }

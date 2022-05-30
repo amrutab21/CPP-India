@@ -201,9 +201,10 @@ angular.module('cpp.controllers').
 
                 	$scope.employeeCollection[$scope.employeeCollection.length - 1].UniqueIdentityNumber = currentPoint;
                 }
-
+                $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
                 $timeout(function () {
                     console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                    
                     $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
                 }, 1);
             };
@@ -265,7 +266,7 @@ angular.module('cpp.controllers').
                 {
                 	field: 'FirstName',
                 	name: 'FirstName',
-                	displayName: 'First Name'
+                	displayName: 'First Name*'
                 	/*enableCellEditOnFocus: true,
                     editableCellTemplate: $scope.cellInputEditableTemplate*/
 
@@ -275,7 +276,7 @@ angular.module('cpp.controllers').
                 {
                 	field: 'LastName',
                 	name: 'LastName',
-                	displayName: 'Last Name'
+                	displayName: 'Last Name*'
                 	/*enableCellEditOnFocus: true,
                     editableCellTemplate: $scope.cellInputEditableTemplate*/
 
@@ -296,7 +297,7 @@ angular.module('cpp.controllers').
 
                     field: 'FTEPositionID',
                     name: 'FTEPositionID',
-                    displayName: 'FTE Position',
+                    displayName: 'FTE Position*',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
                     cellFilter: 'customFilter:this',
                     editDropdownIdLabel: 'ID',
@@ -308,7 +309,7 @@ angular.module('cpp.controllers').
                 {
                     field: 'HourlyRate',
                     name: 'HourlyRate',
-                    displayName: 'Hourly Rate',
+                    displayName: 'Hourly Rate*',
                     enableCellEdit: true,
                     type: 'text',
                     cellFilter: 'currency',
@@ -608,10 +609,10 @@ angular.module('cpp.controllers').
                             dhtmlx.alert('No changes to be saved.');
                         }
 
-                        //$state.reload();
+                        $state.reload();
                         //clear array
-                        listToSave = [];
-                        $scope.listToDelete = [];
+                        //listToSave = [];
+                        //$scope.listToDelete = [];
 
                         console.log($scope.filterOrg);
 

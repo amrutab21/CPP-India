@@ -140,7 +140,7 @@ namespace WebAPI.Models
                  + " AND prg.ProgramID = prge.ProgramID"
                  + " AND prge.ProgramElementID = prj.ProgramElementID"
                  + " AND prg.OrganizationID = org.OrganizationID"
-                 + " AND org.OrganizationID = '" + OrganizationID + "'";
+                 + " AND org.OrganizationID = @OrganizationID";
                 //query += " AND prj.ProjectID = prj_loc.ProjectID";
                 //if (ProgramID != "null")
                 //    query += " AND prg.ProgramID = '" + ProgramID + "'";
@@ -150,6 +150,7 @@ namespace WebAPI.Models
                 //    query += " AND prj.ProjectID = '" + ProjectID + "'";
              
                 MySqlCommand command = new MySqlCommand(q, conn);
+                command.Parameters.AddWithValue("@OrganizationID", OrganizationID);
                 logger.Error("Pass Query");
 
                 using (reader = command.ExecuteReader())

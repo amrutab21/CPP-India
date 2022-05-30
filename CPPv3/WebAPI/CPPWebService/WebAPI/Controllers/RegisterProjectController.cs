@@ -42,7 +42,10 @@ namespace WebAPI.Controllers
                 status = WebAPI.Models.Project.updateProject(project);
 
             if (project.Operation == 3)
-                status = WebAPI.Models.Project.deleteProject(project.ProjectID);
+                status = WebAPI.Models.Project.deleteProject(project);
+            //----Vaishnavi 30-03-2022----//
+            if (project.Operation == 5)
+                status = WebAPI.Models.Project.closeProject(project);
 
             if (project.Operation == 4)
                 status = "Success";

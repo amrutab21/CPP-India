@@ -180,7 +180,9 @@ angular.module('xenon.Gantt_Controller', []).
             setTimeout(function () {
                 $("<h6 style='color: black; font-weight: 1000; opacity: .75; padding-bottom: 5px'>WBS</h5>").insertBefore($("#schedule-gantt"));
                 //$("<h6 style='margin-top:15px;color: black; font-weight: 1000; opacity: .75; padding-bottom: 5px;display:inline-block;'>Cost Line Items</h6>").insertBefore($("#cost-gantt")); // Jignesh-22-03-2021
-                $("<div style='margin-top:15px;margin-bottom:15px;display: inline-block; float: right;margin-right:3%'><div style='background-color: #73c9db; width: 25px; border: 1px solid #000000; height: 12px; margin-left: 100px; display: inline-block'></div><span id='budget' style='font-weight:bold;'> : Budget</span><div style = 'background-color: #98FB98; width: 25px; border: 1px solid #000000; height:12px; margin-left: 30px; display:inline-block' ></div > <span id='actual' style='font-weight:bold;'> : Actual</span><div style='background-color: #FFDAB9; width: 25px; border: 1px solid #000000; height:12px; margin-left: 30px; display:inline-block'></div> <span id='forecast' style='font-weight:bold;'> : Forecast</span></div>").insertBefore($("#cost-gantt"));  //Manasi 01-04-2021 Legend Budget Actual Forecast
+                //$("<div style='margin-top:15px;margin-bottom:15px;display: inline-block; float: right;margin-right:3%'><div style='background-color: #73c9db; width: 25px; border: 1px solid #000000; height: 12px; margin-left: 100px; display: inline-block'></div><span id='budget' style='font-weight:bold;'> : Budget</span><div style = 'background-color: #98FB98; width: 25px; border: 1px solid #000000; height:12px; margin-left: 30px; display:inline-block' ></div > <span id='actual' style='font-weight:bold;'> : Actual</span><div style='background-color: #FFDAB9; width: 25px; border: 1px solid #000000; height:12px; margin-left: 30px; display:inline-block'></div> <span id='forecast' style='font-weight:bold;'> : Forecast</span></div>").insertBefore($("#cost-gantt"));  //Manasi 01-04-2021 Legend Budget Actual Forecast
+                //Nivedita 17-01-2022
+                $("<div style='margin-top:15px;margin-bottom:15px;display: inline-block; float: right;margin-right:0'><div style='background-color: #097392; width: 25px; border: 1px solid #000000; height: 12px; margin-left: 40px; display: inline-block'></div><span id='budget' style='font-weight:bold;'> : Budget</span><div style = 'background-color: #83B4B3; width: 25px; border: 1px solid #000000; height:12px; margin-left: 30px; display:inline-block' ></div > <span id='actual' style='font-weight:bold;'> : Actual</span><div style='background-color: #FFF0CE; width: 25px; border: 1px solid #000000; height:12px; margin-left: 30px; display:inline-block'></div> <span id='forecast' style='font-weight:bold;'> : Forecast</span></div>").insertBefore($("#cost-gantt"));  //Manasi 01-04-2021 Legend Budget Actual Forecast
                 //$('div:contains("Category"):not(:has(div))').css('margin-left', '2%');
                 //$("div[style='width: 313px;']").css('margin-left', '2%');
             }, 100);
@@ -320,12 +322,15 @@ angular.module('xenon.Gantt_Controller', []).
 
                 var authRole = $scope.localStorageSrevice.get('authorizationData').role;
                 var employeeID = $scope.localStorageSrevice.get('authorizationData').employeeID;
+                var userName = $scope.localStorageSrevice.get('authorizationData').userName;
+                var userRole = $scope.localStorageSrevice.get('authorizationData').role;
 
 
                 $http.get(serviceBasePath + 'Request/Project/null/null/' + delayedData[2].result[0].ProjectID).then(function (response) {
 
 
                     var projEleApproverDetails = response.data.result[0].ApproversDetails;
+                    var elementCreatedBy = response.data.result[0].CreatedBy;
                     var matrixId = 0;
 
                     ApprovalMatrix.get({}, function (approvalMatrixData) {
@@ -334,16 +339,26 @@ angular.module('xenon.Gantt_Controller', []).
 
                         for (var j = 0; j < matrixData.length; j++) {
 
-                            if (matrixData[j].Role == "Project Manager") {
-                                matrixId = matrixData[j].Id;
-                                break;
+
+
+                            if (matrixData[j].Role == "Project Manager" || matrixData[j].Role === "Element Manager") {
+                                if (matrixData[j].Role === userRole) {
+                                    matrixId = matrixData[j].Id;
+                                    break;
+                                }
                             }
 
+
+
+                        }
+                        $('#PurchaseOrderID').hide();
+                        if (userName === elementCreatedBy) {
+                            $('#PurchaseOrderID').show();
                         }
                         if (matrixId != 0) {
                             for (var i = 0; i < projEleApproverDetails.length; i++) {
-                                if (projEleApproverDetails[i].EmpId == employeeID
-                                    && projEleApproverDetails[i].ApproverMatrixId == matrixId) {
+                                if (userName === elementCreatedBy || (projEleApproverDetails[i].EmpId == employeeID
+                                    && projEleApproverDetails[i].ApproverMatrixId == matrixId)) {
                                     $('#PurchaseOrderID').show();
                                     break;
                                 } else {
@@ -470,6 +485,19 @@ angular.module('xenon.Gantt_Controller', []).
                             $('#ApprovalBtn').show();  // Swapnil 31-08-2020
                             $('#ResendApprovlLinkBtn').show();
                         }
+                        if (trend.Status == "Closed") {   //----Vaishnavi 30-03-2022----//
+                            $("#ExportToMPP").prop('disabled', true);
+                            $("#customCostOverhead").prop('disabled', true);
+                            $("#reportManagerBtn").prop('disabled', true);
+                            $("#ResendApprovlLinkBtn").prop('disabled', true);
+                            $("#spnApprovalBtn").prop('disabled', true);
+                            $("#saveCost").prop('disabled', true);
+                            $("#ApprovalBtn").prop('disabled', true);
+                            $("#submitForApproval").prop('disabled', true);
+                            
+                            
+
+                        } //----Vaishnavi 30-03-2022----//
                     } else if (trend.TrendStatusID == 4) {
                         //TrendStatus.setStatus(status + "Requested for approval");
                         TrendStatus.setStatus("Requested for approval");   //Manasi
@@ -481,6 +509,7 @@ angular.module('xenon.Gantt_Controller', []).
 
                     if ((trend.TrendCost == null || trend.TrendCost <= 0) && trend.TrendStatusID == 3) {  //luan here 
                         $("#submitForApproval").prop('disabled', false);    //luan here
+
                         $("#ApprovalBtn").hide();  // Swapnil 31-08-2020
                         //$("#approveBtn").hide();    //luan here
                         //$('#submitForApproval').html('Submit');  // Swapnil 31-08-2020
@@ -490,12 +519,23 @@ angular.module('xenon.Gantt_Controller', []).
                             $("#submitForApproval").prop('disabled', true);
                             $('#ApprovalBtn').show();
                             $('#ResendApprovlLinkBtn').show();
-                        }
+                        } 
+                        if (trend.Status == "Closed") {  //----Vaishnavi 30-03-2022----//
+                            $("#submitForApproval").prop('disabled', true);
+                        }  //----Vaishnavi 30-03-2022----//
                     }
 
                     // swapnil 02-10-2020
                     if (($scope.trend.TrendStatusID === 3 || $scope.trend.TrendStatusID === 1) && $scope.trend.approvedList_EmployeeID != "" && $scope.trend.approvedList_EmployeeID != null && $scope.trend.approvedList_EmployeeID != "0") {
                         $("#customCostOverhead").prop('disabled', true);
+                        if ($scope.trend.Status == "Closed") {   //----Vaishnavi 30-03-2022----//
+                            $("#ExportToMPP").prop('disabled', true);
+                            $("#reportManagerBtn").prop('disabled', true);
+                            $("#saveCost").prop('disabled', true);
+                            
+                            
+                        }
+                         //----Vaishnavi 30-03-2022----//
                     }
 
 
@@ -505,9 +545,22 @@ angular.module('xenon.Gantt_Controller', []).
 
                     if (auth.acl[13] == 1) {
                         $("#reportBtn").prop('disabled', false);
+                        if (trend.Status == "Closed") {   //----Vaishnavi 30-03-2022----//
+                            $("#ExportToMPP").prop('disabled', true);
+                            $("#PurchaseOrderID").prop('disabled', true);
+                            $("#reportManagerBtn").prop('disabled', true);
+                            $("#saveCost").prop('disabled', true);
+                            
+                        }  //----Vaishnavi 30-03-2022----//
                     }
                     else {
                         $("#reportBtn").prop('disabled', true);
+                        if (trend.Status == "Closed") {   //----Vaishnavi 30-03-2022----//
+                            $("#ExportToMPP").prop('disabled', true);
+                            $("#PurchaseOrderID").prop('disabled', true);
+                            $("#reportManagerBtn").prop('disabled', true);
+                            $("#saveCost").prop('disabled', true);
+                        } //----Vaishnavi 30-03-2022----//
                     }
 
                     //UserRole attribute ModifyProject
@@ -535,6 +588,12 @@ angular.module('xenon.Gantt_Controller', []).
                         $("#submitForApproval").prop('disabled', true);    //luan here
                         $("#ApprovalBtn").prop('disabled', true); // Swapnil 31-08-2020
                         $("#ApprovalBtn").hide(); // Swapnil 31-08-2020
+                        if (delayedData[8].result[0].Trend.Status == "Closed") {   //----Vaishnavi 30-03-2022----//
+                           
+                            $("#ExportToMPP").prop('disabled', true);
+                            $("#saveCost").prop('disabled', true);
+                            
+                        }   //----Vaishnavi 30-03-2022----//
                         //$("#approveBtn").hide();    //luan here
                     } else if (delayedData[3] == 3000) {//-----------Manasi 10-11-2020
                         Page.setTitle("Project Current");
@@ -548,6 +607,12 @@ angular.module('xenon.Gantt_Controller', []).
                         $("#ApprovalBtn").prop('disabled', true);
                         $("#ApprovalBtn").hide();
                         //$("#approveBtn").hide();    //luan here
+
+                        if (delayedData[2].result[0].Status == "Closed") {   //----Vaishnavi 30-03-2022----//
+                            $("#ExportToMPP").prop('disabled', true);
+                            $("#saveCost").prop('disabled', true);
+                            
+                        }  //----Vaishnavi 30-03-2022----//
                     }//---------------------------------------------------------
                     else {
                         Page.setTitle("Project Baseline");
@@ -560,7 +625,7 @@ angular.module('xenon.Gantt_Controller', []).
             var authData = getAuthorizationData();
             //--------------------Swapnil 18-09-2020-----------------------------------------------------
             MFAConfiguration.lookup().get(function (response) {
-                debugger
+                //////
                 //console.log(response);
                 mfaDetails = response.result;
 
@@ -928,7 +993,8 @@ angular.module('xenon.Gantt_Controller', []).
 
                                     // Jignesh-25-03-2021
                                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                    if (authRole === "Admin") {
+                                    //if (authRole === "Admin") {
+                                    if (authRole.indexOf('Admin') != -1) {
                                         //luan quest 3/26
                                         position["name"] = '----------Add New----------';
                                         position["value"] = 0;
@@ -1037,7 +1103,8 @@ angular.module('xenon.Gantt_Controller', []).
 
                                     // Jignesh-25-03-2021
                                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                    if (authRole === "Admin") {
+                                    //if (authRole === "Admin") {
+                                    if (authRole.indexOf('Admin') != -1) {
                                         //luan quest 3/26
                                         subcontractorType["name"] = '----------Add New----------';
                                         subcontractorType["value"] = 0;
@@ -1102,7 +1169,8 @@ angular.module('xenon.Gantt_Controller', []).
 
                                     // Jignesh-25-03-2021
                                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                    if (authRole === "Admin") {
+                                    //if (authRole === "Admin") {
+                                    if (authRole.indexOf('Admin') != -1) {
                                         //luan quest 3/26
                                         //luan quest 3/26
                                         materialCategory["name"] = '----------Add New----------';
@@ -1203,7 +1271,8 @@ angular.module('xenon.Gantt_Controller', []).
 
                                     // Jignesh-25-03-2021
                                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                    if (authRole === "Admin") {
+                                    //if (authRole === "Admin") {
+                                    if (authRole.indexOf('Admin') != -1) {
                                         //luan quest 3/26
                                         odcType["name"] = '----------Add New----------';
                                         odcType["value"] = 0;
@@ -1289,7 +1358,8 @@ angular.module('xenon.Gantt_Controller', []).
 
                                     // Jignesh-25-03-2021
                                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                    if (authRole === "Admin") {
+                                    //if (authRole === "Admin") {
+                                    if (authRole.indexOf('Admin') != -1) {
                                         //luan quest 3/26
                                         employee["name"] = '----------Add New----------';
                                         employee["value"] = 0;
@@ -1373,7 +1443,8 @@ angular.module('xenon.Gantt_Controller', []).
 
                                     // Jignesh-25-03-2021
                                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                    if (authRole === "Admin") {
+                                    //if (authRole === "Admin") {
+                                    if (authRole.indexOf('Admin') != -1) {
                                         //luan quest 3/26
                                         subcontractor["name"] = '----------Add New----------';
                                         subcontractor["value"] = 0;
@@ -1447,7 +1518,8 @@ angular.module('xenon.Gantt_Controller', []).
 
                                     // Jignesh-25-03-2021
                                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                    if (authRole === "Admin") {
+                                    //if (authRole === "Admin") {
+                                    if (authRole.indexOf('Admin') != -1) {
                                         //luan quest 3/26
                                         material["name"] = '----------Add New----------';
                                         material["value"] = 0;
@@ -1560,6 +1632,58 @@ angular.module('xenon.Gantt_Controller', []).
             //changedCost
             $scope.textBoxStyles = [];
             $scope.changedCost = function (id, i) {
+                // Nivedita - Check FTE should not greater than 1
+
+
+                var checkForFTE = false;
+                var strCostTrackType;
+                if ($scope.isBaseline == true) {
+                    checkForFTE = true;
+                }
+                else if (delayedData[3] == 1000) {
+                    strCostTrackType = $scope.CostTrackTypes[id][i];
+                    if (strCostTrackType == 4) {
+                        checkForFTE = true;
+                    }
+                }
+                else if (delayedData[3] == 1) {
+                    checkForFTE = true;
+                }
+
+                //if ($scope.method[id] === "F" && $scope.textBoxValues[id][i] > 1 && checkForFTE == true) {
+                //    //dhtmlx.alert('FTE value for labor can not be greater than 1');
+                //    var strCellId = "costCell" + id + i;
+                //    var strFlagId = "imgflag" + id;
+                //    $('#' + strCellId).css('color', 'red');
+                //    //$(this).css('color', 'red');
+                //    //var i = $(this);
+                //    //$scope.textBoxValues[id][i].css("color", "red");
+
+
+                //    //$('#' + strFlagId).removeAttr('style');
+                //    $('#' + strFlagId).css('display','inline');
+
+                //    //$scope.textBoxValues[id][i] = "0";
+                //    //return true;
+                //}
+                //else {
+                //    if ($scope.method[id] === "F" && $scope.textBoxValues[id][i] > 1) {
+                //        var strCellId = "costCell" + id + i;
+                //        var strFlagId = "imgflag" + id;
+                //        $('#' + strCellId).css('color', 'red');
+                //        $('#' + strFlagId).css('display', 'inline');
+                //    }
+                //    else {
+                //        var strCellId = "costCell" + id + i;
+                //        var strFlagId = "imgflag" + id;
+
+                //        $('#' + strCellId).css('color', 'black');
+
+                //        $('#' + strFlagId).css('display', 'none');
+                //    }
+
+                //}
+                //--------------- X --------------- X --------------- X --------------- X --------------- 
                 $scope.ChangeText = false;   //Manasi 04-09-2020
                 var rx = new RegExp(/^\d*\.?\d{0,8}$/);
                 if (rx.test($scope.textBoxValues[id][i].replace(/\s+/g, ''))) {  // Jignesh-05-04-2021
@@ -1597,6 +1721,33 @@ angular.module('xenon.Gantt_Controller', []).
                     }, 250);
 
                 }
+
+                var datatxt = $scope.textBoxValues[id];
+                if ($scope.method[id] === "F") {
+                    var isFTEvalueGreater = false;
+                    var strFlagId = "imgflag" + id;
+                    for (var i = 0; i < datatxt.length; i++) {
+                        var strCellId = "costCell" + id + i;
+                        if (datatxt[i] > 1) {
+                            isFTEvalueGreater = true;
+                            $('#' + strCellId).css('color', 'red');
+                            //strColorTxt = "color:red;";
+                        }
+                        else {
+                            $('#' + strCellId).css('color', 'black');
+                        }
+
+                    }//close for loop
+                    if (isFTEvalueGreater) {
+                        $('#' + strFlagId).css('display', 'inline');
+                    }
+                    else {
+                        $('#' + strFlagId).css('display', 'none');
+                    }
+                }
+
+
+
             };
 
             //initialize cost method - FTE, Lumpsum, and unit
@@ -2004,7 +2155,7 @@ angular.module('xenon.Gantt_Controller', []).
                     if (response.result) {
                         dhtmlx.alert(response.result);
                         if (!response.result.includes('TBD')) { // Swapnil 09-09-2020
-                            debugger
+                            ////
                             //approval progress bar
                             TrendId.get({
                                 "trendId": delayedData[3],
@@ -2023,9 +2174,10 @@ angular.module('xenon.Gantt_Controller', []).
                         }
                     }
                     $state.reload();
+                    var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
                 });
 
-				var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
+                var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
 
                 ////Hide fund allocation
                 //    } else {
@@ -2079,7 +2231,7 @@ angular.module('xenon.Gantt_Controller', []).
                         // Multi factor Authentication Working comment on 21 aug 2020 pritesh
                         //  alert(authData.userName);
                         //---------- Swapnil 18-09-2020 --------------------------------------------------------------------
-                        debugger
+                        ////
                         if (mfaDetails.IsMFAEnabled == "0") {
                             $('#ResendApprovlLinkBtn').show();
                             $('#ApprovalBtn').prop('disabled', true);
@@ -2225,8 +2377,9 @@ angular.module('xenon.Gantt_Controller', []).
                     }
 
                     $state.reload();
+                    var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
                 });
-				var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
+                var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
                 //var trendToBeRequestForApproval = {
                 //    "UserID": authData.userName,
                 //    "Role": authData.role,
@@ -2358,7 +2511,7 @@ angular.module('xenon.Gantt_Controller', []).
 
             //Save Cost
             $scope.saveCost = function () {
-                //debugger;
+                //////;
                 //console.log('here');
                 if (validateCostFields() == true) {
                     dhtmlx.alert({
@@ -2851,12 +3004,12 @@ angular.module('xenon.Gantt_Controller', []).
                 InsertCost.save(costListToSave, function (response) {
                     //console.log(response);
                     isCostSaving = false;
+                    $('#saveCost').prop('disabled', false);
                     if (response.result) {
                         dhtmlx.alert(response.result);
                     } else {
                         $scope.ChangeText = false;
                         dhtmlx.alert('All costs saved successfully!');
-                        $('#saveCost').prop('disabled', false);
                     }
                     //console.log('luan success');
                     //Update phase total and activity total
@@ -2961,7 +3114,7 @@ angular.module('xenon.Gantt_Controller', []).
 
                     refreshHtmlDelete();
                     //priteshs2
-
+                    
                 });
             }
 
@@ -3206,7 +3359,8 @@ angular.module('xenon.Gantt_Controller', []).
                     var temp = {};
                     // Jignesh-26-03-2021
                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                    if (authRole === "Admin") {
+                    //if (authRole === "Admin") {
+                    if (authRole.indexOf('Admin') != -1) {
                         temp.key = 'Add New';
                         temp.label = 'Add New';
                         $scope.MainCategory.push(temp);
@@ -3217,7 +3371,7 @@ angular.module('xenon.Gantt_Controller', []).
                     angular.forEach(MainCategory, function (value, key) {
                         var obj = {};
                         obj.key = value.CategoryDescription;
-                        obj.label = value.CategoryDescription;
+                        obj.label = value.CategoryID + ' - ' + value.CategoryDescription; //Jinesh-T-16/11/2021
                         $scope.MainCategory.push(obj);
                     });
 
@@ -3245,6 +3399,7 @@ angular.module('xenon.Gantt_Controller', []).
 
             //OnLightbox - get activity task (MainCategory-SubCategory) and display them as selection
             $scope.scheduleGanttInstance.attachEvent("onLightBox", function (id, task, is_new) {
+                ////
                 //console.log('luan test');
                 $scope.lightBoxTask = $scope.scheduleGanttInstance.getTask(id);
 
@@ -3345,7 +3500,7 @@ angular.module('xenon.Gantt_Controller', []).
                 //Main and Sub category must be selected
                 if (mainCategory == undefined || mainCategory == null || mainCategory == ''
                     || subCateogry == undefined || subCateogry == null || subCateogry == '') {
-                    dhtmlx.alert('Main and Sub categories cannot be empty');
+                    dhtmlx.alert('Category and Sub categories cannot be empty');
                     //dhtmlx.alert('Main and Sub tasks cannot be empty'); //Manasi
                     return;
                 }
@@ -3377,14 +3532,14 @@ angular.module('xenon.Gantt_Controller', []).
 
                 if (isTaskExist && (is_new == true)) {
                     //alertBox.showAlert("Task is already exist");
-                    dhtmlx.alert("Task already exists");
+                    dhtmlx.alert("Category already exists");
                     return false;
                 }
                 //Manasi 18-02-2021
                 else if (isTaskExist && (is_new == false)) {
                     if (isDateEdit == false) {
                         //alertBox.showAlert("Task is already exist");
-                        dhtmlx.alert("Task already exists");
+                        dhtmlx.alert("Category already exists");
                         return false;
                     }
                 }
@@ -3533,6 +3688,7 @@ angular.module('xenon.Gantt_Controller', []).
                     confirm_deleting: "The selected item will be deleted permanently, are you sure?",
                     main: "Main activity",
 
+                    //section_details:"WBS Category",
                     section_mainphase: "WBS Category",
                     section_subphase: "WBS Sub Category",
                     section_start_date: "Start Date",
@@ -3631,7 +3787,8 @@ angular.module('xenon.Gantt_Controller', []).
                         var temp = {};
                         // Jignesh-26-03-2021
                         var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        if (authRole === "Admin") {
+                        //if (authRole === "Admin") {
+                        if (authRole.indexOf('Admin') != -1) {
                             temp.key = 'Add New';
                             temp.label = 'Add New';
                             $scope.MainCategory.push(temp);
@@ -3641,7 +3798,7 @@ angular.module('xenon.Gantt_Controller', []).
                         angular.forEach(MainCategory, function (value, key) {
                             var obj = {};
                             obj.key = value.CategoryDescription;
-                            obj.label = value.CategoryDescription;
+                            obj.label = value.CategoryID + ' - ' + value.CategoryDescription; //Jignesh-T-16/11/2021 (Already created Tasks)
                             $scope.MainCategory.push(obj);
                         });
 
@@ -3681,7 +3838,8 @@ angular.module('xenon.Gantt_Controller', []).
                             var temp = {};
                             // Jignesh-26-03-2021
                             var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                            if (authRole === "Admin") {
+                            //if (authRole === "Admin") {
+                            if (authRole.indexOf('Admin') != -1) {
                                 temp.key = 'Add New';
                                 temp.label = 'Add New';
                                 $scope.subCategory.push(temp);
@@ -3691,7 +3849,7 @@ angular.module('xenon.Gantt_Controller', []).
                             for (var i = 0; i < subCategory.length; i++) {
                                 var obj = {};
                                 obj.key = subCategory[i].SubCategoryDescription;
-                                obj.label = subCategory[i].SubCategoryDescription;
+                                obj.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription; //Jignesh-T-16/11/2021
                                 $scope.subCategory.push(obj);
 
                             }
@@ -3724,7 +3882,8 @@ angular.module('xenon.Gantt_Controller', []).
 
                     // Jignesh-25-03-2021
                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                    if (authRole === "Admin") {
+                    //if (authRole === "Admin") {
+                    if (authRole.indexOf('Admin') != -1) {
                         //luan quest 3/26
                         position["name"] = '----------Add New----------';
                         position["value"] = 0;
@@ -3754,7 +3913,8 @@ angular.module('xenon.Gantt_Controller', []).
 
                 // Jignesh-25-03-2021
                 var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                if (authRole === "Admin") {
+                //if (authRole === "Admin") {
+                if (authRole.indexOf('Admin') != -1) {
                     temp["name"] = '----------Add New----------';
                     temp["value"] = 0;
                     $scope.materialCategories.push(temp);
@@ -3786,7 +3946,8 @@ angular.module('xenon.Gantt_Controller', []).
                 var temp = { name: '', value: '' };
                 // Jignesh-25-03-2021
                 var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                if (authRole === "Admin") {
+                //if (authRole === "Admin") {
+                if (authRole.indexOf('Admin') != -1) {
                     temp["name"] = '----------Add New----------';
                     temp["value"] = 0;
                     $scope.subcontractorTypes.push(temp);
@@ -3840,7 +4001,8 @@ angular.module('xenon.Gantt_Controller', []).
                 var temp = { name: '', value: '' };
                 // Jignesh-25-03-2021
                 var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                if (authRole === "Admin") {
+                //if (authRole === "Admin") {
+                if (authRole.indexOf('Admin') != -1) {
                     temp["name"] = '----------Add New----------';
                     temp["value"] = 0;
                     $scope.ODCTypes.push(temp);
@@ -4030,7 +4192,7 @@ angular.module('xenon.Gantt_Controller', []).
                                     $scope.costGanttInstance.config.start_date = $scope.scheduleGanttInstance.getState().min_date;
                                     $scope.costGanttInstance.config.end_date = $scope.scheduleGanttInstance.getState().max_date;
                                     $scope.costGanttInstance.parse($scope.costs, "json");
-                                   // $scope.costGanttInstance.render();
+                                    // $scope.costGanttInstance.render();
                                     //setTimeout(function () { refreshHtmlDelete(); }, 1000);
                                     return true;
                                 }
@@ -4063,7 +4225,7 @@ angular.module('xenon.Gantt_Controller', []).
                                 //console.log(CostData);
                                 //luan here 4/23
                                 var startTime = performance.now();
-                           
+
                                 $scope.CostData = CostData.CostRow;
 
                                 if ($scope.TrendNumber == "1000") {
@@ -5602,12 +5764,20 @@ angular.module('xenon.Gantt_Controller', []).
                                             }
                                         }
 
+                                        updatePhaseAndProjectDisplay();
+                                        updateTrendDate();
+                                        var aID = $scope.selectedActivity.id;
+                                        $scope.scheduleGanttInstance.callEvent('customSelect', [aID, 0, false]);
+                                        $scope.scheduleGanttInstance.selectTask($scope.selectedActivity.id);
+
                                         $timeout(function () {
                                             currentId = -1;
                                             // alert("Check");
-                                            $scope.scheduleGanttInstance.callEvent('customSelect', [$scope.selectedActivity.id, 0, false]);
-                                            $scope.scheduleGanttInstance.selectTask($scope.selectedActivity.id);
-                                            $scope.showSpinner12 = false;
+                                            updatePhaseAndProjectDisplay();
+                                            updateTrendDate();
+                                            $scope.scheduleGanttInstance.callEvent('customSelect', [aID, 0, false]);
+                                            $scope.scheduleGanttInstance.selectTask(aID);
+                                            //$scope.showSpinner12 = false;
                                         }, 1000);
 
                                     });
@@ -5616,7 +5786,7 @@ angular.module('xenon.Gantt_Controller', []).
                                         $scope.selectedCost = $scope.costGanttInstance.getTask($scope.selectedCostId);  //Manasi 11-03-2021
                                         updateBuffer($scope.selectedCost); // Jignesh-10-03-2021
                                     }
-                                    $scope.scheduleGanttInstance.callEvent('onTaskSelected', [selectedTask.id]);
+                                    //$scope.scheduleGanttInstance.callEvent('onTaskSelected', [selectedTask.id]);
 
                                     $timeout(function () {
                                         //getProjectDurationAndCost();
@@ -5627,6 +5797,11 @@ angular.module('xenon.Gantt_Controller', []).
                                         var amountInput = delayedData[2].result[0].Amount;
                                         $scope.amount = amountInput - $scope.allCostTotal;
                                         $scope.allEACTotal = $scope.selectedActivity.totalCostActualForecast; // Jignesh-03-05-2021
+                                        updatePhaseAndProjectDisplay();
+                                        updateTrendDate();
+                                        $scope.scheduleGanttInstance.callEvent('customSelect', [$scope.selectedActivity.id, 0, false]);
+                                        $scope.scheduleGanttInstance.selectTask($scope.selectedActivity.id);
+                                        $scope.showSpinner12 = false;
                                         //deactivateSpinner();
                                         $scope.direction = '';
                                     }, 1000);
@@ -5724,6 +5899,8 @@ angular.module('xenon.Gantt_Controller', []).
                         })
                     }
                 }
+                $scope.scheduleGanttInstance.callEvent('customSelect', [$scope.selectedActivity.id, 0, false]);
+                $scope.scheduleGanttInstance.selectTask($scope.selectedActivity.id);
                 if ($scope.isScaleChanged == true) {
                     $scope.isScaleChanged = false;
                 }
@@ -5913,14 +6090,18 @@ angular.module('xenon.Gantt_Controller', []).
                     var first = false;
                     $scope.scheduleGanttInstance.eachTask(function (task) {
                         if (!task.update_id && !first) {
-                            $scope.scheduleGanttInstance.selectTask($scope.first_task_id);
+                            //$scope.scheduleGanttInstance.selectTask($scope.first_task_id);
                             first = true;
 
                         }
                     });
                     $scope.screenLoad = false;
                 }
-            }, 2000);
+				$scope.scheduleGanttInstance.selectTask($scope.first_task_id);
+				var s = $scope.scheduleGanttInstance.callEvent("customClick", [$scope.first_task_id]);
+				//var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
+				//$scope.scheduleGanttInstance.selectTask($scope.first_task_id);
+            }, 1000);
 
             $scope.scheduleGanttInstance.attachEvent('onGanttRender', function () {
                 $('div.gantt_grid_head_cell.gantt_grid_head_add').css('opacity', '0');   //Manasi 10-08-2020
@@ -6335,7 +6516,7 @@ angular.module('xenon.Gantt_Controller', []).
             $scope.costGanttInstance.config.drag_progress = false;
             $scope.costGanttInstance.config.fit_tasks = false;
             $scope.costGanttInstance.config.scroll_on_click = false;
-            $scope.costGanttInstance.config.min_column_width = 120;
+            $scope.costGanttInstance.config.min_column_width = 75; // Jignesh-05-01-2021
             $scope.costGanttInstance.config.initial_scroll = false;
             $scope.costGanttInstance.config.drag_move = false;
             $scope.costGanttInstance.config.prevent_default_scroll = true;
@@ -6348,8 +6529,8 @@ angular.module('xenon.Gantt_Controller', []).
             $scope.costGanttInstance.config.show_task_cells = false;
             $scope.costGanttInstance.config.branch_loading = true;
             $scope.costGanttInstance.config.show_progress = false;
-           // $scope.costGanttInstance.config.smart_scales = true;
-           // $scope.costGanttInstance.config.static_background = true;  
+            // $scope.costGanttInstance.config.smart_scales = true;
+            // $scope.costGanttInstance.config.static_background = true;  
 
             //Cofig columns for Cost Chart
             if (isCurrentTrend) {
@@ -6358,10 +6539,50 @@ angular.module('xenon.Gantt_Controller', []).
                 if (auth.role == "Executive Manager") {
                     $scope.costGanttInstance.config.columns = [
                         { name: "delete", label: "", width: 30, align: "center" },
+                        //{
+                        //    name: "flag", label: "", width: 30, align: "center", resize: true, template: function (obj) {
+                        //        if (obj.cost_type == 'F') {
+                        //            return 'Yes';
+                        //        }
+                        //        else {
+                        //            return 'No';
+                        //        }
+                        //    }
+                        //},
                         //{ name: "costLineItemIdNew", label: "#", width: 200, align: "left", resize: true }, 
                         //{ name: "newCostLineItemId", label: "#", width: 200, align: "left", resize: true },
                         // Swapnil 30/11/2020
-                        { name: "newCostLineItemId", label: "#", width: 40, align: "left", resize: true },
+                        {
+                            name: "newCostLineItemId", label: "#", width: 60, align: "left", resize: true, template: function (obj) {
+                                //;
+                                var data = $scope.CostData;
+                                var filters = [{ CostLineItemID: obj.CostLineItemID }, { CostID: obj.cost_id }];
+                                var CurCostData = data.filter(s => filters.every(t => {
+                                    var key = Object.keys(t)[0];
+                                    return s[key] == t[key]
+                                }));
+
+                                if (obj.cost_type == 'F') {
+                                    var isExtraHours = false;
+                                    var TextBoxArr = CurCostData[0].TextBoxValue.split(',');
+                                    for (var i = 0; i < TextBoxArr.length; i++) {
+                                        if (TextBoxArr[i] > 1) {
+                                            isExtraHours = true;
+                                        }
+                                    }
+                                    if (isExtraHours) {
+                                        return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" width="18px" />' + ' ' + obj.newCostLineItemId;
+                                    }
+                                    else {
+                                        return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" style="display:none" width="18px"  />' + obj.newCostLineItemId;
+                                    }
+
+                                }
+                                else {
+                                    return obj.newCostLineItemId;
+                                }
+                            }
+                        },
                         { name: "cost_track_type", label: "", width: 40, hide: false, align: "center" },  //Manasi 09-03-2021 change width to 40 from 30
                         { name: "text", label: " Cost Type", width: 140, tree: false, align: "left", resize: true },
                         { name: "description", label: "Cost Type Category", width: 220, align: "left", resize: true },  //Replace "Type with category"  Manasi 24-07-2020
@@ -6369,7 +6590,16 @@ angular.module('xenon.Gantt_Controller', []).
                         { name: "unit_type", label: "Unit Type", width: 100, align: "left", resize: true },  //align: "center" Manasi
                         //{ name: "unit_cost", label: "Unit Cost", width: 100, align: "right", resize: true }, //align: "center" Manasi
                         //{ name: "unit_budget", label: "Unit Budget", width: 100, align: "right", resize: true }, // align: "center" Manasi
-                        { name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true }, // align: "center" Manasi
+                        {
+                            name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true, template: function (obj) {     //Manasi 16-07-2020
+                                if (obj.text.indexOf('Subcontractor') >= 0 || obj.text.indexOf('ODC') >= 0)
+                                    return 'N/A';
+                                else
+                                    return obj.unit_budget != "" ? $filter('currency')(obj.unit_budget, '$', 2) : obj.unit_budget;  // Pritesh 25Jul2020 to make it consistent
+                            }
+
+
+                        }, // align: "center" Manasi
                         {
                             //name: "total_units", label: "# Of Units", width: 100, align: "center", resize: true, template: function (obj) {
                             name: "total_units", label: "# Of Units", width: 100, align: "right", resize: true, template: function (obj) {
@@ -6431,18 +6661,65 @@ angular.module('xenon.Gantt_Controller', []).
                 } else {
                     $scope.costGanttInstance.config.columns = [
                         { name: "delete", label: "", width: 30, align: "center" },
+                        //{
+                        //    name: "flag", label: "", width: 30, align: "center", resize: true, template: function (obj) {
+                        //        if (obj.cost_type == 'F') {
+                        //            return 'Yes';
+                        //        }
+                        //        else {
+                        //            return 'No';
+                        //        }
+                        //    }
+                        //},
                         //{ name: "costLineItemIdNew", label: "#", width: 200, align: "left", resize: true }, 
                         //{ name: "newCostLineItemId", label: "#", width: 200, align: "left", resize: true },
                         // Swapnil 30/11/2020
-                        { name: "newCostLineItemId", label: "#", width: 40, align: "left", resize: true },
+                        {
+                            name: "newCostLineItemId", label: "#", width: 60, align: "left", resize: true, template: function (obj) {
+                                //;
+                                var data = $scope.CostData;
+                                var filters = [{ CostLineItemID: obj.CostLineItemID }, { CostID: obj.cost_id }];
+                                var CurCostData = data.filter(s => filters.every(t => {
+                                    var key = Object.keys(t)[0];
+                                    return s[key] == t[key]
+                                }));
+
+                                if (obj.cost_type == 'F') {
+                                    var isExtraHours = false;
+                                    var TextBoxArr = CurCostData[0].TextBoxValue.split(',');
+                                    for (var i = 0; i < TextBoxArr.length; i++) {
+                                        if (TextBoxArr[i] > 1) {
+                                            isExtraHours = true;
+                                        }
+                                    }
+                                    if (isExtraHours) {
+                                        return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" width="18px" />' + ' ' + obj.newCostLineItemId;
+                                    }
+                                    else {
+                                        return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" style="display:none" width="18px"  />' + ' ' + obj.newCostLineItemId;
+                                    }
+
+                                }
+                                else {
+                                    return obj.newCostLineItemId;
+                                }
+                            }
+                        },
                         { name: "cost_track_type", label: "", width: 40, hide: false, align: "center" },   //Manasi 09-03-2021 change width to 40 from 30
                         { name: "text", label: " Cost Type", width: 140, tree: false, align: "left", resize: true },
                         { name: "description", label: "Cost Type Category", width: 220, align: "left", resize: true },  //Replace "Type with category"  Manasi 24-07-2020
                         { name: "employee_id", label: "Name", width: 210, align: "left", resize: true }, //align: "center" Manasi
-                        { name: "unit_type", label: "Unit Type", width: 100, align: "left", resize: true },  //align: "center" Manasi
+                        { name: "unit_type", label: "Unit Type", width: 70, align: "left", resize: true },  //align: "center" Manasi
                         //{ name: "unit_cost", label: "Unit Cost", width: 100, align: "right", resize: true }, //align: "center" Manasi
                         //{ name: "unit_budget", label: "Unit Budget", width: 100, align: "right", resize: true }, // align: "center" Manasi
-                        { name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true }, // align: "center" Manasi
+                        {
+                            name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true, template: function (obj) {     //Manasi 16-07-2020
+                                if (obj.text.indexOf('Subcontractor') >= 0 || obj.text.indexOf('ODC') >= 0)
+                                    return 'N/A';
+                                else
+                                    return obj.unit_budget != "" ? $filter('currency')(obj.unit_budget, '$', 2) : obj.unit_budget;
+                            }
+                        }, // align: "center" Manasi
                         {
                             //name: "total_units", label: "# Of Units", width: 100, align: "center", resize: true, template: function (obj) {
                             name: "total_units", label: "# Of Units", width: 100, align: "right", resize: true, template: function (obj) {
@@ -6465,21 +6742,21 @@ angular.module('xenon.Gantt_Controller', []).
                         },
                         //-------------------Manasi 16-07-2020-----------------------------------------
                         {
-                            name: "total_budget", label: "Budget", width: 150, align: "right", resize: true, template: function (obj) {   //Manasi 08-03-2021 Change width from 100 to 120
+                            name: "total_budget", label: "Budget", width: 140, align: "right", resize: true, template: function (obj) {   //Manasi 08-03-2021 Change width from 100 to 120
                                 if (obj.total_budget === "") {
                                     return '';
                                 }
 
                                 //return $filter('currency')(obj.total_budget, '$', formatCurrency(obj.total_budget)); // Pritesh Commented added below to make consistent in Current view on 25jul2020
-                                return $filter('currency')(obj.total_budget, '$', 2);
+                                return $filter('currency')(obj.total_budget, '$', 0);
                             }
                         },
                         {
-                            name: "total_cost", label: "EAC", width: 150, align: "right", resize: true, template: function (obj) {     //Manasi 16-07-2020
+                            name: "total_cost", label: "EAC", width: 140, align: "right", resize: true, template: function (obj) {     //Manasi 16-07-2020
                                 if (obj.total_cost === "") {
                                     return '';
                                 }
-                                return $filter('currency')(obj.total_cost, '$', 2);  // Pritesh 25Jul2020 to make it consistent
+                                return $filter('currency')(obj.total_cost, '$', 0);  // Pritesh 25Jul2020 to make it consistent
                             }
                         }
                     ];
@@ -6493,18 +6770,65 @@ angular.module('xenon.Gantt_Controller', []).
                 if (auth.role == "Executive Manager") {
                     $scope.costGanttInstance.config.columns = [
                         { name: "delete", label: "", width: 30, align: "center" },
+                        //{
+                        //    name: "flag", label: "", width: 30, align: "center", resize: true, template: function (obj) {
+                        //        if (obj.cost_type == 'F') {
+                        //            return 'Yes';
+                        //        }
+                        //        else {
+                        //            return 'No';
+                        //        }
+                        //    }
+                        //},
                         //{ name: "costLineItemIdNew", label: "#", width: 200, align: "left", resize: true }, 
                         //{ name: "newCostLineItemId", label: "#", width: 200, align: "left", resize: true },
                         // Swapnil 30/11/2020
-                        { name: "newCostLineItemId", label: "#", width: 40, align: "left", resize: true },
+                        {
+                            name: "newCostLineItemId", label: "#", width: 60, align: "left", resize: true, template: function (obj) {
+                                //;
+                                var data = $scope.CostData;
+                                var filters = [{ CostLineItemID: obj.CostLineItemID }, { CostID: obj.cost_id }];
+                                var CurCostData = data.filter(s => filters.every(t => {
+                                    var key = Object.keys(t)[0];
+                                    return s[key] == t[key]
+                                }));
+
+                                if (obj.cost_type == 'F') {
+                                    var isExtraHours = false;
+                                    var TextBoxArr = CurCostData[0].TextBoxValue.split(',');
+                                    for (var i = 0; i < TextBoxArr.length; i++) {
+                                        if (TextBoxArr[i] > 1) {
+                                            isExtraHours = true;
+                                        }
+                                    }
+                                    if (isExtraHours) {
+                                        return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" width="18px" />' + ' ' + obj.newCostLineItemId;
+                                    }
+                                    else {
+                                        return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" style="display:none" width="18px"  />' + obj.newCostLineItemId;
+                                    }
+
+                                }
+                                else {
+                                    return obj.newCostLineItemId;
+                                }
+                            }
+                        },
                         //{ name: "cost_track_type", label: "", width: 30, hide: false, align: "center" },
                         { name: "text", label: " Cost Type", width: 140, tree: false, align: "left", resize: true },
                         { name: "description", label: "Cost Type Category", width: 220, align: "left", resize: true },  //Replace "Type with category"  Manasi 24-07-2020
                         { name: "employee_id", label: "Name", width: 220, align: "left", resize: true }, //align: "center" Manasi
-                        { name: "unit_type", label: "Unit Type", width: 100, align: "left", resize: true },  //align: "center" Manasi
+                        { name: "unit_type", label: "Unit Type", width: 70, align: "left", resize: true },  //align: "center" Manasi
                         //{ name: "unit_cost", label: "Unit Cost", width: 100, align: "right", resize: true }, //align: "center" Manasi
                         //{ name: "unit_budget", label: "Unit Budget", width: 100, align: "right", resize: true }, // align: "center" Manasi
-                        { name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true }, // align: "center" Manasi
+                        {
+                            name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true, template: function (obj) {     //Manasi 16-07-2020
+                                if (obj.text.indexOf('Subcontractor') >= 0 || obj.text.indexOf('ODC') >= 0)
+                                    return 'N/A';
+                                else
+                                    return obj.unit_budget != "" ? $filter('currency')(obj.unit_budget, '$', 2) : obj.unit_budget;
+                            }
+                        }, // align: "center" Manasi
                         {
                             //name: "total_units", label: "# Of Units", width: 100, align: "center", resize: true, template: function (obj) {
                             name: "total_units", label: "# Of Units", width: 100, align: "right", resize: true, template: function (obj) {
@@ -6567,18 +6891,65 @@ angular.module('xenon.Gantt_Controller', []).
                 else {
                     $scope.costGanttInstance.config.columns = [
                         { name: "delete", label: "", width: 30, align: "center" },
+                        //{
+                        //    name: "flag", label: "", width: 30, align: "center", resize: true, template: function (obj) {
+                        //        if (obj.cost_type == 'F') {
+                        //            return 'Yes';
+                        //        }
+                        //        else {
+                        //            return 'No';
+                        //        }
+                        //    }
+                        //},
                         //{ name: "costLineItemIdNew", label: "#", width: 200, align: "left", resize: true }, 
                         //{ name: "newCostLineItemId", label: "#", width: 200, align: "left", resize: true },
                         // Swapnil 30/11/2020
-                        { name: "newCostLineItemId", label: "#", width: 40, align: "left", resize: true },
+                        {
+                            name: "newCostLineItemId", label: "#", width: 60, align: "left", resize: true, template: function (obj) {
+                                //;
+                                var data = $scope.CostData;
+                                var filters = [{ CostLineItemID: obj.CostLineItemID }, { CostID: obj.cost_id }];
+                                var CurCostData = data.filter(s => filters.every(t => {
+                                    var key = Object.keys(t)[0];
+                                    return s[key] == t[key]
+                                }));
+
+                                if (obj.cost_type == 'F') {
+                                    var isExtraHours = false;
+                                    var TextBoxArr = CurCostData[0].TextBoxValue.split(',');
+                                    for (var i = 0; i < TextBoxArr.length; i++) {
+                                        if (TextBoxArr[i] > 1) {
+                                            isExtraHours = true;
+                                        }
+                                    }
+                                    if (isExtraHours) {
+                                        return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" width="18px" />' + ' ' + obj.newCostLineItemId;
+                                    }
+                                    else {
+                                        return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" style="display:none" width="18px"  />' + obj.newCostLineItemId;
+                                    }
+
+                                }
+                                else {
+                                    return obj.newCostLineItemId;
+                                }
+                            }
+                        },
                         //{ name: "cost_track_type", label: "", width: 30, hide: false, align: "center" },
                         { name: "text", label: " Cost Type", width: 140, tree: false, align: "left", resize: true },
                         { name: "description", label: "Cost Type Category", width: 200, align: "left", resize: true },  //Replace "Type with category"  Manasi 24-07-2020
                         { name: "employee_id", label: "Name", width: 210, align: "left", resize: true }, //align: "center" Manasi
-                        { name: "unit_type", label: "Unit Type", width: 100, align: "left", resize: true },  //align: "center" Manasi
+                        { name: "unit_type", label: "Unit Type", width: 70, align: "left", resize: true },  //align: "center" Manasi
                         //{ name: "unit_cost", label: "Unit Cost", width: 100, align: "right", resize: true }, //align: "center" Manasi
                         //{ name: "unit_budget", label: "Unit Budget", width: 100, align: "right", resize: true }, // align: "center" Manasi
-                        { name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true }, // align: "center" Manasi
+                        {
+                            name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true, template: function (obj) {     //Manasi 16-07-2020
+                                if (obj.text.indexOf('Subcontractor') >= 0 || obj.text.indexOf('ODC') >= 0)
+                                    return 'N/A';
+                                else
+                                    return obj.unit_budget != "" ? $filter('currency')(obj.unit_budget, '$', 2) : obj.unit_budget;
+                            }
+                        }, // align: "center" Manasi
                         {
                             //name: "total_units", label: "# Of Units", width: 100, align: "center", resize: true, template: function (obj) {
                             name: "total_units", label: "# Of Units", width: 100, align: "right", resize: true, template: function (obj) {
@@ -6607,7 +6978,7 @@ angular.module('xenon.Gantt_Controller', []).
                                 }
 
                                 //return $filter('currency')(obj.total_budget, '$', formatCurrency(obj.total_budget)); // Pritesh Commented added below to make consistent in Current view on 25jul2020
-                                return $filter('currency')(obj.total_budget, '$', 2);
+                                return $filter('currency')(obj.total_budget, '$', 0);
                             }
                         },
                         //{
@@ -6642,21 +7013,68 @@ angular.module('xenon.Gantt_Controller', []).
             } else {
                 $scope.costGanttInstance.config.columns = [
                     { name: "delete", label: "", width: 30, align: "center" },
+                    //{
+                    //    name: "flag", label: "", width: 30, align: "center", resize: true, template: function (obj) {
+                    //        if (obj.cost_type == 'F') {
+                    //            return 'Yes';
+                    //        }
+                    //        else {
+                    //            return 'No';
+                    //        }
+                    //    }
+                    //},
                     //{ name: "costLineItemIdNew", label: "#", width: 200, align: "left", resize: true },
                     //{ name: "newCostLineItemId", label: "#", width: 200, align: "left", resize: true },
                     // Swapnil 30/11/2020
-                    { name: "newCostLineItemId", label: "#", width: 40, align: "left", resize: true },
+                    {
+                        name: "newCostLineItemId", label: "#", width: 60, align: "right", resize: true, template: function (obj) {
+                            //;
+                            var data = $scope.CostData;
+                            var filters = [{ CostLineItemID: obj.CostLineItemID }, { CostID: obj.cost_id }];
+                            var CurCostData = data.filter(s => filters.every(t => {
+                                var key = Object.keys(t)[0];
+                                return s[key] == t[key]
+                            }));
+
+                            if (obj.cost_type == 'F') {
+                                var isExtraHours = false;
+                                var TextBoxArr = CurCostData[0].TextBoxValue.split(',');
+                                for (var i = 0; i < TextBoxArr.length; i++) {
+                                    if (TextBoxArr[i] > 1) {
+                                        isExtraHours = true;
+                                    }
+                                }
+                                if (isExtraHours) {
+                                    return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" width="18px" />' + ' ' + obj.newCostLineItemId;
+                                }
+                                else {
+                                    return '<img id=imgflag' + obj.id + ' src="assets/images/flags/Flag-red.png" style="display:none" width="18px"  />' + obj.newCostLineItemId;
+                                }
+
+                            }
+                            else {
+                                return obj.newCostLineItemId;
+                            }
+                        }
+                    },
                     { name: "ABCD", label: "", width: 30, hide: true },
                     { name: "text", label: " Cost Type", width: 140, tree: false, align: "left", resize: true },
                     { name: "description", label: "Cost Type Category", width: 220, align: "left", resize: true },    //Replace "Type with category"  Manasi 24-07-2020
                     { name: "employee_id", label: "Name", width: 185, align: "left", resize: true },  //align: "center" Manasi
-                    { name: "unit_type", label: "Unit Type", width: 100, align: "left", resize: true },  //align: "center"  Manasi
+                    { name: "unit_type", label: "Unit Type", width: 70, align: "left", resize: true },  //align: "center"  Manasi
                     //{ name: "unit_cost", label: "Unit Cost", width: 100, align: "right", resize: true }, //align: "center" Manasi
                     //{ name: "unit_budget", label: "Unit Budget", width: 100, align: "right", resize: true }, //align: "center" Manasi
-                    { name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true }, //align: "center" Manasi
+                    {
+                        name: "unit_budget", label: "Unit Cost", width: 100, align: "right", resize: true, template: function (obj) {     //Manasi 16-07-2020
+                            if (obj.text.indexOf('Subcontractor') >= 0 || obj.text.indexOf('ODC') >= 0)
+                                return 'N/A';
+                            else
+                                return obj.unit_budget != "" ? $filter('currency')(obj.unit_budget, '$', 2) : obj.unit_budget;
+                        }
+                    }, //align: "center" Manasi
                     {
                         //name: "total_units", label: "# Of Units", width: 100, align: "center", resize: true, template: function (obj) {
-                        name: "total_units", label: "# Of Units", width: 100, align: "right", resize: true, template: function (obj) { //Manasi
+                        name: "total_units", label: "# Of Units", width: 70, align: "right", resize: true, template: function (obj) { //Manasi
                             if (obj.text.indexOf("Material") >= 0 || obj.text.indexOf("Labor") >= 0) {
                                 //console.log(obj.total_units);
                                 return roundToTwo(Number(obj.total_units));
@@ -6690,7 +7108,7 @@ angular.module('xenon.Gantt_Controller', []).
                                 return '';
                             }
                             // return $filter('currency')(obj.total_budget, '$', formatCurrency(obj.total_budget));  Pritesh Commented on 25Jul2020 as to keept the format consistent
-                            return $filter('currency')(obj.total_budget, '$', 2);
+                            return $filter('currency')(obj.total_budget, '$', 0);
                         }
                     }
 
@@ -6736,7 +7154,8 @@ angular.module('xenon.Gantt_Controller', []).
                 if (isCurrentTrend)
                     bbb = cells.get(1);
                 //activate tooltip on first mouseover
-
+                //Nivedita 21-01-2022
+                //cells[1].ariaLabel = "";
                 $(bbb).on('mouseover', function () {
                     $(this).addClass('hover');
                     if ($scope.trend.TrendNumber == "1000") {
@@ -6943,7 +7362,7 @@ angular.module('xenon.Gantt_Controller', []).
                 else if ($scope.scheduleScale === "year")
                     numberOfBoxes = moment(e).format('YYYY') - moment(s).format('YYYY') + 1;
                 var widthOfTextBox = sizes.width / numberOfBoxes;
-                return renderCostBoxes(widthOfTextBox, numberOfBoxes, task.id);
+                return renderCostBoxes(widthOfTextBox, numberOfBoxes, task.id, task.cost_type);
             };
 
             $scope.costGanttInstance.attachEvent("onBeforeTaskDisplay", function (id, task) {
@@ -7058,8 +7477,8 @@ angular.module('xenon.Gantt_Controller', []).
                                         day = '0' + day;
 
                                     var FormateLoop = [year, month, day].join('-');
-
-                                    StartDateOfEachWeek.push(FormateLoop);
+                                    var formatedDateSW = (moment(FormateLoop).isoWeekday() === 1) ? FormateLoop : moment(FormateLoop).startOf('isoWeek').format(sqlDateFormat);
+                                    StartDateOfEachWeek.push(formatedDateSW);
                                     var newDate = loop.setDate(loop.getDate() + 7);
                                     loop = new Date(newDate);
                                 }
@@ -7104,6 +7523,12 @@ angular.module('xenon.Gantt_Controller', []).
                                             TxtValCountWhenIndividualStartISNull++;
                                         }
                                         else {
+                                            //if ($scope.textBoxValues[task.id].length != 0) {
+                                            //    TextBoxValuesArray.push($scope.textBoxValues[task.id][i]);
+                                            //}
+                                            //else {
+                                            //    TextBoxValuesArray.push('0.00');
+                                            //}
                                             TextBoxValuesArray.push('0.00');
                                         }
                                         //  TextBoxValuesArray.push('0');                                  
@@ -7536,7 +7961,8 @@ angular.module('xenon.Gantt_Controller', []).
 
             });
             ////////------------------------ Pritesh New Logic  End added on 2 Jul 2020------------------------------------------
-            var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
+            //var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
+			//var s = $scope.scheduleGanttInstance.callEvent("customClick", [$scope.first_task_id]);
 
             /////// -------------------Pritesh commented old logic on 2 july 2020 only kept for reference if it get affected anywhere ------------------------
             //$scope.costGanttInstance.attachEvent("onGanttRender", function () {
@@ -8593,7 +9019,7 @@ angular.module('xenon.Gantt_Controller', []).
                     currentId = -1;
                 }
                 else {
-                    debugger
+                    ////
                     $scope.isCostEdited[id] = true;
                     for (var i = 0; i < $scope.TotalCostBox; i++) {
 
@@ -8649,7 +9075,7 @@ angular.module('xenon.Gantt_Controller', []).
                     //    item.end_date = moment(item.end_date).format(dateFormat);
                     //})
                     $scope.costGanttInstance.parse({ data: $scope.costs.data, links: [] });
-                   // $scope.costGanttInstance.render();
+                    // $scope.costGanttInstance.render();
                     //setTimeout(function () { refreshHtmlDelete(); }, 1000);
                     //$scope.allCostTotal = $scope.selectedActivity.totalCost;
                     $scope.allCostTotal = $scope.selectedActivity.totalBudget;      //Manasi 15-07-2020
@@ -8722,7 +9148,7 @@ angular.module('xenon.Gantt_Controller', []).
                                     //    item.end_date = moment(item.end_date).format(dateFormat);
                                     //})
                                     $scope.costGanttInstance.parse({ data: $scope.costs.data, links: [] });
-                                   // $scope.costGanttInstance.render();
+                                    // $scope.costGanttInstance.render();
                                     //setTimeout(function () { refreshHtmlDelete(); }, 1000);
                                     //getProjectDurationAndCost();
                                     updateTrendValue($scope.selectedActivity.id); //update Trend value
@@ -8801,12 +9227,12 @@ angular.module('xenon.Gantt_Controller', []).
                                         //$scope.scheduleGanttInstance.selectTask($scope.selectedActivity.id);
                                         //$scope.showSpinner12 = false;
 
-                                      //  $timeout(function () {
-                                            currentId = -1;
-                                             alert("Check");
-                                            $scope.scheduleGanttInstance.callEvent('customSelect', [aID, 0, false]);  //Manasi 01-03-2021
-                                            $scope.scheduleGanttInstance.selectTask($scope.selectedActivity.id);
-                                            $scope.showSpinner12 = false;
+                                        //  $timeout(function () {
+                                        currentId = -1;
+                                        //alert("Check");
+                                        $scope.scheduleGanttInstance.callEvent('customSelect', [aID, 0, false]);  //Manasi 01-03-2021
+                                        $scope.scheduleGanttInstance.selectTask($scope.selectedActivity.id);
+                                        $scope.showSpinner12 = false;
                                         //}, 100);
 
                                     });
@@ -9004,7 +9430,7 @@ angular.module('xenon.Gantt_Controller', []).
             //customClick - BEGIN
             $scope.costGanttInstance.attachEvent("customClick", function (id) {
                 // id = id + 1;
-                debugger
+                ////
                 $scope.newEmployees[id] = [];
                 $scope.newSubcontractors[id] = [];
                 $scope.newMaterials[id] = [];
@@ -9645,8 +10071,9 @@ angular.module('xenon.Gantt_Controller', []).
 
             //-----------------Manasi 11-02-2021------------------------------------------------
             onRouteChangeOff = $scope.$on('$locationChangeStart', function (event) {
-                debugger
+                ////
                 //console.log('we in there');
+
                 var newUrl = $location.path();
                 var isCostEdited = isCostsEdited();
                 var res;
@@ -9700,6 +10127,7 @@ angular.module('xenon.Gantt_Controller', []).
 
                     }
                 }
+
                 if (res) {
                     //$scope.saveCost();
                     event.preventDefault();
@@ -9756,11 +10184,12 @@ angular.module('xenon.Gantt_Controller', []).
                 }
                 else {
                     //onRouteChangeOff();
-                    if (scope.params.confirm === "back") {
-                        //do nothing;
-                    }
-                    else
-                        $location.path(newUrl);
+                    /* Nivedita 24/11/2021
+                     if (scope.params.confirm === "back") {
+                    //    //do nothing;
+                    //}
+                    //else*/
+                    $location.path(newUrl);
                     return;
                     //dhtmlx.alert("Please add cost details.")
                 }
@@ -9965,7 +10394,7 @@ angular.module('xenon.Gantt_Controller', []).
                         byteArray = new Uint8Array(byteNumbers);
 
                         saveByteArray(byteArray, d.data.fileName);
-                        // debugger;
+                        // ////;
                         $('#ExportToMPP').prop('disabled', false);
                         document.getElementById("loading").style.display = "none";
                         dhtmlx.alert("File generated successfully"); // Jignesh-02-03-2021
@@ -9978,14 +10407,15 @@ angular.module('xenon.Gantt_Controller', []).
                     $http.get(serviceBasePath + 'Request/Delete?fileName=' + fileName)
                         .then(function success(d) {
                             // alert(d.data.result);
-                            //debugger;
+                            //////;
 
                             dhtmlx.alert(d.data.result);
 
                         });
                 }, function error(d) {
                     //dhtmlx.alert(d.ExceptionMessage);
-                    dhtmlx.alert("File generation failed. Please try again.")
+                    //dhtmlx.alert("File generation failed. Please try again.")
+                    dhtmlx.alert("Failed to generate MPP file.Please contact your Administrator")
                 }).finally(function () {
                     $('#ExportToMPP').prop('disabled', false);
                     document.getElementById("loading").style.display = "none";
@@ -10103,7 +10533,7 @@ angular.module('xenon.Gantt_Controller', []).
                 return buf;
             }
 
-            function renderCostBoxes(widthOfTextBox, numberOfBoxes, id) {
+            function renderCostBoxes(widthOfTextBox, numberOfBoxes, id, costType) {
                 //console.log(numberOfBoxes);
                 $scope.numberOfBoxes[id] = numberOfBoxes;
 
@@ -10122,31 +10552,38 @@ angular.module('xenon.Gantt_Controller', []).
                         s = parseInt(s) + parseInt(id.toString() + '000'); // Jignesh-06-05-2021
 
                         if ($scope.CostTrackTypes[id] && $scope.CostTrackTypes[id][i] == $scope.costTrackType.ACTUAL) { //ACTUAL COST
-
-                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#98FB98;' />"
+                            //Nivedita 17-01-2022
+                            costBoxes += "<input id=" + 'costCell' + id + '' + i + " onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#83B4B3;' />"
                         } else if ($scope.CostTrackTypes[id] && $scope.CostTrackTypes[id][i] == $scope.costTrackType.ESTIMATE_TO_COMPLETION) {
-                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#FFDAB9;' />"
+                            costBoxes += "<input id=" + 'costCell' + id + '' + i + " onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#FFF0CE;' />" //Nivedita 17-01-2022
                         }
                         else {
-                            costBoxes += "<input onClick='this.select();'  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;' />"
+                            costBoxes += "<input id=" + 'costCell' + id + '' + i + " onClick='this.select();'  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;' />"
                         }
                     }
                 }
                 else {
                     var datatxt = $scope.textBoxValues;
                     for (var i = 0; i < numberOfBoxes; i++) {
+                        var strColorTxt = '';
+                        if (costType == 'F') {
+                            if (datatxt[id][i] > 1) {
+                                strColorTxt = "color:red;";
+                            }
+                        }
+
                         var s = i.toString(); // Jignesh-06-05-2021  id.toString() + '0' + i.toString();
                         //s = parseInt(s) + 5;
                         s = parseInt(s) + parseInt(id.toString() + '000'); // Jignesh-06-05-2021
 
                         if ($scope.CostTrackTypes[id] && $scope.CostTrackTypes[id][i] == $scope.costTrackType.ACTUAL) { //ACTUAL COST
 
-                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#98FB98;' />"
+                            costBoxes += "<input id=" + 'costCell' + id + '' + i + " onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#83B4B3;" + strColorTxt + "' />"
                         } else if ($scope.CostTrackTypes[id] && $scope.CostTrackTypes[id][i] == $scope.costTrackType.ESTIMATE_TO_COMPLETION) {
-                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#FFDAB9;' />"
+                            costBoxes += "<input id=" + 'costCell' + id + '' + i + " onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#FFF0CE;" + strColorTxt + "' />" //Nivedita 17-01-2022
                         }
                         else {
-                            costBoxes += "<input onClick='this.select();' disabled = true ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' TABINDEX=" + s + " ng-model='textBoxValues[" + id + "][" + i + "]' ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;' />"
+                            costBoxes += "<input id=" + 'costCell' + id + '' + i + " onClick='this.select();' disabled = true ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' TABINDEX=" + s + " ng-model='textBoxValues[" + id + "][" + i + "]' ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;" + strColorTxt + "' />"
                         }
                     }
                 }
@@ -10198,7 +10635,9 @@ angular.module('xenon.Gantt_Controller', []).
                     if ($scope.description[id].name != '----------Add New----------') {
                         // Jignesh-25-03-2021
                         var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        if (authRole === "Admin") {
+                        
+                        //if (authRole === "Admin") {
+                        if (authRole.indexOf('Admin') != -1) {
                             var temp = { name: '----------Add New----------', value: '0' };
                             resultAr.push(temp);
                         }
@@ -10246,7 +10685,8 @@ angular.module('xenon.Gantt_Controller', []).
                     if ($scope.description[id].name != '----------Add New----------') {
                         // Jignesh-25-03-2021
                         var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        if (authRole === "Admin") {
+                        //if (authRole === "Admin") {
+                        if (authRole.indexOf('Admin') != -1) {
                             var temp = { name: '----------Add New----------', value: '0' };
                             resultAr.push(temp);
                         }
@@ -10296,7 +10736,8 @@ angular.module('xenon.Gantt_Controller', []).
                     if ($scope.description[id].name != '----------Add New----------') {
                         // Jignesh-25-03-2021
                         var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        if (authRole === "Admin") {
+                        //if (authRole === "Admin") {
+                        if (authRole.indexOf('Admin') != -1) {
                             var temp = { name: '----------Add New----------', value: '0' };
                             resultAr.push(temp);
                         }
@@ -10346,7 +10787,8 @@ angular.module('xenon.Gantt_Controller', []).
                     if ($scope.description[id].name != '----------Add New----------') {
                         // Jignesh-25-03-2021
                         var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        if (authRole === "Admin") {
+                        //if (authRole === "Admin") {
+                        if (authRole.indexOf('Admin') != -1) {
                             var temp = { name: '----------Add New----------', value: '0' };
                             resultAr.push(temp);
                         }
@@ -10396,7 +10838,8 @@ angular.module('xenon.Gantt_Controller', []).
                     if ($scope.description[id].name != '----------Add New----------') {
                         // Jignesh-25-03-2021
                         var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        if (authRole === "Admin") {
+                        //if (authRole === "Admin") {
+                        if (authRole.indexOf('Admin') != -1) {
                             var temp = { name: '----------Add New----------', value: '0' };
                             resultAr.push(temp);
                         }
@@ -10443,7 +10886,8 @@ angular.module('xenon.Gantt_Controller', []).
                     if ($scope.description[id].name != '----------Add New----------') {
                         // Jignesh-25-03-2021
                         var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        if (authRole === "Admin") {
+                        //if (authRole === "Admin") {
+                        if (authRole.indexOf('Admin') != -1) {
                             var temp = { name: '----------Add New----------', value: '0' };
                             resultAr.push(temp);
                         }
@@ -11891,14 +12335,14 @@ angular.module('xenon.Gantt_Controller', []).
                 var isFieldEmptied = false;
                 $scope.costGanttInstance.eachTask(function (item) {
                     if ($scope.method[item.id] == "F") {
-                        if ($scope.description[item.id].name == "" || $scope.employee_id[item.id] == undefined || $scope.employee_id[item.id].name == "") {
+                        if ($scope.description[item.id].name == "" || $scope.employee_id[item.id] == undefined || $scope.employee_id[item.id].name == "" || $scope.employee_id[item.id].name == undefined) {
                             isFieldEmptied = true;
                         }
                     } else if ($scope.method[item.id] == "L") {
-                        if ($scope.description[item.id].name == "" || $scope.subcontractor_id[item.id] == undefined || $scope.subcontractor_id[item.id].name == "")
+                        if ($scope.description[item.id].name == "" || $scope.subcontractor_id[item.id] == undefined || $scope.subcontractor_id[item.id].name == "" || $scope.subcontractor_id[item.id].name == undefined)
                             isFieldEmptied = true;
                     } else if ($scope.method[item.id] == "U") {
-                        if ($scope.description[item.id].name == "" || $scope.material_id[item.id] == undefined || $scope.material_id[item.id].name == "" || $scope.unit_type[item.id] == "" || $scope.unitCost[item.id] == "") {//|| item.UnitType == "" || item.unitCost ==""){
+                        if ($scope.description[item.id].name == "" || $scope.material_id[item.id] == undefined || $scope.material_id[item.id].name == "" || $scope.unit_type[item.id] == "" || $scope.unitCost[item.id] == "" || $scope.material_id[item.id].name == undefined) {//|| item.UnitType == "" || item.unitCost ==""){
                             isFieldEmptied = true;
                         }
                     } else if ($scope.method[item.id] == "ODC") {
@@ -11976,13 +12420,13 @@ angular.module('xenon.Gantt_Controller', []).
                 $scope.scheduleGanttInstance.config.drag_progress = false;
                 $scope.scheduleGanttInstance.config.fit_tasks = true;
                 $scope.scheduleGanttInstance.config.scroll_on_click = false;
-                $scope.scheduleGanttInstance.config.min_column_width = 120;
+                $scope.scheduleGanttInstance.config.min_column_width = 75; // Jignesh-05-01-2021
                 $scope.scheduleGanttInstance.config.initial_scroll = false;
                 $scope.scheduleGanttInstance.config.drag_move = false;
                 $scope.scheduleGanttInstance.config.autoSize = 'xy';
                 $scope.scheduleGanttInstance.config.prevent_default_scroll = true;
                 $scope.scheduleGanttInstance.config.task_height = 15;
-                $scope.scheduleGanttInstance.config.row_height = 22;
+                $scope.scheduleGanttInstance.config.row_height = 30;
                 $scope.scheduleGanttInstance.config.grid_width = grid_width;  //luan quest 3 - original 900
                 $scope.scheduleGanttInstance.config.keyboard_navigation = true;
                 $scope.scheduleGanttInstance.config.tooltip_timeout = 10;
@@ -11991,30 +12435,66 @@ angular.module('xenon.Gantt_Controller', []).
                 if (isCurrentTrend) {     //in current view
                     $scope.scheduleGanttInstance.config.columns = [
                         { name: "add", label: "", width: 30, class: "gantt_add" },
-                        { name: "text", label: "Category", tree: true, width: 395, resize: true },
+                        { name: "text", label: "Category", tree: true, width: 450, resize: true },
                         //{ name: "originalStartDate", label: "Orig. Start", align: "center", width: 120, resize: true },  //Manasi 22-02-2021   change width to 120
                         {  //Manasi 23-02-2021
-                            name: "originalStartDate", width: 120, label: "Orig. Start", align: "center", resize: true, template: function (obj) {
-                                return obj.originalStartDate != 'N/A' ? moment(obj.originalStartDate).format('MM/DD/YYYY') : 'N/A';
+                            name: "originalStartDate", width: 100, label: "Orig. Start", align: "center", resize: true, template: function (obj) {
+                                // Jignesh-05-01-2021 to format date like MM/DD/YY
+                                if (obj.originalStartDate != 'N/A') {
+                                    var date = (obj.originalStartDate != undefined) ? new Date(obj.originalStartDate) : new Date();
+                                    var formattedDate = ('0' + date.getDate()).slice(-2);
+                                    var formattedMonth = ('0' + (date.getMonth() + 1)).slice(-2);
+                                    var formattedYear = date.getFullYear().toString().substr(2, 2);
+                                    var dateString = formattedMonth + '/' + formattedDate + '/' + formattedYear;
+                                }
+                                return obj.originalStartDate != 'N/A' ? dateString : 'N/A';
+                                //return obj.originalStartDate != 'N/A' ? moment(obj.originalStartDate).format('MM/DD/YYYY') : 'N/A';
                             }
                         },  //Manasi 22-02-2021   change width to 120
                         //{ name: "originalEndDate", label: "Orig. End", align: "center", width: 120, resize: true },   //Manasi 22-02-2021   change width to 120
                         {   //Manasi 23-02-2021
-                            name: "originalEndDate", width: 125, label: "Orig. End", align: "center", resize: true, template: function (obj) {
-                                return obj.originalEndDate != 'N/A' ? moment(obj.originalEndDate).format('MM/DD/YYYY') : 'N/A';
+                            name: "originalEndDate", width: 100, label: "Orig. End", align: "center", resize: true, template: function (obj) {
+                                // Jignesh-05-01-2021 to format date like MM/DD/YY
+                                if (obj.originalEndDate != 'N/A') {
+                                    var date = (obj.originalEndDate != undefined) ? new Date(obj.originalEndDate) : new Date();
+                                    var formattedDate = ('0' + date.getDate()).slice(-2);
+                                    var formattedMonth = ('0' + (date.getMonth() + 1)).slice(-2);
+                                    var formattedYear = date.getFullYear().toString().substr(2, 2);
+                                    var dateString = formattedMonth + '/' + formattedDate + '/' + formattedYear;
+                                }
+                                return obj.originalEndDate != 'N/A' ? dateString : 'N/A';
+                                //return obj.originalEndDate != 'N/A' ? moment(obj.originalEndDate).format('MM/DD/YYYY') : 'N/A';
                             }
                         },
                         //{ name: "start_date", label: "Cur. Start", align: "center", width: 120, resize: true },  //Manasi 22-02-2021   change width to 120
                         {    //Manasi 23-02-2021
-                            name: "start_date", width: 125, label: "Cur. Start", align: "center", resize: true, template: function (obj) {
-                                return obj.start_date != 'N/A' ? moment(obj.start_date).format('MM/DD/YYYY') : 'N/A';
+                            name: "start_date", width: 100, label: "Cur. Start", align: "center", resize: true, template: function (obj) {
+                                // Jignesh-05-01-2021 to format date like MM/DD/YY
+                                if (obj.start_date != 'N/A') {
+                                    var date = (obj.start_date != undefined) ? new Date(obj.start_date) : new Date();
+                                    var formattedDate = ('0' + date.getDate()).slice(-2);
+                                    var formattedMonth = ('0' + (date.getMonth() + 1)).slice(-2);
+                                    var formattedYear = date.getFullYear().toString().substr(2, 2);
+                                    var dateString = formattedMonth + '/' + formattedDate + '/' + formattedYear;
+                                }
+                                return obj.start_date != 'N/A' ? dateString : 'N/A';
+                                //return obj.start_date != 'N/A' ? moment(obj.start_date).format('MM/DD/YYYY') : 'N/A';
                             }
                         },
                         //{ name: "end_date", label: "Cur. End", align: "center", width: 120, resize: true },  //Manasi 22-02-2021   change width to 120
 
                         {  //Manasi 23-02-2021
-                            name: "end_date", width: 125, label: "Cur. End", align: "center", resize: true, template: function (obj) {
-                                return obj.end_date != 'N/A' ? moment(obj.end_date).format('MM/DD/YYYY') : 'N/A';
+                            name: "end_date", width: 100, label: "Cur. End", align: "center", resize: true, template: function (obj) {
+                                // Jignesh-05-01-2021 to format date like MM/DD/YY
+                                if (obj.end_date != 'N/A') {
+                                    var date = (obj.end_date != undefined) ? new Date(obj.end_date) : new Date();
+                                    var formattedDate = ('0' + date.getDate()).slice(-2);
+                                    var formattedMonth = ('0' + (date.getMonth() + 1)).slice(-2);
+                                    var formattedYear = date.getFullYear().toString().substr(2, 2);
+                                    var dateString = formattedMonth + '/' + formattedDate + '/' + formattedYear;
+                                }
+                                return obj.end_date != 'N/A' ? dateString : 'N/A';
+                                //return obj.end_date != 'N/A' ? moment(obj.end_date).format('MM/DD/YYYY') : 'N/A';
                             }
                         },
 
@@ -12028,14 +12508,14 @@ angular.module('xenon.Gantt_Controller', []).
                         {
                             name: "totalBudget", width: 130, label: "Budget", align: "right", resize: true, template: function (obj) {  //Manasi 22-02-2021   change width to 120
                                 // return $filter('currency')(obj.totalBudget, '$', formatCurrency(obj.totalBudget));
-                                return $filter('currency')(obj.totalBudget, '$', 2);// Pritesh added for keeping the format of decimals 13aug202
+                                return $filter('currency')(obj.totalBudget, '$', 0);// Pritesh added for keeping the format of decimals 13aug202
                             }
                         },
                         {
                             //name: "totalCostActualForecast", width: 100, label: "Forecast", align: "right", resize: true, template: function (obj) {
                             name: "totalCostActualForecast", width: 130, label: "EAC", align: "right", resize: true, template: function (obj) {  //Manasi 22-02-2021   change width to 120
                                 // return $filter('currency')(obj.totalCostActualForecast, '$', formatCurrency(obj.totalCostActualForecast));// Pritesh Commented on 25Jul2020 as to keept the format consistent
-                                return $filter('currency')(obj.totalCostActualForecast, '$', 2);// Pritesh added for keeping the format of decimals 13aug202
+                                return $filter('currency')(obj.totalCostActualForecast, '$', 0);// Pritesh added for keeping the format of decimals 13aug202
                                 //return $filter('currency')(0, '$', 2);
                             }
                         },
@@ -12051,29 +12531,64 @@ angular.module('xenon.Gantt_Controller', []).
                 } else {    //not current view
                     $scope.scheduleGanttInstance.config.columns = [
                         { name: "add", label: "", width: 30, class: "gantt_add", resize: true },
-                        { name: "text", label: "Category", tree: true, width: 395, resize: true },
+                        { name: "text", label: "Category", tree: true, width: 450, resize: true },
                         //{ name: "originalStartDate", label: "Orig. Start", align: "center", width: 113, resize: true },
                         {  //Manasi 23-02-2021
-                            name: "originalStartDate", label: "Orig. Start", align: "center", width: 120, resize: true, template: function (obj) {
-                                return obj.originalStartDate != 'N/A' ? moment(obj.originalStartDate).format('MM/DD/YYYY') : 'N/A';
+                            name: "originalStartDate", label: "Orig. Start", align: "center", width: 100, resize: true, template: function (obj) {
+                                // Jignesh-05-01-2021 to format date like MM/DD/YY
+                                if (obj.originalStartDate != 'N/A') {
+                                    var date = (obj.originalStartDate != undefined) ? new Date(obj.originalStartDate) : new Date();
+                                    var formattedDate = ('0' + date.getDate()).slice(-2);
+                                    var formattedMonth = ('0' + (date.getMonth() + 1)).slice(-2);
+                                    var formattedYear = date.getFullYear().toString().substr(2, 2);
+                                    var dateString = formattedMonth + '/' + formattedDate + '/' + formattedYear;
+                                }
+                                return obj.originalStartDate != 'N/A' ? dateString : 'N/A';
                             }
                         },
                         //{ name: "originalEndDate", label: "Orig. End", align: "center", width: 113, resize: true },
                         {   //Manasi 23-02-2021
-                            name: "originalEndDate", label: "Orig. End", align: "center", width: 120, resize: true, template: function (obj) {
-                                return obj.originalEndDate != 'N/A' ? moment(obj.originalEndDate).format('MM/DD/YYYY') : 'N/A';
+                            name: "originalEndDate", label: "Orig. End", align: "center", width: 100, resize: true, template: function (obj) {
+                                // Jignesh-05-01-2021 to format date like MM/DD/YY
+                                if (obj.originalEndDate != 'N/A') {
+                                    var date = (obj.originalEndDate != undefined) ? new Date(obj.originalEndDate) : new Date();
+                                    var formattedDate = ('0' + date.getDate()).slice(-2);
+                                    var formattedMonth = ('0' + (date.getMonth() + 1)).slice(-2);
+                                    var formattedYear = date.getFullYear().toString().substr(2, 2);
+                                    var dateString = formattedMonth + '/' + formattedDate + '/' + formattedYear;
+                                }
+                                return obj.originalEndDate != 'N/A' ? dateString : 'N/A';
+                                //return obj.originalEndDate != 'N/A' ? moment(obj.originalEndDate).format('MM/DD/YYYY') : 'N/A';
                             }
                         },
                         //{ name: "start_date", label: "Cur. Start", align: "center", width: 113, resize: true },
                         {   //Manasi 23-02-2021
-                            name: "start_date", label: "Cur. Start", align: "center", width: 120, resize: true, template: function (obj) {
-                                return obj.start_date != 'N/A' ? moment(obj.start_date).format('MM/DD/YYYY') : 'N/A';
+                            name: "start_date", label: "Cur. Start", align: "center", width: 100, resize: true, template: function (obj) {
+                                // Jignesh-05-01-2021 to format date like MM/DD/YY
+                                if (obj.start_date != 'N/A') {
+                                    var date = (obj.start_date != undefined) ? new Date(obj.start_date) : new Date();
+                                    var formattedDate = ('0' + date.getDate()).slice(-2);
+                                    var formattedMonth = ('0' + (date.getMonth() + 1)).slice(-2);
+                                    var formattedYear = date.getFullYear().toString().substr(2, 2);
+                                    var dateString = formattedMonth + '/' + formattedDate + '/' + formattedYear;
+                                }
+                                return obj.start_date != 'N/A' ? dateString : 'N/A';
+                                //return obj.start_date != 'N/A' ? moment(obj.start_date).format('MM/DD/YYYY') : 'N/A';
                             }
                         },
                         //{ name: "end_date", width: 113, label: "Cur. End", align: "center", resize: true },
                         {    //Manasi 23-02-2021
-                            name: "end_date", label: "Cur. End", align: "center", width: 120, resize: true, template: function (obj) {
-                                return obj.end_date != 'N/A' ? moment(obj.end_date).format('MM/DD/YYYY') : 'N/A';
+                            name: "end_date", label: "Cur. End", align: "center", width: 100, resize: true, template: function (obj) {
+                                // Jignesh-05-01-2021 to format date like MM/DD/YY
+                                if (obj.end_date != 'N/A') {
+                                    var date = (obj.end_date != undefined) ? new Date(obj.end_date) : new Date();
+                                    var formattedDate = ('0' + date.getDate()).slice(-2);
+                                    var formattedMonth = ('0' + (date.getMonth() + 1)).slice(-2);
+                                    var formattedYear = date.getFullYear().toString().substr(2, 2);
+                                    var dateString = formattedMonth + '/' + formattedDate + '/' + formattedYear;
+                                }
+                                return obj.end_date != 'N/A' ? dateString : 'N/A';
+                                //return obj.end_date != 'N/A' ? moment(obj.end_date).format('MM/DD/YYYY') : 'N/A';
                             }
                         },
                         //-------------Commented by Manasi----------------------
@@ -12085,8 +12600,9 @@ angular.module('xenon.Gantt_Controller', []).
                         //----------------------------------------------------------
                         {
                             name: "totalBudget", width: 165, label: "Budget", align: "right", resize: true, template: function (obj) {
-                                //  return $filter('currency')(obj.totalBudget, '$', formatCurrency(obj.totalBudget));
-                                return $filter('currency')(obj.totalBudget, '$', 2);// Pritesh added for keeping the format of decimals 13aug202
+                                //return $filter('currency')(obj.totalBudget, '$', formatCurrency(obj.totalBudget));
+                                //return $filter('currency')(obj.totalBudget, '$', 2);// Pritesh added for keeping the format of decimals 13aug202
+                                return $filter('currency')(obj.totalBudget, '$', 0);
                             }
                         },
                     ];
@@ -12244,21 +12760,145 @@ angular.module('xenon.Gantt_Controller', []).
                         });
                 }
 
+               
+
+                //--------------------------------Custom lightbox control--------------------------------
+                $scope.scheduleGanttInstance.form_blocks["CustomDDMainCategory"] = {
+                    render: function (config) { // config- section configuration object
+                        var height = (config.height || 50) + "px";
+                        
+                        return "<div class='dhx_cal_ltext' style='height: 60px;padding-left: 6px;'><select id='ddMainCategory' class='class='mySelect' style='width: 532px'>" +
+                            " <option value='' selected hidden>--select WBS Category--</option>" +
+                            "</select></div> ";
+                           
+                    },
+                    set_value: function (node, value, ev, config) {
+                        // node - HTML object related to HTML defined above
+                        // value - value defined by map_to property
+                        // ev - event object
+                        // config - section configuration object
+
+                        for (var i = 0; i < $scope.MainCategory.length; i++) {
+                            $('#ddMainCategory').append($('<option>').val($scope.MainCategory[i].key).text($scope.MainCategory[i].label));
+                        }
+                        
+                        
+                        $('#ddMainCategory').chosen();
+                        $('#ddMainCategory').unbind().chosen().change(function (e) {
+                            
+                            var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
+                            var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+                            var startDate = $scope.scheduleGanttInstance.getLightboxSection('start_date');
+                            var endDate = $scope.scheduleGanttInstance.getLightboxSection('end_date');
+                            var selected = $(this).val();
+                            
+
+                            var index; //Category Id of parent
+                            $scope.subCategory = [];
+                            for (var i = 0; i < MainCategory.length; i++) {
+                                if (main.getValue() === MainCategory[i].CategoryDescription) {
+                                    index = MainCategory[i].CategoryID;
+                                    vId = MainCategory[i].VersionId;
+                                }
+                            }
+                            var phaseid = $scope.scheduleGanttInstance.getTask($scope.lightBoxTask.parent).PhaseID;
+                            
+                            $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + phaseid + "/" + index + "/" + vId).then(function (response) {
+                                var subCategory = response.data.result;
+                                for (var i = 0; i < subCategory.length; i++) {
+                                    var obj = {};
+                                    obj.key = subCategory[i].SubCategoryDescription;
+                                    obj.label = subCategory[i].SubCategoryDescription; //Jignesh-T-Unknown
+                                    $scope.subCategory.push(obj);
+
+                                }
+                                var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+
+                                //escape html tags
+                                for (var x = 0; x < $scope.subCategory.length; x++) {
+                                    $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                                    $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                                }
+                                
+                                
+                                for (var i = 0; i < $scope.subCategory.length; i++) {
+                                    $('#ddSubCategory').append($('<option>').val($scope.subCategory[i].key).text($scope.subCategory[i].label));
+                                }
+                                $('#ddSubCategory').chosen();
+                                $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
+                                $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
+                                //main.setValue(selected);
+                                //$('#ddMainCategory').val(selected).trigger("chosen:updated");
+                                
+                            });
+                            
+                            
+                            
+                            
+
+                        });
+                        
+                        
+                    },
+                    get_value: function (node, ev, config) {
+                        // node - HTML object related to HTML defined above
+                        // event object
+                        // config - section configuration object
+                        
+                        return node.querySelector("select").value;
+                    },
+                    focus: function (node) {
+                        // node - HTML object related to HTML defined above
+                        node.querySelector("select").focus();
+                    }
+                    
+                };
 
 
+                $scope.scheduleGanttInstance.form_blocks["CustomDDSubCategory"] = {
+                    render: function (config) { // config- section configuration object
+                        var height = (config.height || 50) + "px";
+                        return "<div class='dhx_cal_ltext' style='height: 60px;padding-left: 6px;'><select id='ddSubCategory' style='width: 532px'>" +
+                            " <option value='' selected hidden>--select WBS sub Category--</option>" +
+                            "</select></div> ";
 
+                    },
+                    set_value: function (node, value, ev, config) {
+                        // node - HTML object related to HTML defined above
+                        // value - value defined by map_to property
+                        // ev - event object
+                        // config - section configuration object
+
+                        for (var i = 0; i < $scope.subCategory.length; i++) {
+                            $('#ddSubCategory').append($('<option>').val($scope.subCategory[i].key).text($scope.subCategory[i].label));
+                        }
+
+                        $('#ddSubCategory').chosen();
+
+                    },
+                    get_value: function (node, ev, config) {
+                        debugger;
+                        // node - HTML object related to HTML defined above
+                        // event object
+                        // config - section configuration object
+                        return node.querySelector("select").value;
+                    },
+                    
+                    focus: function (node) {
+                        // node - HTML object related to HTML defined above
+                        node.querySelector("select").focus();
+                    }
+                };
+                //--------------------------------END Custom lightbox control--------------------------------
                 //----END PURCHASE ORDER
 
                 if (isCurrentTrend) {
+                    debugger;
                     $scope.scheduleGanttInstance.config.lightbox.sections = [
                         {
-                            name: "mainphase",
-                            height: 38,
-                            map_to: "mainCategory",
-                            type: "select",
-                            options: $scope.scheduleGanttInstance.serverList("main", $scope.MainCategory),
-                            focus: true,
-                            onchange: function () {
+                            name: "mainphase", height: 38, map_to: "mainCategory", type: "CustomDDMainCategory", focus: true,
+                                onchange: function () {
+
                                 var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
                                 var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
                                 var startDate = $scope.scheduleGanttInstance.getLightboxSection('start_date');
@@ -12287,7 +12927,7 @@ angular.module('xenon.Gantt_Controller', []).
                                     for (var i = 0; i < subCategory.length; i++) {
                                         var obj = {};
                                         obj.key = subCategory[i].SubCategoryDescription;
-                                        obj.label = subCategory[i].SubCategoryDescription;
+                                        obj.label = subCategory[i].SubCategoryDescription; //Jignesh-T-Unknown
                                         $scope.subCategory.push(obj);
 
                                     }
@@ -12305,16 +12945,74 @@ angular.module('xenon.Gantt_Controller', []).
                                 });
                             }
                         },
+                        //{
+                        //    name: "mainphase",
+                        //    height: 38,
+                        //    map_to: "mainCategory",
+                        //    type: "select",
+                        //    options: $scope.scheduleGanttInstance.serverList("main", $scope.MainCategory),
+                        //    focus: true,
+                        //    onchange: function () {
+                                
+                        //        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
+                        //        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+                        //        var startDate = $scope.scheduleGanttInstance.getLightboxSection('start_date');
+                        //        var endDate = $scope.scheduleGanttInstance.getLightboxSection('end_date');
+
+                        //        $scope.temp = main.getValue();
+                        //        $scope.tempSub = sub.getValue();
+                        //        $scope.lightBoxStartDate = startDate.getValue();
+                        //        $scope.lightBoxEndDate = endDate.getValue();
+
+                        //        var index; //Category Id of parent
+                        //        $scope.subCategory = [];
+                        //        for (var i = 0; i < MainCategory.length; i++) {
+                        //            if (main.getValue() === MainCategory[i].CategoryDescription) {
+                        //                index = MainCategory[i].CategoryID;
+                        //                vId = MainCategory[i].VersionId;
+                        //            }
+                        //        }
+
+                        //        //   GanttCategory.getSubCategory().get({ProgramID:delayedData[2].result[0].ProgramID, Phase:$scope.lightBoxTask.parent , CategoryID: index },function(response){
+                        //        //  ProgramCategory.getSubActivityCategoryProgram().get({Phase:$scope.lightBoxTask.parent, CateogryID: index},function(response){
+
+                        //        var phaseid = $scope.scheduleGanttInstance.getTask($scope.lightBoxTask.parent).PhaseID;
+                        //        $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + phaseid + "/" + index + "/" + vId).then(function (response) {
+                        //            var subCategory = response.data.result;
+                        //            for (var i = 0; i < subCategory.length; i++) {
+                        //                var obj = {};
+                        //                obj.key = subCategory[i].SubCategoryDescription;
+                        //                obj.label = subCategory[i].SubCategoryDescription; //Jignesh-T-Unknown
+                        //                $scope.subCategory.push(obj);
+
+                        //            }
+                        //            var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+
+                        //            //escape html tags
+                        //            for (var x = 0; x < $scope.subCategory.length; x++) {
+                        //                $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //                $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //            }
+
+                        //            $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
+                        //            $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
+
+                        //        });
+                        //    }
+                        //},
                         {
-                            name: "subphase",
-                            height: 38,
-                            map_to: "subCategory",
-                            type: "select",
-                            options: $scope.scheduleGanttInstance.serverList("sub", $scope.subCategory),
-                            focus: true,
-                            onchange: function () {
-                            }
+                            name: "subphase", height: 38, map_to: "subCategory", type: "CustomDDSubCategory", focus: true,
                         },
+                        //{
+                        //    name: "subphase",
+                        //    height: 38,
+                        //    map_to: "subCategory",
+                        //    type: "select",
+                        //    options: $scope.scheduleGanttInstance.serverList("sub", $scope.subCategory),
+                        //    focus: true,
+                        //    onchange: function () {
+                        //    }
+                        //},
                         { name: "start_date", single_date: true, height: 38, map_to: "start_date", type: "duration", year_range: 100 },
                         { name: "end_date", single_date: true, height: 38, map_to: "end_date", type: "duration", year_range: 100 },
                         {
@@ -12329,14 +13027,10 @@ angular.module('xenon.Gantt_Controller', []).
                         },
                     ];
                 } else {
+                    debugger;
                     $scope.scheduleGanttInstance.config.lightbox.sections = [
                         {
-                            name: "mainphase",
-                            height: 38,
-                            map_to: "mainCategory",
-                            type: "select",
-                            options: $scope.scheduleGanttInstance.serverList("main", $scope.MainCategory),
-                            focus: true,
+                            name: "mainphase", height: 38, map_to: "mainCategory", type: "CustomDDMainCategory", focus: true,
                             onchange: function () { //luan 3/28
                                 //console.log($scope.selectedPhase);
                                 var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
@@ -12413,7 +13107,8 @@ angular.module('xenon.Gantt_Controller', []).
                                                 var temp = {};
                                                 // Jignesh-26-03-2021
                                                 var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                                if (authRole === "Admin") {
+                                                //if (authRole === "Admin") {
+                                                if (authRole.indexOf('Admin') != -1) {
                                                     temp.key = 'Add New';
                                                     temp.label = 'Add New';
                                                     $scope.MainCategory.push(temp);
@@ -12425,7 +13120,7 @@ angular.module('xenon.Gantt_Controller', []).
                                                 angular.forEach(response.subCategoryData, function (value, key) {
                                                     var obj = {};
                                                     obj.key = value.CategoryDescription;
-                                                    obj.label = value.CategoryDescription;
+                                                    obj.label = value.CategoryID + ' - ' + value.CategoryDescription; //Jignesh-T-While adding new Category
                                                     $scope.subCategory.push(obj);
                                                     //console.log(value);
                                                 });
@@ -12433,7 +13128,7 @@ angular.module('xenon.Gantt_Controller', []).
 
                                                 var newlyAddedSubcategory = {};
                                                 newlyAddedSubcategory.key = response.objectSaved.SubCategoryDescription;
-                                                newlyAddedSubcategory.label = response.objectSaved.SubCategoryDescription;
+                                                newlyAddedSubcategory.label = response.objectSaved.SubCategoryID + ' - ' + response.objectSaved.SubCategoryDescription;
                                                 $scope.subCategory.push(newlyAddedSubcategory);
 
                                                 //console.log($scope.subCategory);
@@ -12441,10 +13136,11 @@ angular.module('xenon.Gantt_Controller', []).
                                                 angular.forEach(categoryList, function (value, key) {
                                                     var obj = {};
                                                     obj.key = value.CategoryDescription;
-                                                    obj.label = value.CategoryDescription;
+                                                    obj.label = value.CategoryID + ' - ' + value.CategoryDescription; //Jignesh-T-Adding new category
                                                     $scope.MainCategory.push(obj);
                                                     //console.log(value);
-                                                    if (value.CategoryDescription == response.objectSaved.CategoryDescription) {
+                                                    var newLabel = response.objectSaved.CategoryID + ' - ' + response.objectSaved.CategoryDescription;
+                                                    if (obj.label == newLabel) {
                                                         selectedCategory = obj;
 
                                                         $scope.newCategory = selectedCategory;   //Manasi 11-02-2021
@@ -12475,8 +13171,8 @@ angular.module('xenon.Gantt_Controller', []).
                                                     $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
                                                 }
 
-                                                main.setValue(selectedCategory.label);
-                                                sub.setValue(newlyAddedSubcategory.label);
+                                                main.setValue(selectedCategory.key);
+                                                sub.setValue(newlyAddedSubcategory.key);
                                                 //console.log($scope.MainCategory);
                                             });
                                         } else {
@@ -12513,7 +13209,8 @@ angular.module('xenon.Gantt_Controller', []).
                                     var temp = {};
                                     // Jignesh-26-03-2021
                                     var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                    if (authRole === "Admin") {
+                                    //if (authRole === "Admin") {
+                                    if (authRole.indexOf('Admin') != -1) {
                                         temp.key = 'Add New';
                                         temp.label = 'Add New';
                                         $scope.subCategory.push(temp);
@@ -12523,12 +13220,12 @@ angular.module('xenon.Gantt_Controller', []).
                                     for (var i = 0; i < subCategory.length; i++) {
                                         var obj = {};
                                         obj.key = subCategory[i].SubCategoryDescription;
-                                        obj.label = subCategory[i].SubCategoryDescription;
+                                        obj.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription; //Jignesh-T-16/11/2021
                                         $scope.subCategory.push(obj);
 
                                         if (i == 0) {
                                             defaultOne.key = subCategory[i].SubCategoryDescription;
-                                            defaultOne.label = subCategory[i].SubCategoryDescription;
+                                            defaultOne.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription;
                                         }
                                     }
 
@@ -12544,160 +13241,389 @@ angular.module('xenon.Gantt_Controller', []).
                                     $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
 
                                     var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-                                    sub.setValue(defaultOne.label);
+                                    sub.setValue(defaultOne.key);
 
 
                                 });
                             }
                         },
+                        
+                        //{
+                        //    name: "mainphase",
+                        //    height: 38,
+                        //    map_to: "mainCategory",
+                        //    type: "select",
+                        //    options: $scope.scheduleGanttInstance.serverList("main", $scope.MainCategory),
+                        //    focus: true,
+                        //    onchange: function () { //luan 3/28
+                        //        //console.log($scope.selectedPhase);
+                        //        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
+                        //        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+                        //        var startDate = $scope.scheduleGanttInstance.getLightboxSection('start_date');
+                        //        var endDate = $scope.scheduleGanttInstance.getLightboxSection('end_date');
+
+                        //        $scope.temp = main.getValue();
+                        //        $scope.tempSub = sub.getValue();
+                        //        $scope.lightBoxStartDate = startDate.getValue();
+                        //        $scope.lightBoxEndDate = endDate.getValue();
+
+                        //        //luan 3/29
+                        //        if (main.getValue() != 'Add New') {
+                        //            PREVIOUSMAIN = main.getValue();
+                        //            //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+                        //        }
+                        //        PREVIOUSSUB = sub.getValue();
+
+                        //        //console.log(main.getValue());
+                        //        if (main.getValue() == 'Add New') {
+                        //            //luan 3/29
+                        //            //main.setValue('');   //reset
+                        //            //sub.setValue('');   //reset
+
+                        //            var scope = $rootScope.$new();
+
+                        //            scope.params = {
+                        //                phase: $scope.selectedPhase,
+                        //                phaseList: $scope.phases,
+                        //                organizationID: $scope.OrganizationID,
+                        //                mainCategory: MainCategory, // Jignesh 06-10-2020
+                        //            }
+
+                        //            //console.log(scope.params);
+
+                        //            $rootScope.modalInstance = $uibModal.open({
+                        //                backdrop: 'static',
+                        //                keyboard: false,
+                        //                scope: scope,
+                        //                templateUrl: "app/views/modal/add_main_sub_category_modal.html",
+                        //                size: "md",
+                        //                controller: "AddMainSubCategoryModalCtrl"
+                        //            });
+                        //            $rootScope.modalInstance.result.then(function (response) {
+
+
+                        //                //console.log(response);
+                        //                $('.gantt_cal_cover').show();
+                        //                $('.gantt_cal_light').css('z-index', '10001');  //restore
+
+                        //                //luan 3/29
+                        //                if (response.status == 'Cancel') {
+                        //                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+
+                        //                    main.setValue(PREVIOUSMAIN);   //revert history
+                        //                    //sub.setValue(PREVIOUSSUB);   //revert history
+
+                        //                    PREVIOUSMAIN = main.getValue();
+                        //                    PREVIOUSSUB = sub.getValue();
+                        //                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+                        //                }
+
+                        //                if (response.status == 'Success') {
+                        //                    ProgramCategory.getMainActivityCategoryProgram().get({ "Phase": $scope.selectedPhase.PhaseID, "OrganizationID": $scope.OrganizationID, "ProjectId": delayedData[2].result[0].ProjectID }, function (CategoryListData) {
+                        //                        //console.log(CategoryListData.result);
+                        //                        MainCategory = CategoryListData.result;
+                        //                        var categoryList = CategoryListData.result;
+                        //                        var selectedCategory = {};
+                        //                        $scope.MainCategory = [];
+                        //                        $scope.subCategory = [];
+                        //                        //luan 3/28
+
+                        //                        var temp = {};
+                        //                        // Jignesh-26-03-2021
+                        //                        var authRole = $scope.localStorageSrevice.get('authorizationData').role;
+                        //                        //if (authRole === "Admin") {
+                        //                        if (authRole.indexOf('Admin') != -1) {
+                        //                            temp.key = 'Add New';
+                        //                            temp.label = 'Add New';
+                        //                            $scope.MainCategory.push(temp);
+                        //                            $scope.subCategory.push(temp);
+                        //                        }
+
+
+                        //                        /* Jignesh 06-10-2020 */
+                        //                        angular.forEach(response.subCategoryData, function (value, key) {
+                        //                            var obj = {};
+                        //                            obj.key = value.CategoryDescription;
+                        //                            obj.label = value.CategoryID + ' - ' + value.CategoryDescription; //Jignesh-T-While adding new Category
+                        //                            $scope.subCategory.push(obj);
+                        //                            //console.log(value);
+                        //                        });
+                        //                        /* End */
+
+                        //                        var newlyAddedSubcategory = {};
+                        //                        newlyAddedSubcategory.key = response.objectSaved.SubCategoryDescription;
+                        //                        newlyAddedSubcategory.label = response.objectSaved.SubCategoryID + ' - ' + response.objectSaved.SubCategoryDescription;
+                        //                        $scope.subCategory.push(newlyAddedSubcategory);
+
+                        //                        //console.log($scope.subCategory);
+
+                        //                        angular.forEach(categoryList, function (value, key) {
+                        //                            var obj = {};
+                        //                            obj.key = value.CategoryDescription;
+                        //                            obj.label = value.CategoryID + ' - ' + value.CategoryDescription; //Jignesh-T-Adding new category
+                        //                            $scope.MainCategory.push(obj);
+                        //                            //console.log(value);
+                        //                            var newLabel = response.objectSaved.CategoryID + ' - ' + response.objectSaved.CategoryDescription;
+                        //                            if (obj.label == newLabel) {
+                        //                                selectedCategory = obj;
+
+                        //                                $scope.newCategory = selectedCategory;   //Manasi 11-02-2021
+                        //                            }
+                        //                        });
+
+                        //                        //console.log($scope.MainCategory, $scope.subCategory);
+
+                        //                        //escape html tags
+                        //                        for (var x = 0; x < $scope.MainCategory.length; x++) {
+                        //                            $scope.MainCategory[x].key = $scope.MainCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //                            $scope.MainCategory[x].label = $scope.MainCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //                        }
+
+                        //                        for (var x = 0; x < $scope.subCategory.length; x++) {
+                        //                            $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //                            $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //                        }
+
+                        //                        $scope.scheduleGanttInstance.updateCollection("main", $scope.MainCategory);
+                        //                        $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
+                        //                        $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
+                        //                        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
+                        //                        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+
+                        //                        if (response.message != undefined) {
+                        //                            dhtmlx.alert(response.message);
+                        //                            $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
+                        //                        }
+
+                        //                        main.setValue(selectedCategory.key);
+                        //                        sub.setValue(newlyAddedSubcategory.key);
+                        //                        //console.log($scope.MainCategory);
+                        //                    });
+                        //                } else {
+                        //                    if (response.message != undefined) {
+                        //                        dhtmlx.alert(response.message);
+                        //                        $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
+                        //                    }
+                        //                }
+                        //            }, function error(response) {
+                        //                //console.log(response);
+                        //            });
+                        //            return;
+                        //        }
+
+                        //        var index; //Category Id of parent
+                        //        $scope.subCategory = [];
+                        //        for (var i = 0; i < MainCategory.length; i++) {
+                        //            if (main.getValue() === MainCategory[i].CategoryDescription) {
+                        //                index = MainCategory[i].CategoryID;
+                        //                vId = MainCategory[i].VersionId;
+                        //            }
+                        //        }
+
+
+                        //        //console.log($scope.OrganizationID);
+                        //        var phaseid = $scope.scheduleGanttInstance.getTask($scope.lightBoxTask.parent).PhaseID;
+                        //        $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + phaseid + "/" + index + "/" + vId).then(function (response) {
+                        //            var subCategory = response.data.result;
+                        //            var defaultOne = {};
+
+                        //            //console.log('4319 test', response);
+
+                        //            //luan 3/28
+                        //            var temp = {};
+                        //            // Jignesh-26-03-2021
+                        //            var authRole = $scope.localStorageSrevice.get('authorizationData').role;
+                        //            //if (authRole === "Admin") {
+                        //            if (authRole.indexOf('Admin') != -1) {
+                        //                temp.key = 'Add New';
+                        //                temp.label = 'Add New';
+                        //                $scope.subCategory.push(temp);
+                        //            }
+
+
+                        //            for (var i = 0; i < subCategory.length; i++) {
+                        //                var obj = {};
+                        //                obj.key = subCategory[i].SubCategoryDescription;
+                        //                obj.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription; //Jignesh-T-16/11/2021
+                        //                $scope.subCategory.push(obj);
+
+                        //                if (i == 0) {
+                        //                    defaultOne.key = subCategory[i].SubCategoryDescription;
+                        //                    defaultOne.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription;
+                        //                }
+                        //            }
+
+                        //            //console.log(defaultOne);
+
+                        //            //escape html tags
+                        //            for (var x = 0; x < $scope.subCategory.length; x++) {
+                        //                $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //                $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //            }
+
+                        //            $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
+                        //            $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
+
+                        //            var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+                        //            sub.setValue(defaultOne.key);
+
+
+                        //        });
+                        //    }
+                        //},
                         {
-                            name: "subphase",
-                            height: 38,
-                            map_to: "subCategory",
-                            type: "select",
-                            options: $scope.scheduleGanttInstance.serverList("sub", $scope.subCategory),
-                            focus: true,
-                            onchange: function () { //luan 3/28
-                                //console.log($scope.selectedPhase);
-                                var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
-                                var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-
-                                //$scope.temp = main.getValue();
-                                //$scope.tempSub = subs.getValue();
-                                //alert($scope.tempSub);
-                                //$scope.lightBoxStartDate = startDate.getValue();
-                                //$scope.lightBoxEndDate = endDate.getValue();
-
-                                //luan 3/29
-                                if (sub.getValue() != 'Add New') {
-                                    PREVIOUSSUB = sub.getValue();
-                                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-                                }
-
-                                //luan 3/28
-                                if (sub.getValue() == 'Add New') {
-                                    //sub.setValue('');   //reset
-                                    var scope = $rootScope.$new();
-
-                                    //Prepare the main category and main category id
-                                    var CategoryID = '';
-                                    var main_category = '';
-
-                                    main_category = main.getValue();
-                                    for (var x = 0; x < MainCategory.length; x++) {
-                                        if (main_category == MainCategory[x].CategoryDescription) {
-                                            CategoryID = MainCategory[x].CategoryID;
-                                            VersionId = MainCategory[x].VersionId;
-                                        }
-                                    }
-
-                                    scope.params = {
-                                        phase: $scope.selectedPhase,
-                                        phaseList: $scope.phases,
-                                        organizationID: $scope.OrganizationID,
-                                        mainCategory: main_category,
-                                        mainCategoryID: CategoryID,
-                                        isSubCategory: true
-                                    }
-
-                                    //console.log(scope.params);
-
-                                    $rootScope.modalInstance = $uibModal.open({
-                                        backdrop: 'static',
-                                        keyboard: false,
-                                        scope: scope,
-                                        templateUrl: "app/views/modal/add_main_sub_category_modal.html",
-                                        size: "md",
-                                        controller: "AddMainSubCategoryModalCtrl"
-                                    });
-                                    $rootScope.modalInstance.result.then(function (response) {
-                                        //console.log(response);
-                                        $('.gantt_cal_cover').show();
-                                        $('.gantt_cal_light').css('z-index', '10001');  //restore
-
-                                        //luan 3/29
-                                        if (response.status == 'Cancel') {
-                                            //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-
-                                            //main.setValue(PREVIOUSMAIN);   //revert history
-                                            sub.setValue(PREVIOUSSUB);   //revert history
-
-                                            PREVIOUSMAIN = main.getValue();
-                                            PREVIOUSSUB = sub.getValue();
-                                            //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-                                        }
-
-                                        if (response.status == 'Success') {
-                                            $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + $scope.selectedPhase.PhaseID + "/" + CategoryID + "/" + VersionId).then(function (SubCategoryData) {
-                                                var subCategory = SubCategoryData.data.result;
-                                                //console.log(subCategory);
-                                                var selectedSubcategory = {};
-
-                                                $scope.subCategory = [];
-
-                                                //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-
-                                                //luan 3/28
-                                                var temp = {};
-                                                // Jignesh-26-03-2021
-                                                var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                                                if (authRole === "Admin") {
-                                                    temp.key = 'Add New';
-                                                    temp.label = 'Add New';
-                                                    $scope.subCategory.push(temp);
-                                                }
-
-
-                                                for (var i = 0; i < subCategory.length; i++) {
-                                                    var obj = {};
-                                                    obj.key = subCategory[i].SubCategoryDescription;
-                                                    obj.label = subCategory[i].SubCategoryDescription;
-                                                    $scope.subCategory.push(obj);
-
-                                                    //console.log(obj, response.objectSaved);
-                                                    if (obj.label == response.objectSaved.SubCategoryDescription) {
-                                                        selectedSubcategory = obj;
-                                                        //console.log(selectedSubcategory);
-                                                    }
-
-                                                }
-
-                                                //escape html tags
-                                                for (var x = 0; x < $scope.subCategory.length; x++) {
-                                                    $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                                                    $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                                                }
-
-                                                $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
-                                                $scope.scheduleGanttInstance.showLightbox($scope.selectedActivity.id);
-                                                var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
-                                                var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-
-                                                if (response.message != undefined) {
-                                                    dhtmlx.alert(response.message);
-                                                    $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
-                                                }
-
-                                                main.setValue(PREVIOUSMAIN);   //Manasi 26-02-2021
-                                                //main.setValue($scope.newCategory.label);   //Manasi 11-02-2021
-                                                sub.setValue(selectedSubcategory.label);
-                                                //console.log($scope.subCategory);
-
-                                            });
-                                        } else {
-                                            if (response.message != undefined) {
-                                                dhtmlx.alert(response.message);
-                                                $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
-                                            }
-                                        }
-                                    }, function error(response) {
-                                        //console.log(response);
-                                    });
-                                    return;
-                                }
-
-                            }
+                            name: "subphase", height: 38, map_to: "subCategory", type: "CustomDDSubCategory", focus: true,
                         },
+                        //{
+                        //    name: "subphase",
+                        //    height: 38,
+                        //    map_to: "subCategory",
+                        //    type: "select",
+                        //    options: $scope.scheduleGanttInstance.serverList("sub", $scope.subCategory),
+                        //    focus: true,
+                        //    onchange: function () { //luan 3/28
+                        //        //console.log($scope.selectedPhase);
+                        //        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
+                        //        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+
+                        //        //$scope.temp = main.getValue();
+                        //        //$scope.tempSub = subs.getValue();
+                        //        //alert($scope.tempSub);
+                        //        //$scope.lightBoxStartDate = startDate.getValue();
+                        //        //$scope.lightBoxEndDate = endDate.getValue();
+
+                        //        //luan 3/29
+                        //        if (sub.getValue() != 'Add New') {
+                        //            PREVIOUSSUB = sub.getValue();
+                        //            //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+                        //        }
+
+                        //        //luan 3/28
+                        //        if (sub.getValue() == 'Add New') {
+                        //            //sub.setValue('');   //reset
+                        //            var scope = $rootScope.$new();
+
+                        //            //Prepare the main category and main category id
+                        //            var CategoryID = '';
+                        //            var main_category = '';
+
+                        //            main_category = main.getValue();
+                        //            for (var x = 0; x < MainCategory.length; x++) {
+                        //                if (main_category == MainCategory[x].CategoryDescription) {
+                        //                    CategoryID = MainCategory[x].CategoryID;
+                        //                    VersionId = MainCategory[x].VersionId;
+                        //                }
+                        //            }
+
+                        //            scope.params = {
+                        //                phase: $scope.selectedPhase,
+                        //                phaseList: $scope.phases,
+                        //                organizationID: $scope.OrganizationID,
+                        //                mainCategory: main_category,
+                        //                mainCategoryID: CategoryID,
+                        //                isSubCategory: true
+                        //            }
+
+                        //            //console.log(scope.params);
+
+                        //            $rootScope.modalInstance = $uibModal.open({
+                        //                backdrop: 'static',
+                        //                keyboard: false,
+                        //                scope: scope,
+                        //                templateUrl: "app/views/modal/add_main_sub_category_modal.html",
+                        //                size: "md",
+                        //                controller: "AddMainSubCategoryModalCtrl"
+                        //            });
+                        //            $rootScope.modalInstance.result.then(function (response) {
+                        //                //console.log(response);
+                        //                $('.gantt_cal_cover').show();
+                        //                $('.gantt_cal_light').css('z-index', '10001');  //restore
+
+                        //                //luan 3/29
+                        //                if (response.status == 'Cancel') {
+                        //                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+
+                        //                    //main.setValue(PREVIOUSMAIN);   //revert history
+                        //                    sub.setValue(PREVIOUSSUB);   //revert history
+
+                        //                    PREVIOUSMAIN = main.getValue();
+                        //                    PREVIOUSSUB = sub.getValue();
+                        //                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+                        //                }
+
+                        //                if (response.status == 'Success') {
+                        //                    $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + $scope.selectedPhase.PhaseID + "/" + CategoryID + "/" + VersionId).then(function (SubCategoryData) {
+                        //                        var subCategory = SubCategoryData.data.result;
+                        //                        //console.log(subCategory);
+                        //                        var selectedSubcategory = {};
+
+                        //                        $scope.subCategory = [];
+
+                        //                        //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+
+                        //                        //luan 3/28
+                        //                        var temp = {};
+                        //                        // Jignesh-26-03-2021
+                        //                        var authRole = $scope.localStorageSrevice.get('authorizationData').role;
+                        //                        //if (authRole === "Admin") {
+                        //                        if (authRole.indexOf('Admin') != -1) {
+                        //                            temp.key = 'Add New';
+                        //                            temp.label = 'Add New';
+                        //                            $scope.subCategory.push(temp);
+                        //                        }
+
+
+                        //                        for (var i = 0; i < subCategory.length; i++) {
+                        //                            var obj = {};
+                        //                            obj.key = subCategory[i].SubCategoryDescription;
+                        //                            obj.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription; //Jignesh-T-16/11/2021 (While creating new subCategory in presently created task)
+                        //                            $scope.subCategory.push(obj);
+
+                        //                            //console.log(obj, response.objectSaved);
+                        //                            var savedLabel = response.objectSaved.SubCategoryID + ' - ' + response.objectSaved.SubCategoryDescription
+                        //                            if (obj.label == savedLabel) {
+                        //                                selectedSubcategory = obj;
+                        //                                //console.log(selectedSubcategory);
+                        //                            }
+
+                        //                        }
+
+                        //                        //escape html tags
+                        //                        for (var x = 0; x < $scope.subCategory.length; x++) {
+                        //                            $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //                            $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                        //                        }
+
+                        //                        $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
+                        //                        $scope.scheduleGanttInstance.showLightbox($scope.selectedActivity.id);
+                        //                        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
+                        //                        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+
+                        //                        if (response.message != undefined) {
+                        //                            dhtmlx.alert(response.message);
+                        //                            $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
+                        //                        }
+
+                        //                        main.setValue(PREVIOUSMAIN);   //Manasi 26-02-2021
+                        //                        //main.setValue($scope.newCategory.label);   //Manasi 11-02-2021
+                        //                        sub.setValue(selectedSubcategory.key);
+                        //                        //console.log($scope.subCategory);
+
+                        //                    });
+                        //                } else {
+                        //                    if (response.message != undefined) {
+                        //                        dhtmlx.alert(response.message);
+                        //                        $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
+                        //                    }
+                        //                }
+                        //            }, function error(response) {
+                        //                //console.log(response);
+                        //            });
+                        //            return;
+                        //        }
+
+                        //    }
+                        //},
                         { name: "start_date", single_date: true, height: 38, map_to: "start_date", type: "duration", year_range: 100 },
                         { name: "end_date", single_date: true, height: 38, map_to: "end_date", type: "duration", year_range: 100 },
                     ];
@@ -12727,7 +13653,7 @@ angular.module('xenon.Gantt_Controller', []).
 
                 });
             }
-            
+
             function updateBuffer(cost) {
                 var textIds = $scope.textBoxValues[1];
                 //if(textIds) {

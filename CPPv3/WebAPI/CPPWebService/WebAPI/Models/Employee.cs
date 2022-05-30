@@ -122,7 +122,8 @@ namespace WebAPI.Models
                 try
                 {
 
-                    employeeList = ctx.Employee.Where(e => e.OrganizationID.Equals(orgID)).OrderBy(e => e.UniqueIdentityNumber).ToList();
+                    // employeeList = ctx.Employee.Where(e => e.OrganizationID.Equals(orgID)).OrderBy(e => e.UniqueIdentityNumber).ToList();
+                    employeeList = ctx.Employee.Where(e => e.OrganizationID.Equals(orgID)).OrderBy(e => e.Name).ToList();
 
                     #region Two table join example. Also uncomment class
                     //List<Employee_FTEDEsc> employee_FTEDEscList = new List<Employee_FTEDEsc>();

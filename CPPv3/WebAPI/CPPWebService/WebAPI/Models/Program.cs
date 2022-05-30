@@ -22,6 +22,8 @@ namespace WebAPI.Models
         [NotMapped]
         public int Operation;
         public bool isModified;
+        public bool isNotesModified;
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProgramID { get; set; }
         public string ProgramName { get; set; }
@@ -68,18 +70,73 @@ namespace WebAPI.Models
         public String ContractValue { get; set; }   //Manasi 14-07-2020
         public String JobNumber { get; set; }    //Manasi 04-08-2020
 
+        public List<int> CertifiedPayrollIDS { get; set; }   //Vaishnavi 12-04-2022
+
+        public String IsCertifiedPayrollChecked { get; set; }
+
+        public List<String> ProgramPrevailingWagesList { get; set; }
+
+        public String IsPrevailingWageChecked { get; set; }
+
+        public List<int> WrapIDS { get; set; }
+
+        public String IsWrapChecked { get; set; }     //Vaishnavi 12-04-2022
+
         public DateTime? CurrentStartDate { get; set; }
         public DateTime? CurrentEndDate { get; set; }
+        public DateTime? originalEndDate { get; set; } //Aditya 17-02-2021
         public DateTime? ForecastStartDate { get; set; }
         public DateTime? ForecastEndDate { get; set; }
         public string CurrentCost { get; set; }
         public string ForecastCost { get; set; }
         public string OrganizationID { get; set; }
+        public bool IsDeleted { get; set; }
 
+        public string DeletedBy { get; set; }
+        public string Status { get; set; }     //----Vaishnavi 30-03-2022----//
         public int ProgramManagerID { get; set; }
         public int ProgramSponsorID { get; set; }
 
         public int ProjectClassID { get; set; }
+
+        public string IsPPBond { get; set; }
+
+        public string PrimeSubPrime { get; set; }
+
+        public string PrimeParent { get; set; }
+
+        public List<int> PManagerIDS { get; set; } //Aditya PMDD 05052022
+
+        public string IsCostPartOfContract { get; set; }
+
+        public string PPBondNotes { get; set; }
+
+        [NotMapped]
+        public DateTime? LaborStartDate { get; set; }    //Vaishnavi 12-04-2022
+        [NotMapped]
+        public DateTime? LaborEndDate { get; set; }
+        [NotMapped]
+        public DateTime? MaterialsStartDate { get; set; }
+        [NotMapped]
+        public DateTime? MaterialsEndDate { get; set; }
+        [NotMapped]
+        public DateTime? OtherStartDate { get; set; }
+        [NotMapped]
+        public DateTime? OtherEndDate { get; set; }
+        [NotMapped]
+        public string LaborWarranty { get; set; }    //Vaishnavi 12-04-2022
+        [NotMapped]
+        public string MaterialsWarranty { get; set; }
+        [NotMapped]
+        public string OtherWarranty { get; set; }
+        [NotMapped]
+        public string LaborDescription { get; set; }
+        [NotMapped]
+        public string MaterialsDescription { get; set; }
+        [NotMapped]
+        public string OtherDescription { get; set; }
+
+        public string ReportingTo { get; set; }    //Vaishnavi 12-04-2022
 
         [ForeignKey("ProgramManagerID")]
         public virtual Employee ProgramManagerObj { get; set; }
@@ -90,6 +147,18 @@ namespace WebAPI.Models
         [ForeignKey("ProjectClassID")]
         public virtual ProjectClass ProjectClass { get; set; }
 
+        [NotMapped]
+        public ProgramWarranty LaborWarrantyList { get; set; }     //Vaishnavi 12-04-2022
+        [NotMapped]
+        public ProgramWarranty MaterialsWarrantyList { get; set; }
+        [NotMapped]
+        public ProgramWarranty OtherWarrantyList { get; set; }       //Vaishnavi 12-04-2022
+
+        [NotMapped]
+        public string programNote { get; set; }
+
+        [NotMapped]
+        public PrelimnaryNotice prelimnaryNotice { get; set; }
 
         [NotMapped]
         public virtual ICollection<ProgramCategory> programCategories { get; set; }
@@ -108,7 +177,7 @@ namespace WebAPI.Models
             {
                 using (var ctx = new CPPDbContext())
                 {
-                    var test = ctx.Program.Where(a => a.OrganizationID == OrganizationID)
+                    var test = ctx.Program.Where(a => a.OrganizationID == OrganizationID && a.IsDeleted == false)
                          .Select(c => new { c.ProgramID, c.ProgramName })
                         .ToList();
                     MatchedProgramList = test.Select(a => new Program { ProgramID = a.ProgramID, ProgramName = a.ProgramName }).ToList();
@@ -139,11 +208,13 @@ namespace WebAPI.Models
                     {
                         string orgId = OrganizationID;
                         int pgmId = int.Parse(ProgramID);
-                        IQueryable<Program> programs = ctx.Program.Where(p => p.OrganizationID == orgId && p.ProgramID == pgmId);
+                        IQueryable<Program> programs = ctx.Program.Where(p => p.OrganizationID == orgId && p.ProgramID == pgmId && p.IsDeleted == false);
                         MatchedProgramList = programs.ToList<Program>();
                         for (var i = 0; i < MatchedProgramList.Count; i++)
                         {
                             var proId = MatchedProgramList[i].ProgramID;
+                            
+                            
                             // List<ProgramFund> programFunds = ProgramFund.getProgramFund(MatchedProgramList[i].ProgramID);
                             //MatchedProgramList[i].programCategories = ctx.ProgramCategory.Where(a => a.ProgramID == MatchedProgramList[i].ProgramID).ToList();
                             //List<ProgramCategory> programCategories = ctx.ProgramCategory.Where(a => a.ProgramID == proId).ToList();
@@ -159,8 +230,10 @@ namespace WebAPI.Models
                     }
                     else if (OrganizationID != "null")
                     {
+                        //MatchedProgramList = getProgramLookup(OrganizationID,ProgramID,KeyStroke);
                         string orgId = OrganizationID;
-                        IQueryable<Program> programs = ctx.Program.Where(p => p.OrganizationID == orgId);
+                        IQueryable<Program> programs = ctx.Program.Where(p => p.OrganizationID == orgId && p.IsDeleted == false);
+                          
                         MatchedProgramList = programs.ToList<Program>();
                         for (var i = 0; i < MatchedProgramList.Count; i++)
                         {
@@ -181,11 +254,14 @@ namespace WebAPI.Models
                     else if (ProgramID != "null")
                     {
                         int pgmId = int.Parse(ProgramID);
-                        IQueryable<Program> programs = ctx.Program.Where(p => p.ProgramID == pgmId);
+                        IQueryable<Program> programs = ctx.Program.Where(p => p.ProgramID == pgmId && p.IsDeleted == false);
+                            
                         MatchedProgramList = programs.ToList<Program>();
                         for (var i = 0; i < MatchedProgramList.Count; i++)
                         {
                             var proId = MatchedProgramList[i].ProgramID;
+
+                          
                             //List<ProgramFund> programFunds = ProgramFund.getProgramFund(MatchedProgramList[i].ProgramID);
                             ////MatchedProgramList[i].programCategories = ctx.ProgramCategory.Where(a => a.ProgramID == MatchedProgramList[i].ProgramID).ToList();
                             //List<ProgramCategory> programCategories = ctx.ProgramCategory.Where(a => a.ProgramID == proId).ToList();
@@ -201,7 +277,9 @@ namespace WebAPI.Models
                     }
                     else if (KeyStroke != "null")
                     {
-                        IQueryable<Program> programs = ctx.Program.Where(p => p.ProgramName.Contains(KeyStroke));
+                        IQueryable<Program> programs = ctx.Program.Where(p => p.ProgramName.Contains(KeyStroke) && p.IsDeleted == false);
+
+                           
                         MatchedProgramList = programs.ToList<Program>();
                         for (var i = 0; i < MatchedProgramList.Count; i++)
                         {
@@ -221,7 +299,8 @@ namespace WebAPI.Models
                     }
                     else
                     {
-                        IQueryable<Program> programs = ctx.Program;
+                        IQueryable<Program> programs = ctx.Program.Where(p => p.IsDeleted == false);
+                            
                         MatchedProgramList = programs.ToList<Program>();
                         for (var i = 0; i < MatchedProgramList.Count; i++)
                         {
@@ -246,6 +325,7 @@ namespace WebAPI.Models
             }
             catch (Exception ex)
             {
+               
                 var stackTrace = new StackTrace(ex, true);
                 var line = stackTrace.GetFrame(0).GetFileLineNumber();
                 Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
@@ -264,7 +344,7 @@ namespace WebAPI.Models
             {
                 using (var ctx = new CPPDbContext())
                 {
-                    IQueryable<Program> programs = ctx.Program.Where(p => p.OrganizationID == pgm.OrganizationID && p.ProgramName == pgm.ProgramName);
+                    IQueryable<Program> programs = ctx.Program.Where(p => p.OrganizationID == pgm.OrganizationID && p.ProgramName == pgm.ProgramName && p.IsDeleted == false);
                     if (programs.ToList().Count == 0)
                     {
                         ctx.Database.Log = msg => Trace.WriteLine(msg);
@@ -274,6 +354,12 @@ namespace WebAPI.Models
                         List<ProgramCategory> programCategoryList = pgm.programCategories.ToList();
                         pgm.programFunds = null;
                         pgm.programCategories = null;
+                        pgm.IsDeleted = false;
+                        pgm.Status = "Active";   //----Vaishnavi 30-03-2022----//
+                        //pgm.IsCertifiedPayrollChecked = pgm.IsCertifiedPayrollChecked;    //Vaishnavi 12-04-2022
+                        //pgm.IsPrevailingWageChecked = pgm.IsPrevailingWageChecked;
+                        //pgm.IsWrapChecked = pgm.IsWrapChecked;
+                        //pgm.ReportingTo = pgm.ReportingTo;    //Vaishnavi 12-04-2022
                         ctx.Program.Add(pgm);
                         ctx.SaveChanges();
                         var prog = ctx.Program.OrderByDescending(p => p.ProgramID).FirstOrDefault();
@@ -314,7 +400,62 @@ namespace WebAPI.Models
                         }
                         ctx.ContractModification.Add(contractModificationsList);
                         ctx.SaveChanges();
-                    }
+
+                        ContractProjectManager.SavePMList(pgm); //Aditya PMDD 05052022
+
+                        //if (pgm.IsCertifiedPayrollChecked == "Yes")     //Vaishnavi 12-04-2022
+                        //{
+                        //    if (pgm.CertifiedPayrollIDS.Count != 0)
+                        //    {
+                        //        for (int i = 0; i < pgm.CertifiedPayrollIDS.Count; i++)
+                        //        {
+                        //            ProgramCertifiedPayroll programCertifiedPayroll = new ProgramCertifiedPayroll();
+                        //            programCertifiedPayroll.ProgramID = pgm.ProgramID;
+                        //            programCertifiedPayroll.CertifiedPayrollID = pgm.CertifiedPayrollIDS[i];
+                        //            ctx.ProgramCertifiedPayroll.Add(programCertifiedPayroll);
+                        //            ctx.SaveChanges();
+                        //        }
+                        //    }
+                        //}
+                        //if (pgm.IsPrevailingWageChecked == "Yes")
+                        //{
+                        //    if (pgm.ProgramPrevailingWagesList.Count != 0)
+                        //    {
+                        //        for (int i = 0; i < pgm.ProgramPrevailingWagesList.Count; i++)
+                        //        {
+                        //            ProgramPrevailingWage programPrevailingWage = new ProgramPrevailingWage();
+                        //            programPrevailingWage.ProgramID = pgm.ProgramID;
+                        //            programPrevailingWage.Description = pgm.ProgramPrevailingWagesList[i];
+                        //            ctx.ProgramPrevailingWage.Add(programPrevailingWage);
+                        //            ctx.SaveChanges();
+                        //        }
+                        //    }
+                        //}
+                        //if (pgm.IsWrapChecked == "Yes")
+                        //{
+                        //    if (pgm.WrapIDS.Count != 0)
+                        //    {
+                        //        for (int i = 0; i < pgm.WrapIDS.Count; i++)
+                        //        {
+                        //            ProgramWrap programWrap = new ProgramWrap();
+                        //            programWrap.ProgramID = pgm.ProgramID;
+                        //            programWrap.WrapID = pgm.WrapIDS[i];
+                        //            ctx.ProgramWrap.Add(programWrap);
+                        //            ctx.SaveChanges();
+                        //        }
+                        //    }
+                        //}
+                        //ProgramWarranty.registerProgramWarranty(pgm);
+
+                        if (pgm.programNote != "")
+                        {
+                            ProgramNotes pNotes = new ProgramNotes();
+                            pNotes.notes_desc = pgm.programNote;
+                            pNotes.programID = pgm.ProgramID;
+                            ctx.ProgramNotes.Add(pNotes);
+                            ctx.SaveChanges();
+                        }
+                    }     //Vaishnavi 12-04-2022
                     else
                     {
                         //result = "Failed to add new Program. Program " + pgm.ProgramName + " Already Exist in the system";
@@ -374,6 +515,7 @@ namespace WebAPI.Models
                                 pgm.JobNumber = program.JobNumber;   //Manasi 04-08-2020
                                 pgm.CurrentStartDate = program.CurrentStartDate;
                                 pgm.CurrentEndDate = program.CurrentEndDate;
+                                pgm.originalEndDate = program.originalEndDate; //Aditya 17-02-2022
                                 pgm.BillingPOC = program.BillingPOC;
                                 pgm.BillingPOCPhone1 = program.BillingPOCPhone1;
                                 pgm.BillingPOCPhone2 = program.BillingPOCPhone2;
@@ -407,8 +549,13 @@ namespace WebAPI.Models
                                 pgm.programCategories = null;
                                 List<ProgramCategory> categoryToBeDeleted = program.categoryToBeDeleted.ToList();
                                 pgm.categoryToBeDeleted = null;
-
+                                //pgm.IsPPBond = program.IsPPBond;
+                                //pgm.IsCostPartOfContract = program.IsCostPartOfContract;
+                                //pgm.PPBondNotes = program.PPBondNotes;
+                                pgm.PrimeSubPrime = program.PrimeSubPrime;
+                                pgm.PrimeParent = program.PrimeParent;
                                 ctx.SaveChanges();
+                                ContractProjectManager.SavePMList(program); //Aditya PMDD 05052022
 
                                 for (var i = 0; i < fundToBeDeletedList.Count; i++)
                                 {
@@ -444,6 +591,17 @@ namespace WebAPI.Models
                                         ProgramCategory.registerProgramCategory(category);
                                     }
                                 }
+                                if (program.isNotesModified == true)
+                                {
+                                    if (program.programNote != "")
+                                    {
+                                        ProgramNotes pNotes = new ProgramNotes();
+                                        pNotes.notes_desc = program.programNote;
+                                        pNotes.programID = program.ProgramID;
+                                        ctx.ProgramNotes.Add(pNotes);
+                                        ctx.SaveChanges();
+                                    }
+                                }
                                 result = "Success";
                             }
                             else
@@ -460,6 +618,7 @@ namespace WebAPI.Models
                     {
 
                         Program pgm = ctx.Program.First(p => p.ProgramID == pgmId);
+                        
                         if (pgm != null)
                         {
                             pgm.ProgramName = program.ProgramName;
@@ -488,6 +647,7 @@ namespace WebAPI.Models
                             pgm.JobNumber = program.JobNumber;             //Manasi 04-08-2020
                             pgm.CurrentStartDate = program.CurrentStartDate;
                             pgm.CurrentEndDate = program.CurrentEndDate;
+                            pgm.originalEndDate = program.originalEndDate; //Aditya 17-02-2022
                             pgm.BillingPOC = program.BillingPOC;
                             pgm.BillingPOCPhone1 = program.BillingPOCPhone1;
                             pgm.BillingPOCPhone2 = program.BillingPOCPhone2;
@@ -516,13 +676,119 @@ namespace WebAPI.Models
                             pgm.programFunds = null;
                             List<ProgramFund> fundToBeDeletedList = program.fundToBeDeleted.ToList();
                             pgm.fundToBeDeleted = null;
-
+                           // pgm.IsPPBond = program.IsPPBond;
+                            //pgm.IsCostPartOfContract = program.IsCostPartOfContract;
+                            //pgm.PPBondNotes = program.PPBondNotes;
                             //program Categories
                             List<ProgramCategory> programCategoryList = program.programCategories.ToList();
                             pgm.programCategories = null;
                             List<ProgramCategory> categoryToBeDeleted = program.categoryToBeDeleted.ToList();
                             pgm.categoryToBeDeleted = null;
+                            pgm.PrimeSubPrime = program.PrimeSubPrime;
+                            pgm.PrimeParent = program.PrimeParent;
+
                             ctx.SaveChanges();
+                            ContractProjectManager.SavePMList(program); //Aditya PMDD 05052022
+                            //pgm.IsCertifiedPayrollChecked = program.IsCertifiedPayrollChecked;    //Vaishnavi 12-04-2022
+                            //pgm.IsPrevailingWageChecked = program.IsPrevailingWageChecked;
+                            //pgm.IsWrapChecked = program.IsWrapChecked;
+                            //pgm.ReportingTo = program.ReportingTo;
+                            //ctx.SaveChanges();
+                            //if (program.IsCertifiedPayrollChecked == "Yes")
+                            //{
+                            //    if (program.CertifiedPayrollIDS.Count != 0)
+                            //    {
+                            //        List<ProgramCertifiedPayroll> programids = ctx.ProgramCertifiedPayroll.Where(p => p.ProgramID == program.ProgramID).ToList();
+                            //        foreach (var k in programids)
+                            //        {
+                            //            ctx.ProgramCertifiedPayroll.Remove(k);
+                            //            ctx.SaveChanges();
+                            //        }
+                            //        for (int i = 0; i < program.CertifiedPayrollIDS.Count; i++)
+                            //        {
+                            //            ProgramCertifiedPayroll programCertifiedPayroll = new ProgramCertifiedPayroll();
+                            //            programCertifiedPayroll.ProgramID = program.ProgramID;
+                            //            programCertifiedPayroll.CertifiedPayrollID = program.CertifiedPayrollIDS[i];
+                            //            ctx.ProgramCertifiedPayroll.Add(programCertifiedPayroll);
+                            //            ctx.SaveChanges();
+                            //        }
+                            //    }
+                            //}
+                            //if (program.IsCertifiedPayrollChecked == "No")
+                            //{
+
+                            //    List<ProgramCertifiedPayroll> programids = ctx.ProgramCertifiedPayroll.Where(p => p.ProgramID == program.ProgramID).ToList();
+                            //    foreach (var x in programids)
+                            //    {
+                            //        ctx.ProgramCertifiedPayroll.Remove(x);
+                            //        ctx.SaveChanges();
+                            //    }
+
+                            //}
+                            //if (program.IsPrevailingWageChecked == "Yes")
+                            //{
+                            //    if (program.ProgramPrevailingWagesList.Count != 0)
+                            //    {
+                            //        List<ProgramPrevailingWage> programids = ctx.ProgramPrevailingWage.Where(p => p.ProgramID == program.ProgramID).ToList();
+                            //        foreach (var k in programids)
+                            //        {
+                            //            ctx.ProgramPrevailingWage.Remove(k);
+                            //            ctx.SaveChanges();
+                            //        }
+                            //        for (int i = 0; i < program.ProgramPrevailingWagesList.Count; i++)
+                            //        {
+                            //            ProgramPrevailingWage programPrevailingWage = new ProgramPrevailingWage();
+                            //            programPrevailingWage.ProgramID = program.ProgramID;
+                            //            programPrevailingWage.Description = program.ProgramPrevailingWagesList[i];
+                            //            ctx.ProgramPrevailingWage.Add(programPrevailingWage);
+                            //            ctx.SaveChanges();
+                            //        }
+                            //    }
+                            //}
+                            //if (program.IsPrevailingWageChecked == "No")
+                            //{
+
+                            //    List<ProgramPrevailingWage> programids = ctx.ProgramPrevailingWage.Where(p => p.ProgramID == program.ProgramID).ToList();
+                            //    foreach (var x in programids)
+                            //    {
+                            //        ctx.ProgramPrevailingWage.Remove(x);
+                            //        ctx.SaveChanges();
+                            //    }
+
+                            //}
+                            //if (program.IsWrapChecked == "Yes")
+                            //{
+                            //    if (program.WrapIDS.Count != 0)
+                            //    {
+                            //        List<ProgramWrap> programids = ctx.ProgramWrap.Where(p => p.ProgramID == program.ProgramID).ToList();
+                            //        foreach (var k in programids)
+                            //        {
+                            //            ctx.ProgramWrap.Remove(k);
+                            //            ctx.SaveChanges();
+                            //        }
+                            //        for (int i = 0; i < program.WrapIDS.Count; i++)
+                            //        {
+                            //            ProgramWrap programWrap = new ProgramWrap();
+                            //            programWrap.ProgramID = program.ProgramID;
+                            //            programWrap.WrapID = program.WrapIDS[i];
+                            //            ctx.ProgramWrap.Add(programWrap);
+                            //            ctx.SaveChanges();
+                            //        }
+                            //    }
+                            //}
+                            //if (program.IsWrapChecked == "No")
+                            //{
+
+                            //    List<ProgramWrap> programids = ctx.ProgramWrap.Where(p => p.ProgramID == program.ProgramID).ToList();
+                            //    foreach (var x in programids)
+                            //    {
+                            //        ctx.ProgramWrap.Remove(x);
+                            //        ctx.SaveChanges();
+                            //    }
+
+                            //}
+
+                            /*ProgramWarranty.updateProgramWarranty(program);*/    //Vaishnavi 12-04-2022
 
                             for (var i = 0; i < fundToBeDeletedList.Count; i++)
                             {
@@ -559,6 +825,17 @@ namespace WebAPI.Models
                                     ProgramCategory.registerProgramCategory(item);
                                 }
                             }
+                            if (program.isNotesModified == true)
+                            {
+                                if (program.programNote != "")
+                                {
+                                    ProgramNotes pNotes = new ProgramNotes();
+                                    pNotes.notes_desc = program.programNote;
+                                    pNotes.programID = program.ProgramID;
+                                    ctx.ProgramNotes.Add(pNotes);
+                                    ctx.SaveChanges();
+                                }
+                            }
 
                             result = "Success";
                         }
@@ -579,7 +856,7 @@ namespace WebAPI.Models
             return result;
         }
 
-        public static void deleteCost(List<Activity> activityList)
+        public static void deleteCost(List<Activity> activityList, string DeletedBy)
         {
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "", Logger.logLevel.Debug);
@@ -597,8 +874,9 @@ namespace WebAPI.Models
                 {
                     conn = ConnectionManager.getConnection();
                     conn.Open();
-                    var query = "Select * from cost_fte where ActivityID = " + act.ActivityID;
+                    var query = "Select * from cost_fte where ActivityID = @ActivityID";
                     MySqlCommand command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@ActivityID", act.ActivityID);
                     using (reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -639,8 +917,9 @@ namespace WebAPI.Models
                 {
                     conn = ConnectionManager.getConnection();
                     conn.Open();
-                    var query = "Select * from cost_lumpsum where ActivityID = " + act.ActivityID;
+                    var query = "Select * from cost_lumpsum where ActivityID = @ActivityID";
                     MySqlCommand command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@ActivityID", act.ActivityID);
                     using (reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -678,8 +957,9 @@ namespace WebAPI.Models
                 {
                     conn = ConnectionManager.getConnection();
                     conn.Open();
-                    var query = "Select * from cost_unitcost where ActivityID = " + act.ActivityID;
+                    var query = "Select * from cost_unitcost where ActivityID = @ActivityID" ;
                     MySqlCommand command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@ActivityID", act.ActivityID);
                     using (reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -716,8 +996,12 @@ namespace WebAPI.Models
                 {
                     foreach (var fte in costFTEList)
                     {
-                        var query = "delete from cost_fte where 1=1 and FTECostID = '" + fte.FTECostID + "'";
+                        //Nivedita 10022022
+                        //var query = "delete from cost_fte where 1=1 and FTECostID = @FTECostID";
+                        var query = "update cost_fte set IsDeleted=true, DeletedDate= NOW(), DeletedBy=@DeletedBy where 1=1 and FTECostID = @FTECostID";
                         MySqlCommand command = new MySqlCommand(query, conn);
+                        command.Parameters.AddWithValue("@FTECostID", fte.FTECostID);
+                        command.Parameters.AddWithValue("@DeletedBy", DeletedBy);
                         command.ExecuteNonQuery();
                         // WebAPI.Models.CostFTE.updateCostFTE(fte.Operation, fte.ProgramID, fte.ProgramElementID, fte.ProjectID, fte.TrendNumber, fte.ActivityID, fte.CostID, fte.StartDate, fte.EndDate, fte.Description, fte.TextBoxValue, fte.Base, fte.FTEHours, fte.FTECost, fte.Scale);
                     }
@@ -726,8 +1010,12 @@ namespace WebAPI.Models
                 {
                     foreach (var lumpsum in costLumpsumList)
                     {
-                        var query = "delete from cost_lumpsum where 1=1 and LumpsumCostID = '" + lumpsum.LumpsumCostID + "'";
+                        //Nivedita 10022022
+                        //var query = "delete from cost_lumpsum where 1=1 and LumpsumCostID = @LumpsumCostID";
+                        var query = "update cost_lumpsum set IsDeleted=true, DeletedDate= NOW(), DeletedBy=@DeletedBy where 1=1 and LumpsumCostID = @LumpsumCostID";
                         MySqlCommand command = new MySqlCommand(query, conn);
+                        command.Parameters.AddWithValue("@LumpsumCostID", lumpsum.LumpsumCostID);
+                        command.Parameters.AddWithValue("@DeletedBy", DeletedBy);
                         command.ExecuteNonQuery();
                         // WebAPI.Models.CostFTE.updateCostFTE(fte.Operation, fte.ProgramID, fte.ProgramElementID, fte.ProjectID, fte.TrendNumber, fte.ActivityID, fte.CostID, fte.StartDate, fte.EndDate, fte.Description, fte.TextBoxValue, fte.Base, fte.FTEHours, fte.FTECost, fte.Scale);
                     }
@@ -736,8 +1024,12 @@ namespace WebAPI.Models
                 {
                     foreach (var unitcost in costUnitList)
                     {
-                        var query = "delete from cost_unitcost where 1=1 and UnitCostID = '" + unitcost.UnitCostID + "'";
+                        //Nivedita 10022022
+                        //var query = "delete from cost_unitcost where 1=1 and UnitCostID = @UnitCostID";
+                        var query = "update cost_unitcost set IsDeleted=true, DeletedDate= NOW(), DeletedBy=@DeletedBy where 1=1 and UnitCostID = @UnitCostID";
                         MySqlCommand command = new MySqlCommand(query, conn);
+                        command.Parameters.AddWithValue("@UnitCostID", unitcost.UnitCostID);
+                        command.Parameters.AddWithValue("@DeletedBy", DeletedBy);
                         command.ExecuteNonQuery();
                         // WebAPI.Models.CostFTE.updateCostFTE(fte.Operation, fte.ProgramID, fte.ProgramElementID, fte.ProjectID, fte.TrendNumber, fte.ActivityID, fte.CostID, fte.StartDate, fte.EndDate, fte.Description, fte.TextBoxValue, fte.Base, fte.FTEHours, fte.FTECost, fte.Scale);
                     }
@@ -746,9 +1038,9 @@ namespace WebAPI.Models
             }
         }
 
-        public static String deleteProgram(int ProgramID)
+        public static String deleteProgram(Program program)
         {
-
+            int ProgramID = program.ProgramID;
             String result = "";
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "", Logger.logLevel.Debug);
@@ -760,15 +1052,15 @@ namespace WebAPI.Models
                 {
                     ctx.Database.Log = msg => Trace.WriteLine(msg);
                     int pgmId = ProgramID;
-                    Program pgm = ctx.Program.First(p => p.ProgramID == pgmId);
-                    List<ProgramElement> programElementList = ctx.ProgramElement.Where(pe => pe.ProgramID == ProgramID).Select(row => row).ToList();
+                    Program pgm = ctx.Program.First(p => p.ProgramID == pgmId && p.IsDeleted==false);
+                    List<ProgramElement> programElementList = ctx.ProgramElement.Where(pe => pe.ProgramID == ProgramID && pe.IsDeleted==false).Select(row => row).ToList();
                     //IQueryable<Project> projectList = ctx.Project.Where()
                     foreach (var peItem in programElementList)
                     {
-                        List<Project> projectList = ctx.Project.Where(p => p.ProgramElementID == peItem.ProgramElementID).Select(proj => proj).ToList();
+                        List<Project> projectList = ctx.Project.Where(p => p.ProgramElementID == peItem.ProgramElementID && p.IsDeleted == false).Select(proj => proj).ToList();
                         foreach (var project in projectList)
                         {
-                            List<Trend> trendList = ctx.Trend.Where(tr => tr.ProjectID == project.ProjectID).Select(trendItem => trendItem).ToList();
+                            List<Trend> trendList = ctx.Trend.Where(tr => tr.ProjectID == project.ProjectID && tr.IsDeleted==false).Select(trendItem => trendItem).ToList();
                             foreach (var trend in trendList)
                             {
                                 List<Activity> activityList = new List<Activity>();
@@ -781,7 +1073,7 @@ namespace WebAPI.Models
                                         conn = ConnectionManager.getConnection();
                                         conn.Open();
                                     }
-                                    activityList = ctx.Activity.Where(a => a.TrendNumber == trend.TrendNumber && a.ProjectID == trend.ProjectID).ToList();
+                                    activityList = ctx.Activity.Where(a => a.TrendNumber == trend.TrendNumber && a.ProjectID == trend.ProjectID && a.IsDeleted==false).ToList();
 
                                 }
                                 catch (Exception ex)
@@ -790,24 +1082,26 @@ namespace WebAPI.Models
                                     var line = stackTrace.GetFrame(0).GetFileLineNumber();
                                     Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
                                 }
-
-                                deleteCost(activityList);
+                                //Nivedita 02-12-2021
+                                deleteCost(activityList, program.DeletedBy);
                                 if (activityList.Count > 0)
                                 {
                                     foreach (var act in activityList)
                                     {
-                                        Activity.deleteActivity(act);
+                                        act.DeletedBy = program.DeletedBy;
+                                        Activity.deleteActivity(act); 
 
                                     }
                                 }
                             }
+                            //Nivedita 02 - 12 - 2021
                             if (trendList.Count > 0)
                             {
 
                                 foreach (var tr in trendList)
                                 {
-                                    Trend.deleteTrend(tr);
-
+                                    tr.DeletedBy = program.DeletedBy;
+                                    Trend.deleteTrend(tr); 
                                 }
                             }
                         }
@@ -816,7 +1110,8 @@ namespace WebAPI.Models
 
                             foreach (var p in projectList)
                             {
-                                Project.deleteProject(p.ProjectID);
+                                p.DeletedBy = program.DeletedBy;
+                                Project.deleteProject(p);
                             }
                         }
 
@@ -828,7 +1123,9 @@ namespace WebAPI.Models
                     {
                         foreach (var pe in programElementList)
                         {
-                            ProgramElement.deleteProgramElement(pe.ProgramElementID);
+                            //ProgramElement.deleteProgramElement(pe.ProgramElementID);
+                            pe.DeletedBy = program.DeletedBy;
+                            ProgramElement.deleteProgramElement(pe);
                         }
                     }
                     //delete program fund
@@ -837,9 +1134,10 @@ namespace WebAPI.Models
                         conn = ConnectionManager.getConnection();
                         conn.Open();
                     }
-                    var query1 = "delete from program_fund where 1=1 and ProgramId = " + ProgramID;
-                    MySqlCommand command1 = new MySqlCommand(query1, conn);
-                    command1.ExecuteNonQuery();
+                    //var query1 = "delete from program_fund where 1=1 and ProgramId = @ProgramID" ;
+                    //MySqlCommand command1 = new MySqlCommand(query1, conn);
+                    //command1.Parameters.AddWithValue("@ProgramID", ProgramID);
+                    //command1.ExecuteNonQuery();
                    
                     //Delete Program Category
                     if (conn == null)
@@ -847,17 +1145,164 @@ namespace WebAPI.Models
                         conn = ConnectionManager.getConnection();
                         conn.Open();
                     }
-                    query1 = "delete from program_category where 1=1 and ProgramID = " + ProgramID;
-                    MySqlCommand command3 = new MySqlCommand(query1, conn);
-                    command3.ExecuteNonQuery();
+                    //query1 = "delete from program_category where 1=1 and ProgramID = @ProgramID";
+                    //MySqlCommand command3 = new MySqlCommand(query1, conn);
+                    //command3.Parameters.AddWithValue("@ProgramID", ProgramID);
+                    //command3.ExecuteNonQuery();
                     //finally delete program
                     if (conn == null)
                     {
                         conn = ConnectionManager.getConnection();
                         conn.Open();
                     }
-                    var query2 = "delete from program where 1=1 and ProgramID = " + ProgramID;
+                    //var query2 = "delete from program where 1=1 and ProgramID = @ProgramID";
+                    var query2 = "update program set IsDeleted=1, DeletedDate=@DeletedDate, DeletedBy=@DeletedBy, Status='Archived' where  ProgramID = @ProgramID";   //----Vaishnavi 30-03-2022----//
                     MySqlCommand command2 = new MySqlCommand(query2, conn);
+                    command2.Parameters.AddWithValue("@ProgramID", pgm.ProgramID);
+                    command2.Parameters.AddWithValue("@DeletedBy", program.DeletedBy);
+                    command2.Parameters.AddWithValue("@DeletedDate", DateTime.Now);
+                    command2.ExecuteNonQuery();
+                    //ctx.Program.Remove(pgm);
+                    // ctx.SaveChanges();
+                    result = "Success";
+                }
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+            }
+            finally
+            {
+
+            }
+            return result;
+        }
+        //----Vaishnavi 30-03-2022----//
+        public static String closeProgram(Program program)
+        {
+            int ProgramID = program.ProgramID;
+            String result = "";
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "", Logger.logLevel.Debug);
+            MySqlConnection conn = null;
+            MySqlDataReader reader = null;
+            try
+            {
+                using (var ctx = new CPPDbContext())
+                {
+                    ctx.Database.Log = msg => Trace.WriteLine(msg);
+                    int pgmId = ProgramID;
+                    Program pgm = ctx.Program.First(p => p.ProgramID == pgmId && p.IsDeleted == false);
+                    List<ProgramElement> programElementList = ctx.ProgramElement.Where(pe => pe.ProgramID == ProgramID && pe.IsDeleted == false).Select(row => row).ToList();
+                    //IQueryable<Project> projectList = ctx.Project.Where()
+                    //foreach (var peItem in programElementList)
+                    //{
+                    //    List<Project> projectList = ctx.Project.Where(p => p.ProgramElementID == peItem.ProgramElementID && p.IsDeleted == false).Select(proj => proj).ToList();
+                    //    foreach (var project in projectList)
+                    //    {
+                    //        List<Trend> trendList = ctx.Trend.Where(tr => tr.ProjectID == project.ProjectID && tr.IsDeleted == false).Select(trendItem => trendItem).ToList();
+                    //        foreach (var trend in trendList)
+                    //        {
+                    //            List<Activity> activityList = new List<Activity>();
+
+                    //            String delete_result = "";
+                    //            try
+                    //            {
+                    //                if (conn == null)
+                    //                {
+                    //                    conn = ConnectionManager.getConnection();
+                    //                    conn.Open();
+                    //                }
+                    //                activityList = ctx.Activity.Where(a => a.TrendNumber == trend.TrendNumber && a.ProjectID == trend.ProjectID && a.IsDeleted == false).ToList();
+
+                    //            }
+                    //            catch (Exception ex)
+                    //            {
+                    //                var stackTrace = new StackTrace(ex, true);
+                    //                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                    //                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+                    //            }
+                    //            //Nivedita 02-12-2021
+                    //            deleteCost(activityList, program.DeletedBy);
+                    //            if (activityList.Count > 0)
+                    //            {
+                    //                foreach (var act in activityList)
+                    //                {
+                    //                    act.DeletedBy = program.DeletedBy;
+                    //                    Activity.deleteActivity(act);
+
+                    //                }
+                    //            }
+                    //        }
+                    //        //Nivedita 02 - 12 - 2021
+                    //        if (trendList.Count > 0)
+                    //        {
+
+                    //            foreach (var tr in trendList)
+                    //            {
+                    //                tr.DeletedBy = program.DeletedBy;
+                    //                Trend.deleteTrend(tr);
+                    //            }
+                    //        }
+                    //    }
+                    //    if (projectList.Count > 0)
+                    //    {
+
+                    //        foreach (var p in projectList)
+                    //        {
+                    //            p.DeletedBy = program.DeletedBy;
+                    //            Project.deleteProject(p);
+                    //        }
+                    //    }
+
+                    //}
+
+
+
+                    if (programElementList.Count > 0)
+                    {
+                        foreach (var pe in programElementList)
+                        {
+                            //ProgramElement.deleteProgramElement(pe.ProgramElementID);
+                            //pe.DeletedBy = program.DeletedBy;
+                            ProgramElement.closeProgramElement(pe);
+                        }
+                    }
+                    ////delete program fund
+                    //if (conn == null)
+                    //{
+                    //    conn = ConnectionManager.getConnection();
+                    //    conn.Open();
+                    //}
+                    //var query1 = "delete from program_fund where 1=1 and ProgramId = @ProgramID" ;
+                    //MySqlCommand command1 = new MySqlCommand(query1, conn);
+                    //command1.Parameters.AddWithValue("@ProgramID", ProgramID);
+                    //command1.ExecuteNonQuery();
+
+                    //Delete Program Category
+                    //if (conn == null)
+                    //{
+                    //    conn = ConnectionManager.getConnection();
+                    //    conn.Open();
+                    //}
+                    //query1 = "delete from program_category where 1=1 and ProgramID = @ProgramID";
+                    //MySqlCommand command3 = new MySqlCommand(query1, conn);
+                    //command3.Parameters.AddWithValue("@ProgramID", ProgramID);
+                    //command3.ExecuteNonQuery();
+                    //finally delete program
+                    if (conn == null)
+                    {
+                        conn = ConnectionManager.getConnection();
+                        conn.Open();
+                    }
+                    //var query2 = "delete from program where 1=1 and ProgramID = @ProgramID";
+                    var query2 = "update program set Status='Closed' where  ProgramID = @ProgramID";
+                    MySqlCommand command2 = new MySqlCommand(query2, conn);
+                    command2.Parameters.AddWithValue("@ProgramID", pgm.ProgramID);
+                    //command2.Parameters.AddWithValue("@DeletedBy", program.DeletedBy);
+                    //command2.Parameters.AddWithValue("@DeletedDate", DateTime.Now);
                     command2.ExecuteNonQuery();
                     //ctx.Program.Remove(pgm);
                     // ctx.SaveChanges();
@@ -877,5 +1322,201 @@ namespace WebAPI.Models
             return result;
         }
 
+        public static String UpdateAdditionalProgramDetails(Program program)
+        {
+            String result = "";
+            try
+            {
+                using (var ctx = new CPPDbContext())
+                {
+                    Program pgm = ctx.Program.First(p => p.ProgramID == program.ProgramID);
+                    pgm.IsPPBond = program.IsPPBond;
+                    pgm.IsCostPartOfContract = program.IsCostPartOfContract;
+                    pgm.PPBondNotes = program.PPBondNotes;
+                    pgm.IsCertifiedPayrollChecked = program.IsCertifiedPayrollChecked;    //Vaishnavi 12-04-2022
+                    pgm.IsPrevailingWageChecked = program.IsPrevailingWageChecked;
+                    pgm.IsWrapChecked = program.IsWrapChecked;
+                    pgm.ReportingTo = program.ReportingTo;
+                    if (program.IsCertifiedPayrollChecked == "Yes")
+                    {
+                        if (program.CertifiedPayrollIDS.Count != 0)
+                        {
+                            List<ProgramCertifiedPayroll> programids = ctx.ProgramCertifiedPayroll.Where(p => p.ProgramID == program.ProgramID).ToList();
+                            foreach (var k in programids)
+                            {
+                                ctx.ProgramCertifiedPayroll.Remove(k);
+                                ctx.SaveChanges();
+                            }
+                            for (int i = 0; i < program.CertifiedPayrollIDS.Count; i++)
+                            {
+                                ProgramCertifiedPayroll programCertifiedPayroll = new ProgramCertifiedPayroll();
+                                programCertifiedPayroll.ProgramID = program.ProgramID;
+                                programCertifiedPayroll.CertifiedPayrollID = program.CertifiedPayrollIDS[i];
+                                ctx.ProgramCertifiedPayroll.Add(programCertifiedPayroll);
+                                ctx.SaveChanges();
+                            }
+                        }
+                    }
+                    if (program.IsCertifiedPayrollChecked == "No")
+                    {
+
+                        List<ProgramCertifiedPayroll> programids = ctx.ProgramCertifiedPayroll.Where(p => p.ProgramID == program.ProgramID).ToList();
+                        foreach (var x in programids)
+                        {
+                            ctx.ProgramCertifiedPayroll.Remove(x);
+                            ctx.SaveChanges();
+                        }
+
+                    }
+
+                    if (program.IsPrevailingWageChecked == "Yes")
+                    {
+                        if (program.ProgramPrevailingWagesList.Count != 0)
+                        {
+                            List<ProgramPrevailingWage> programids = ctx.ProgramPrevailingWage.Where(p => p.ProgramID == program.ProgramID).ToList();
+                            foreach (var k in programids)
+                            {
+                                ctx.ProgramPrevailingWage.Remove(k);
+                                ctx.SaveChanges();
+                            }
+                            for (int i = 0; i < program.ProgramPrevailingWagesList.Count; i++)
+                            {
+                                ProgramPrevailingWage programPrevailingWage = new ProgramPrevailingWage();
+                                programPrevailingWage.ProgramID = program.ProgramID;
+                                programPrevailingWage.Description = program.ProgramPrevailingWagesList[i];
+                                ctx.ProgramPrevailingWage.Add(programPrevailingWage);
+                                ctx.SaveChanges();
+                            }
+                        }
+                    }
+                    if (program.IsPrevailingWageChecked == "No")
+                    {
+
+                        List<ProgramPrevailingWage> programids = ctx.ProgramPrevailingWage.Where(p => p.ProgramID == program.ProgramID).ToList();
+                        foreach (var x in programids)
+                        {
+                            ctx.ProgramPrevailingWage.Remove(x);
+                            ctx.SaveChanges();
+                        }
+
+                    }
+                    if (program.IsWrapChecked == "Yes")
+                    {
+                        if (program.WrapIDS.Count != 0)
+                        {
+                            List<ProgramWrap> programids = ctx.ProgramWrap.Where(p => p.ProgramID == program.ProgramID).ToList();
+                            foreach (var k in programids)
+                            {
+                                ctx.ProgramWrap.Remove(k);
+                                ctx.SaveChanges();
+                            }
+                            for (int i = 0; i < program.WrapIDS.Count; i++)
+                            {
+                                ProgramWrap programWrap = new ProgramWrap();
+                                programWrap.ProgramID = program.ProgramID;
+                                programWrap.WrapID = program.WrapIDS[i];
+                                ctx.ProgramWrap.Add(programWrap);
+                                ctx.SaveChanges();
+                            }
+                        }
+                    }
+                    if (program.IsWrapChecked == "No")
+                    {
+
+                        List<ProgramWrap> programids = ctx.ProgramWrap.Where(p => p.ProgramID == program.ProgramID).ToList();
+                        foreach (var x in programids)
+                        {
+                            ctx.ProgramWrap.Remove(x);
+                            ctx.SaveChanges();
+                        }
+
+                    }
+                    ctx.SaveChanges();
+
+                    //ProgramWarranty.updateProgramWarranty(program);
+                    //PrelimnaryNotice prelimnaryNotice = new PrelimnaryNotice();
+                    //prelimnaryNotice.CreatedDate = DateTime.Now;
+                    //prelimnaryNotice.ProgramID = program.ProgramID;
+                    //prelimnaryNotice.CreatedBy = program.CreatedBy;
+                    //prelimnaryNotice.Date = program.prelimnaryNotice.Date;
+                    //prelimnaryNotice.Reason = program.prelimnaryNotice.Reason; 
+                    //ctx.PrelimnaryNotices.Add(prelimnaryNotice);
+                    //ctx.SaveChanges();
+                    result = "Success";
+                }
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+            }
+           
+            
+            return result;
+        }
+
+        public static Program GetProgramAdditionalInfo(int ProgramID)
+        {
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "", Logger.logLevel.Debug);
+            List<Program> MatchedProgramList = new List<Program>();
+            Program additionalinfodata = new Program();
+            try
+            {
+                using (var ctx = new CPPDbContext())
+                {
+
+                    additionalinfodata.IsCertifiedPayrollChecked = ctx.Program.Where(x => x.ProgramID == ProgramID).Select(x => x.IsCertifiedPayrollChecked).FirstOrDefault();
+                    additionalinfodata.IsPrevailingWageChecked = ctx.Program.Where(x => x.ProgramID == ProgramID).Select(x => x.IsPrevailingWageChecked).FirstOrDefault();
+                    additionalinfodata.IsWrapChecked = ctx.Program.Where(x => x.ProgramID == ProgramID).Select(x => x.IsWrapChecked).FirstOrDefault();
+
+                    additionalinfodata.CertifiedPayrollIDS = ctx.ProgramCertifiedPayroll.Where(c => c.ProgramID == ProgramID).Select(x => x.CertifiedPayrollID).ToList();
+                    additionalinfodata.ProgramPrevailingWagesList = ctx.ProgramPrevailingWage.Where(c => c.ProgramID ==ProgramID).Select(x => x.Description).ToList();
+                    additionalinfodata.WrapIDS = ctx.ProgramWrap.Where(c => c.ProgramID == ProgramID).Select(x => x.WrapID).ToList();
+                    additionalinfodata.ReportingTo = ctx.Program.Where(w => w.ProgramID == ProgramID).Select(p => p.ReportingTo).FirstOrDefault();
+
+                    //additionalinfodata.LaborWarranty = ctx.ProgramWarranty.Where(w => w.ProgramID == ProgramID && w.WarrantyType == "Labor Warranty").Select(p => p.WarrantyDescription).FirstOrDefault();    //Vaishnavi 12-04-2022
+                    //additionalinfodata.MaterialsWarranty = ctx.ProgramWarranty.Where(w => w.ProgramID == ProgramID && w.WarrantyType == "Materials Warranty").Select(p => p.WarrantyDescription).FirstOrDefault();
+                    //additionalinfodata.OtherWarranty = ctx.ProgramWarranty.Where(w => w.ProgramID == ProgramID && w.WarrantyType == "Other Warranty").Select(p => p.WarrantyDescription).FirstOrDefault();
+
+                    //additionalinfodata.LaborStartDate = ctx.ProgramWarranty.Where(w => w.ProgramID ==ProgramID && w.WarrantyType == "Labor Warranty").Select(p => p.StartDate).FirstOrDefault();
+                    //additionalinfodata.MaterialsStartDate = ctx.ProgramWarranty.Where(w => w.ProgramID ==ProgramID && w.WarrantyType == "Materials Warranty").Select(p => p.StartDate).FirstOrDefault();
+                    //additionalinfodata.OtherStartDate = ctx.ProgramWarranty.Where(w => w.ProgramID ==ProgramID && w.WarrantyType == "Other Warranty").Select(p => p.StartDate).FirstOrDefault();
+                    //additionalinfodata.LaborEndDate = ctx.ProgramWarranty.Where(w => w.ProgramID == ProgramID && w.WarrantyType == "Labor Warranty").Select(p => p.EndDate).FirstOrDefault();
+                    //additionalinfodata.MaterialsEndDate = ctx.ProgramWarranty.Where(w => w.ProgramID == ProgramID && w.WarrantyType == "Materials Warranty").Select(p => p.EndDate).FirstOrDefault();
+                    //additionalinfodata.OtherEndDate = ctx.ProgramWarranty.Where(w => w.ProgramID == ProgramID && w.WarrantyType == "Other Warranty").Select(p => p.EndDate).FirstOrDefault();
+
+                    //additionalinfodata.LaborStartDate = (wbsprg.LaborStartDate != null ? wbsprg.LaborStartDate.Value.ToString("yyyy-MM-dd") : "");
+                    //additionalinfodata.MaterialsStartDate = (wbsprg.MaterialsStartDate != null ? wbsprg.MaterialsStartDate.Value.ToString("yyyy-MM-dd") : "");
+                    //additionalinfodata.OtherStartDate = (wbsprg.OtherStartDate != null ? wbsprg.OtherStartDate.Value.ToString("yyyy-MM-dd") : "");
+                    //additionalinfodata.LaborEndDate = (wbsprg.LaborEndDate != null ? wbsprg.LaborEndDate.Value.ToString("yyyy-MM-dd") : "");
+                    //additionalinfodata.MaterialsEndDate = (wbsprg.MaterialsEndDate != null ? wbsprg.MaterialsEndDate.Value.ToString("yyyy-MM-dd") : "");
+                    //additionalinfodata.OtherEndDate = (wbsprg.OtherEndDate != null ? wbsprg.OtherEndDate.Value.ToString("yyyy-MM-dd") : "");
+
+                    //additionalinfodata.LaborDescription = ctx.ProgramWarranty.Where(w => w.ProgramID == ProgramID && w.WarrantyType == "Labor Warranty").Select(p => p.Description).FirstOrDefault();
+                    //additionalinfodata.MaterialsDescription = ctx.ProgramWarranty.Where(w => w.ProgramID ==ProgramID && w.WarrantyType == "Materials Warranty").Select(p => p.Description).FirstOrDefault();
+                    //additionalinfodata.OtherDescription = ctx.ProgramWarranty.Where(w => w.ProgramID ==ProgramID && w.WarrantyType == "Other Warranty").Select(p => p.Description).FirstOrDefault();     //Vaishnavi 12-04-2022
+                    additionalinfodata.IsPPBond = ctx.Program.Where(w => w.ProgramID == ProgramID).Select(p => p.IsPPBond).FirstOrDefault();
+                    additionalinfodata.IsCostPartOfContract = ctx.Program.Where(w => w.ProgramID == ProgramID).Select(p => p.IsCostPartOfContract).FirstOrDefault();
+                    additionalinfodata.PPBondNotes = ctx.Program.Where(w => w.ProgramID == ProgramID).Select(p => p.PPBondNotes).FirstOrDefault(); 
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+                string a = ex.InnerException.ToString();
+            }
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Exit Point", Logger.logLevel.Debug);
+            return additionalinfodata;
+
+        }
+
+      
+       
     }
 }

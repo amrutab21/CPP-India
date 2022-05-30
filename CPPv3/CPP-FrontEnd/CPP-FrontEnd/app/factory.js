@@ -9,16 +9,29 @@ angular.module('xenon.factory', []).
                 // Sidebar Toggle
                 $rootScope.sidebarToggle = function () {
                     console.log($rootScope);
+                    //Narayan - Sidebar Option close on collapse - 06/05/2022
                     var adminList = $('#main-menu').find('li:eq(1)');
+                    var costList = $(adminList).next();
                     var sidebar = $rootScope.layoutOptions.sidebar;
 
                     if(sidebar.isCollapsed == false) {
                         sidebar.toggleOthers = false;
-                        //var isExpanded = $('#main-menu').find('li:eq(1)').hasClass('expanded');
-                        //if (isExpanded == true) {
-                        //    adminList.removeClass('expanded');
-                        //
-                        //}
+                        var isExpanded = $('#main-menu').find('li:eq(1)').hasClass('expanded');
+                        var isCostExp = $(adminList).next().hasClass('expanded');
+                        if (isExpanded == true) {
+                            //adminList.removeClass('expanded');
+                            angular.forEach(adminList, function (item) { 
+                                item.classList.remove('expanded');
+                                //item.lastElementChild.classList.add("d-none");
+                                item.lastElementChild.style.display = '';
+                            });
+                        }
+                        if (isCostExp == true) {
+                            angular.forEach(costList, function (item) {
+                                item.classList.remove('expanded');
+                                item.lastElementChild.style.display = '';
+                            });
+                        }
 
                     }
                     //console.log($('#main-menu').find('li:eq(1)').hasClass('expanded'));

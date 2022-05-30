@@ -41,7 +41,8 @@
         $scope.cellSelectEditableTemplate = '<select ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-options="id.PositionDescription for id in positionCollection track by id.PositionID" ng-blur="updateEntity(row)" />';
         $scope.cellCheckEditTableTemplate = '<input class="c-approval-matrix-check"  type="checkbox" ng-input="COL-FIELD" ng-model="COL_FIELD"/>';
         $scope.cellSelect = '<select ng-model="row.entity.text" data-ng-options="d as d.id for d in tempList">';
-        $scope.addRow = function () {
+        $scope.addRow = function ()
+        {
             var x = Math.max.apply(Math, $scope.ProjectClassCollection.map(function (o) {
 
                 return o.displayId;
@@ -61,11 +62,14 @@
                 checkbox: false,
                 new: true
             });
-
+            $scope.gridApi.core.clearAllFilters();//Nivedita-T on 16/11/2021
             $timeout(function () {
                 console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
                 $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
             }, 1);
+
+
+            
         }
 
 
@@ -104,7 +108,7 @@
                 ,
                 {
                     field: 'ProjectClassName',
-                    name: 'Type',
+                    name: 'Type*',
                     enableCellEditOnFocus: true,
                     //   enableCellEdit :true,
                     //  editableCellTemplate: $scope.cellInputEditableTemplate,
@@ -112,7 +116,7 @@
 
                 }, {
                     field: 'ProjectClassDescription',
-                    name: 'Description',
+                    name: 'Description*',
 
                     //  editableCellTemplate: $scope.cellInputEditableTemplate,
                     //cellFilter :'mapStatus'

@@ -61,8 +61,10 @@
                 new: true
             });
 
+            $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
             $timeout(function () {
                 console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                
                 $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
             }, 1);
         }
@@ -103,7 +105,7 @@
                 ,
                 {
                     field: 'DocumentTypeName',
-                    name: 'Type',
+                    name: 'Type*',
                     enableCellEditOnFocus: true,
                     //   enableCellEdit :true,
                     //  editableCellTemplate: $scope.cellInputEditableTemplate,
@@ -111,7 +113,7 @@
 
                 }, {
                     field: 'DocumentTypeDescription',
-                    name: 'Description',
+                    name: 'Description*',
 
                     //  editableCellTemplate: $scope.cellInputEditableTemplate,
                     //cellFilter :'mapStatus'

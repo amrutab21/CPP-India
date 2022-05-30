@@ -55,6 +55,83 @@ namespace WebAPI.Models
             return projectClassList;
         }
 
+        public static ProjectClass getProjectClassById(int projectClassID)
+        {
+            ProjectClass projectClass = null;
+            try
+            {
+
+                using (var ctx = new CPPDbContext())
+                {
+                    projectClass = ctx.ProjectClass.Where(x => x.ProjectClassID == projectClassID).FirstOrDefault();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+            }
+            finally
+            {
+            }
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Exit Point", Logger.logLevel.Debug);
+
+            return projectClass;
+        }
+        public static List<ProjectClass> getProjectClassByProgramId(int programID)
+        {
+            List<ProjectClass> projectClasses = new List<ProjectClass>();
+            try
+            {
+
+                using (var ctx = new CPPDbContext())
+                {
+                    var pojectClassIDs = ctx.ProgramElement.Where(x => x.ProgramID == programID).Select(x => x.ProjectClassID).ToList();
+                    projectClasses = ctx.ProjectClass.Where(x => pojectClassIDs.Contains(x.ProjectClassID)).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+            }
+            finally
+            {
+            }
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Exit Point", Logger.logLevel.Debug);
+
+            return projectClasses;
+        }
+        public static List<ProjectClass> getProjectClassByProgramElemId(int programElemID)
+        {
+            List<ProjectClass> projectClasses = new List<ProjectClass>();
+            try
+            {
+
+                using (var ctx = new CPPDbContext())
+                {
+                    var pojectClassIDs = ctx.ProgramElement.Where(x => x.ProgramElementID == programElemID).Select(x => x.ProjectClassID).ToList();
+                    projectClasses = ctx.ProjectClass.Where(x => pojectClassIDs.Contains(x.ProjectClassID)).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+            }
+            finally
+            {
+            }
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Exit Point", Logger.logLevel.Debug);
+
+            return projectClasses;
+        }
 
         public static String registerProjectClass(ProjectClass projectClass)
         {

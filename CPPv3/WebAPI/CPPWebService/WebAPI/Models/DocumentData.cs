@@ -26,6 +26,9 @@ namespace WebAPI.Models
         public byte[] DocumentBinaryData { get; set; }
         public int? Size { get; set; }
 
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
 
         //ON DELETE RESTRICT
         //[ForeignKey("ProjectID")]
@@ -44,7 +47,7 @@ namespace WebAPI.Models
                 using (var ctx = new CPPDbContext())
                 {
                     //documentList = ctx.Document.Where(a => a.Project == projectID).OrderBy(a => a.DocumentName).ToList();
-                    document = ctx.Document.Where(a => a.DocumentID == documentID).FirstOrDefault();
+                    document = ctx.Document.Where(a => a.DocumentID == documentID && a.IsDeleted == false).FirstOrDefault();
                     if (document.DocumentID == 0)
                     {
                         throw new Exception("DocumentID" + documentID.ToString() + " not found.");

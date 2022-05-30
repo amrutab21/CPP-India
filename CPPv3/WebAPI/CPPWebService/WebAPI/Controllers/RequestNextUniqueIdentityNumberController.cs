@@ -28,6 +28,16 @@ namespace WebAPI.Controllers
                     paddedNewNum = "BC" + num.ToString().PadLeft(5, '0');
                 }
             }
+            else if (NumberType == "ClientPOC")                                 //Tanmay - 15/12/2021
+            {
+                UniqueIdentityNumber = clientPOC.nextUniqueIdentityNumber();
+                if (UniqueIdentityNumber.Contains("PC"))
+                {
+                    Int32.TryParse(UniqueIdentityNumber.Substring(2), out num);
+                    num++;
+                    paddedNewNum = "PC" + num.ToString().PadLeft(5, '0');
+                }
+            }
             else if (NumberType == "Subcontractor")
             {
                 UniqueIdentityNumber = Subcontractor.nextUniqueIdentityNumber();
@@ -127,7 +137,7 @@ namespace WebAPI.Controllers
             {
                 result = paddedNewNum
             };
-            return Request.CreateResponse(HttpStatusCode.OK, jsonNew);
+            return Request.CreateResponse(HttpStatusCode.OK, jsonNew);        
         }
     }
 }

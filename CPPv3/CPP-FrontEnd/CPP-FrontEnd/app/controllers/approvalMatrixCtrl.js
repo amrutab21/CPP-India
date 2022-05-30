@@ -24,7 +24,7 @@ angular.module('cpp.controllers').
                 });
             }
             ApprovalMatrix.get({}, function (approvalMatrixData) {
-                debugger;
+                //debugger;
                 var i = 1;
                 $scope.checkList = [];
                 $scope.approvalMatrixCollection = approvalMatrixData.result;
@@ -41,7 +41,7 @@ angular.module('cpp.controllers').
             })
             //------------------------------Swapnil 17-09-2020------------------------------------------------------------------------------
             MFAConfiguration.lookup().get(function (response) {
-                debugger
+                //debugger
                 console.log(response);
                 mfaDetails = response.result;
 
@@ -125,10 +125,11 @@ angular.module('cpp.controllers').
                     checkbox:false,
                     new : true
                 });
-
+                $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
                 $timeout(function () {
                     console.log($scope.gridOptions.data);
                     console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                    
                     $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
                 }, 1);
             }
@@ -310,7 +311,7 @@ angular.module('cpp.controllers').
                 var isFilled  = true;
                 var listToSave = [];
                 angular.forEach($scope.approvalMatrixCollection, function (value, key, obj) {
-                    debugger;
+                    //debugger;
                     //if (value.Role == "" || value.Schedule == "") {
                     if (value.Role == "" || value.Cost == "") {
                         dhtmlx.alert({

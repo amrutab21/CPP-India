@@ -31,7 +31,7 @@
             else
                 $scope.edit = false;
             $scope.total = 0.0;
-
+            
             for (var poindx in $scope.purchaseOrderDetails) {
                 if ($scope.purchaseOrderDetails[poindx].CostType == 'ODC') {
                     $scope.purchaseOrderDetails[poindx].EmployeeIDlist = [];
@@ -165,7 +165,7 @@
                     "CustomerRefFullName": "BC00002.Los Angeles Worldwide Airport:16.Construction:003.TestProj:01.testElement:04.2814.1100",
                     "PurchaseOrderID": 13,
                     "PurchaseOrderNumber": "P003010006",
-                    "EmployeeID": [10273, 10271],
+                    "EmployeeID": [0],
                     "EmployeeName": "",
                     "AmountOrQuantity": 126,
                     "UtilizedAmountOrQuantity": 105,
@@ -205,7 +205,7 @@
                             if ($scope.purchaseOrderDetails[x].RequestedAmountOrQuantity != item.RequestedAmountOrQuantity) {
                                 isChanges = true;
                             }
-
+                          
                             if ($scope.purchaseOrderDetails[x].CostType == 'ODC') {
                                 for (var y = 0; y < $scope.purchaseOrderDetails[x].EmployeeID.length; y++) {
                                     if ($scope.purchaseOrderDetails[x].EmployeeID[y] != item.EmployeeID[y]) {
@@ -279,7 +279,7 @@
                 console.log("Employee List");
                 $scope.employeesList = EmployeesData.result;
                 console.log($scope.employeesList);
-                $scope.empdata = [];
+                $scope.empdata = [];          
                 for (var empno in $scope.employeesList) {
                     $scope.empdata.push({
                         "id": $scope.employeesList[empno].ID, "label": $scope.employeesList[empno].Name
@@ -297,7 +297,7 @@
                 
 
             });
-            $scope.setEmployee = function (empID, rowdata) {
+            $scope.setEmployee = function (empID, rowdata) {           
                 console.log("Set Employee==>");
                 console.log(empID);
                 console.log(rowdata);
@@ -391,7 +391,7 @@
 
             $scope.save = function () {
                 var purchaseOrderList = [];
-
+                
                 angular.forEach($scope.purchaseOrderDetails, function (item) {
                     if (item.RequestedAmountOrQuantity > 0 && item.RequestedAmountOrQuantity != undefined) {
                         if (item.CostType == 'ODC') {

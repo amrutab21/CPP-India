@@ -105,7 +105,7 @@ namespace WebAPI.Models
             //I. Delete existing trend
 
             //II. Create new
-            Trend currentTrend = ctx.Trend.Where(a => a.ProjectID == projectID && a.TrendNumber == "1000").FirstOrDefault();
+            Trend currentTrend = ctx.Trend.Where(a => a.ProjectID == projectID && a.TrendNumber == "1000" && a.IsDeleted == false).FirstOrDefault();
             Project project = ctx.Project.Where(a => a.ProjectID == projectID).FirstOrDefault();
 
            

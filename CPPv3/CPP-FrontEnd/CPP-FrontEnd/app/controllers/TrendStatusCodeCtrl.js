@@ -61,9 +61,10 @@
                 checkbox: false,
                 new: true
             });
-
+            $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
             $timeout(function () {
                 console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                
                 $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
             }, 1);
 
@@ -104,7 +105,7 @@
                 ,
                 {
                     field: 'TrendStatusCodeNumber',
-                    name: 'Code',
+                    name: 'Code*',
                     enableCellEditOnFocus: true,
                     width: 100, 
                     cellClass: 'c-col-Num' //Manasi
@@ -116,7 +117,7 @@
                 },
                 {
                     field: 'TrendStatusCodeName',
-                    name: 'Name',
+                    name: 'Name*',
                     enableCellEditOnFocus: true,
                     //   enableCellEdit :true,
                     //  editableCellTemplate: $scope.cellInputEditableTemplate,
@@ -234,7 +235,9 @@
             var listToSave = [];
             angular.forEach($scope.TrendStatusCodeCollection, function (value, key, obj) {
 
-                if (value.TrendStatusCodeNumber == "" || value.TrendStatusCodeName == "" || value.TrendStatusCodeDescription == "") {
+                if (value.TrendStatusCodeNumber == "" || value.TrendStatusCodeName == ""
+                    //|| value.TrendStatusCodeDescription == "" //Aditya 3-2-2022
+                ) {
                     dhtmlx.alert({
                         text: "Please fill data to all required fields before save (Row " + value.displayId + ")",
                         width: "400px"

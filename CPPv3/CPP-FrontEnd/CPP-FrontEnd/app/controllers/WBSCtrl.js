@@ -1,17 +1,16 @@
-
 angular.module('cpp.controllers').
     controller('WBSCtrl', ['$state', 'ProjectTitle', 'UserName', '$http', '$location', '$scope', '$rootScope', '$uibModal', '$sce',
         'Page', 'Organization', 'Program', 'ProgramElement', 'Project', 'Trend', 'currentTrend', 'myLocalStorage', 'localStorageService',
         'RequestApproval', 'TrendStatus', 'FundType', '$location', '$stateParams', '$window', 'ProgramFund', 'usSpinnerService', '$filter',
-        'ProjectScope', '$timeout', 'PhaseCode', 'ProgramCategory', 'ProjectType', 'ProjectClass', 'Client', 'Location', 'ProjectNumber',
+        'ProjectScope', '$timeout', 'PhaseCode', 'ProgramCategory', 'ProjectType', 'ProjectClass', 'ProjectClassByProgramId','ProjectClassByProgramElementId', 'Client', 'Prime', 'Location', 'ProjectNumber',
         'Employee', 'AllEmployee', 'DocumentType', 'Document', 'TrendStatusCode', 'User', 'ProjectElementNumber', 'TrendId', 'LineOfBusiness', 'ProjectWhiteList', 'UpdateProjectWhiteList', 'UpdateContract',
-        'Contract', 'ProgramContract', 'Milestone', 'ChangeOrder', 'UpdateMilestone', 'UpdateChangeOrder', 'ServiceClass', 'WbsService', '$cacheFactory',
+        'Contract', 'ProgramContract', 'Milestone', 'ChangeOrder', 'UpdateMilestone', 'UpdateChangeOrder', 'ServiceClass', 'WbsService', '$cacheFactory', 'ClientPOC', 'UniqueIdentityNumber', 'CertifiedPayroll','Wrap',  
         function ($state, ProjectTitle, UserName, $http, $location, $scope, $rootScope, $uibModal, $sce, Page, Organization, Program, ProgramElement,
             Project, Trend, currentTrend, myLocalStorage, localStorageService, RequestApproval, TrendStatus, FundType,
             $location, $stateParams, $window, ProgramFund, usSpinnerService, $filter, ProjectScope, $timeout, PhaseCode, ProgramCategory,
-            ProjectType, ProjectClass, Client, Location, ProjectNumber, Employee, AllEmployee, DocumentType, Document, TrendStatusCode,
+            ProjectType, ProjectClass, ProjectClassByProgramId, ProjectClassByProgramElementId, Client, Prime, Location, ProjectNumber, Employee, AllEmployee, DocumentType, Document, TrendStatusCode,
             User, ProjectElementNumber, TrendId, LineOfBusiness, ProjectWhiteList, UpdateProjectWhiteList, UpdateContract, Contract, ProgramContract, Milestone, ChangeOrder,
-            UpdateMilestone, UpdateChangeOrder, ServiceClass, WbsService, $cacheFactory) {
+            UpdateMilestone, UpdateChangeOrder, ServiceClass, WbsService, $cacheFactory, ClientPOC, UniqueIdentityNumber, CertifiedPayroll, Wrap) {      
             Page.setTitle('Program Navigation');
             ProjectTitle.setTitle('');
             TrendStatus.setStatus('');
@@ -31,6 +30,8 @@ angular.module('cpp.controllers').
             var formdata = new FormData();
             $scope.deleteDoc = [];
             var _modificationList = null;
+            var _wbsTreeData = null; 
+            var g_program_element_change_order_draft_list = [];
             $('#fileUploadProject').change(function (ev) {
                 console.log(fileUploadProject.files);
                 $("#document_name_project").val(fileUploadProject.files[0].name);
@@ -63,7 +64,7 @@ angular.module('cpp.controllers').
                 }
                 //================= Jignesh-03-03-2021 ==================================
                 if (!docTypeID) {
-                    dhtmlx.alert('Please choose a Doument Type.');
+                    dhtmlx.alert('Please choose a Document Type.');
                     return;
                 }
                 if (!g_editelementdocument) {
@@ -394,6 +395,9 @@ angular.module('cpp.controllers').
 
                 //$('#cancel_doc_update_modal_xPrgElm').trigger('click');
             });
+
+            //====================== Tanmay ===================================================
+            //=================================================================================
 
             //====================================== Jignesh-TDM-06-01-2020 =======================================
             $('#uploadDocBtnTrend').unbind('click').on('click', function ($files) {
@@ -741,7 +745,7 @@ angular.module('cpp.controllers').
                 }
 
                 console.log('get files', $files);
-                var x = wbsTree.getSelectedProgramElementID();
+                var x = _selectedNode.ProgramElementID;
                 console.log(x)
                 var docTypeID = $("#document_type_program_element  option").filter(":selected").val();
                 var files = fileUploadProgramElement.files;
@@ -806,7 +810,7 @@ angular.module('cpp.controllers').
 
                 var request = {
                     method: 'POST',
-                    url: serviceBasePath + '/uploadFiles/Post/ProgramElement/0/' + wbsTree.getSelectedProgramElementID() + '/0/0/0/' + docTypeID,
+                    url: serviceBasePath + '/uploadFiles/Post/ProgramElement/0/' + _selectedNode.ProgramElementID + '/0/0/0/' + docTypeID,
                     data: formdata, //fileUploadProject.files, //$scope.
                     ignore: true,
                     headers: {
@@ -826,7 +830,7 @@ angular.module('cpp.controllers').
                     //    for (var x = 0; x < _documentList.length; x++) {
                     //        gridUploadedDocument.append('<tr><td style="width: 20px"><input type="checkbox" name="record"></td><td style="display:none">' + _documentList[x].DocumentID + '</td><td><a href="' + serviceBasePath + '/Request/DocumentByDocID/' + _documentList[x].DocumentID + '" download>' + _documentList[x].DocumentName + '</a></td><td>' + _documentList[x].DocumentTypeName + '</td><tr>');
                     //    }
-                    $http.get(serviceBasePath + "Request/Document/ProgramElement/" + wbsTree.getSelectedProgramElementID())
+                    $http.get(serviceBasePath + "Request/Document/ProgramElement/" + _selectedNode.ProgramElementID)
                         .then(function success(response) {
                             console.log(response);
                             wbsTree.setDocumentList(response.data.result);
@@ -889,7 +893,8 @@ angular.module('cpp.controllers').
                 }
 
                 console.log('get files', $files);
-                var x = wbsTree.getSelectedProgramElementID();
+               // var x = wbsTree.getSelectedProgramElementID();
+                var x = _selectedNode.ProgramElementID;
                 console.log(x)
                 var docTypeID = $("#document_type_programPrg  option").filter(":selected").val();
                 var files = fileUploadProgramElement.files;
@@ -1002,8 +1007,8 @@ angular.module('cpp.controllers').
                     // Jignesh-24-02-2021 Remove ''&ExecutionDate=' + ExecutionDate.replace(/\//g, "") +' from url from below request.
                     var request = {
                         method: 'POST',
-                        url: serviceBasePath + '/uploadFilesnew/Postnew/ProgramElement/0/' + wbsTree.getSelectedProgramElementID() + '/0/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName),
-                        // url: serviceBasePath + '/uploadFiles/Post/ProgramElement/0/' + wbsTree.getSelectedProgramElementID() + '/0/0/0/' + docTypeID,
+                        url: serviceBasePath + '/uploadFilesnew/Postnew/ProgramElement/0/' + _selectedNode.ProgramElementID + '/0/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName),
+                        // url: serviceBasePath + '/uploadFiles/Post/ProgramElement/0/' + _selectedNode.ProgramElementID + '/0/0/0/' + docTypeID,
                         data: formdata, //fileUploadProject.files, //$scope.
                         ignore: true,
                         headers: {
@@ -1029,7 +1034,7 @@ angular.module('cpp.controllers').
                         //    for (var x = 0; x < _documentList.length; x++) {
                         //        gridUploadedDocument.append('<tr><td style="width: 20px"><input type="checkbox" name="record"></td><td style="display:none">' + _documentList[x].DocumentID + '</td><td><a href="' + serviceBasePath + '/Request/DocumentByDocID/' + _documentList[x].DocumentID + '" download>' + _documentList[x].DocumentName + '</a></td><td>' + _documentList[x].DocumentTypeName + '</td><tr>');
                         //    }
-                        $http.get(serviceBasePath + "Request/Document/ProgramElement/" + wbsTree.getSelectedProgramElementID())
+                        $http.get(serviceBasePath + "Request/Document/ProgramElement/" + _selectedNode.ProgramElementID)
                             .then(function success(response) {
                                 console.log(response);
                                 wbsTree.setDocumentList(response.data.result);
@@ -1121,8 +1126,8 @@ angular.module('cpp.controllers').
 
                     var request = {
                         method: 'POST',
-                        url: serviceBasePath + '/uploadFilesnew/Postnew/ProgramElement/0/' + wbsTree.getSelectedProgramElementID() + '/0/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName) + '&DocID=' + encodeURIComponent(DocID) + '&editOperation=' + encodeURIComponent(editOperation) + '&noFile=' + encodeURIComponent(noFile),
-                        // url: serviceBasePath + '/uploadFiles/Post/ProgramElement/0/' + wbsTree.getSelectedProgramElementID() + '/0/0/0/' + docTypeID,
+                        url: serviceBasePath + '/uploadFilesnew/Postnew/ProgramElement/0/' + _selectedNode.ProgramElementID + '/0/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName) + '&DocID=' + encodeURIComponent(DocID) + '&editOperation=' + encodeURIComponent(editOperation) + '&noFile=' + encodeURIComponent(noFile),
+                        // url: serviceBasePath + '/uploadFiles/Post/ProgramElement/0/' + _selectedNode.ProgramElementID + '/0/0/0/' + docTypeID,
                         data: formdata, //fileUploadProject.files, //$scope.
                         ignore: true,
                         headers: {
@@ -1146,7 +1151,7 @@ angular.module('cpp.controllers').
                         //    for (var x = 0; x < _documentList.length; x++) {
                         //        gridUploadedDocument.append('<tr><td style="width: 20px"><input type="checkbox" name="record"></td><td style="display:none">' + _documentList[x].DocumentID + '</td><td><a href="' + serviceBasePath + '/Request/DocumentByDocID/' + _documentList[x].DocumentID + '" download>' + _documentList[x].DocumentName + '</a></td><td>' + _documentList[x].DocumentTypeName + '</td><tr>');
                         //    }
-                        $http.get(serviceBasePath + "Request/Document/ProgramElement/" + wbsTree.getSelectedProgramElementID())
+                        $http.get(serviceBasePath + "Request/Document/ProgramElement/" + _selectedNode.ProgramElementID)
                             .then(function success(response) {
                                 console.log(response);
                                 wbsTree.setDocumentList(response.data.result);
@@ -1273,7 +1278,7 @@ angular.module('cpp.controllers').
                 }
 
                 console.log('get files', $files);
-                var x = wbsTree.getSelectedProgramID();
+                var x = wbsTree.getSelectedNode().ProgramID;
                 console.log(x)
                 var docTypeID = $("#document_type_program option").filter(":selected").val();
 
@@ -1390,10 +1395,10 @@ angular.module('cpp.controllers').
 
                     var request = {
                         method: 'POST',
-                        //  url: serviceBasePath + '/uploadFiles/Post/Program/0/0/' + wbsTree.getSelectedProgramID() + '/0/0/' + docTypeID,    
-                        //url: serviceBasePath + '/uploadFilesnew/Postnew/Program/0/0/' + wbsTree.getSelectedProgramID() + '/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName) + '&DocID=' + encodeURIComponent(DocID),
-                        // url: serviceBasePath + '/uploadFilesnew/Postnew/Program/0/0/' + wbsTree.getSelectedProgramID() + '/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName) + '&DocID=' + encodeURIComponent(DocID) + '&editOperation=' + encodeURIComponent(editOperation),
-                        url: serviceBasePath + '/uploadFilesnew/Postnew/Program/0/0/' + wbsTree.getSelectedProgramID() + '/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName),
+                        //  url: serviceBasePath + '/uploadFiles/Post/Program/0/0/' + wbsTree.getSelectedNode().ProgramID + '/0/0/' + docTypeID,    
+                        //url: serviceBasePath + '/uploadFilesnew/Postnew/Program/0/0/' + wbsTree.getSelectedNode().ProgramID + '/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName) + '&DocID=' + encodeURIComponent(DocID),
+                        // url: serviceBasePath + '/uploadFilesnew/Postnew/Program/0/0/' + wbsTree.getSelectedNode().ProgramID + '/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName) + '&DocID=' + encodeURIComponent(DocID) + '&editOperation=' + encodeURIComponent(editOperation),
+                        url: serviceBasePath + '/uploadFilesnew/Postnew/Program/0/0/' + wbsTree.getSelectedNode().ProgramID + '/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName),
                         data: formdata, //fileUploadProject.files, //$scope.
                         ignore: true,
                         headers: {
@@ -1421,11 +1426,11 @@ angular.module('cpp.controllers').
 
 
 
-                        $http.get(serviceBasePath + "Request/Document/Program/" + wbsTree.getSelectedProgramID())
+                        $http.get(serviceBasePath + "Request/Document/Program/" + wbsTree.getSelectedNode().ProgramID)
                             .then(function success(response) {
                                 console.log(response);
                                 wbsTree.setDocumentList(response.data.result);
-                                _Document.getModificationByProgramId().get({ programId: wbsTree.getSelectedProgramID() }, function (response) {
+                                _Document.getModificationByProgramId().get({ programId: wbsTree.getSelectedNode().ProgramID }, function (response) {
                                     var _modificationList = response.data;
 
                                     for (var x = 0; x < _documentList.length; x++) {
@@ -1514,8 +1519,8 @@ angular.module('cpp.controllers').
                         noFile = true;
                     var request = {
                         method: 'POST',
-                        //  url: serviceBasePath + '/uploadFiles/Post/Program/0/0/' + wbsTree.getSelectedProgramID() + '/0/0/' + docTypeID,    
-                        url: serviceBasePath + '/uploadFilesnew/Postnew/Program/0/0/' + wbsTree.getSelectedProgramID() + '/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName) + '&DocID=' + encodeURIComponent(DocID) + '&editOperation=' + encodeURIComponent(editOperation) + '&noFile=' + encodeURIComponent(noFile),
+                        //  url: serviceBasePath + '/uploadFiles/Post/Program/0/0/' + wbsTree.getSelectedNode().ProgramID + '/0/0/' + docTypeID,    
+                        url: serviceBasePath + '/uploadFilesnew/Postnew/Program/0/0/' + wbsTree.getSelectedNode().ProgramID + '/0/0/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName) + '&DocID=' + encodeURIComponent(DocID) + '&editOperation=' + encodeURIComponent(editOperation) + '&noFile=' + encodeURIComponent(noFile),
                         data: formdata, //fileUploadProject.files, //$scope.
                         ignore: true,
                         headers: {
@@ -1543,11 +1548,11 @@ angular.module('cpp.controllers').
 
 
 
-                        $http.get(serviceBasePath + "Request/Document/Program/" + wbsTree.getSelectedProgramID())
+                        $http.get(serviceBasePath + "Request/Document/Program/" + wbsTree.getSelectedNode().ProgramID)
                             .then(function success(response) {
                                 console.log(response);
                                 wbsTree.setDocumentList(response.data.result);
-                                _Document.getModificationByProgramId().get({ programId: wbsTree.getSelectedProgramID() }, function (response) {
+                                _Document.getModificationByProgramId().get({ programId: wbsTree.getSelectedNode().ProgramID }, function (response) {
                                     var _modificationList = response.data;
 
                                     for (var x = 0; x < _documentList.length; x++) {
@@ -1694,7 +1699,8 @@ angular.module('cpp.controllers').
                             var docTypeList = wbsTree.getDocTypeList();
                             docTypeDropDownProgram.empty();
                             // Jignesh-25-03-2021
-                            if (wbsTree.getLocalStorage().role === "Admin") {
+                            //if (wbsTree.getLocalStorage().role === "Admin") {
+                            if (wbsTree.getLocalStorage().role.indexOf('Admin') != -1) {
                                 docTypeDropDownProgram.append('<option value="Add New"> ----------Add New---------- </option>');
                             }
                             for (var x = 0; x < docTypeList.length; x++) {
@@ -1717,12 +1723,237 @@ angular.module('cpp.controllers').
                 });
             });
             //=======================================================================================================
+            //======================= Aditya 07042022 Prime Add new//
+            $('#btnSavePrime').unbind('click').on('click', function ($files) {
+                var primeName = $('#txtPrimeName').val();
+
+                if (primeName == "" || primeName.length == 0) {
+                    dhtmlx.alert('Enter Prime Name');
+                    return;
+                }
+                
+
+
+
+                var listToSave = [];
+                var dataObj = {
+                    Operation: '1',
+                    Name: primeName,
+                }
+                listToSave.push(dataObj);
+
+                var url = serviceBasePath + 'Response/prime/';
+                $http({
+                    url: url,
+                    method: "POST",
+                    data: JSON.stringify(listToSave),
+                    headers: { 'Content-Type': 'application/json' }
+                }).then(function success(response) {
+                    debugger;
+                    response.data.result.replace(/[\r]/g, '\n');
+                    if (response.data.result) {
+                        Prime.get({}, function (response) {
+                            debugger;
+                            wbsTree.setPrimeList(response.result);
+                            var PrimeDropDownProgram;
+
+                            var primeList = wbsTree.getPrimeList();
+                            primeList.sort(function (a, b) {                 //vaishnavi
+                                return a.Name.localeCompare(b.Name); //vaishnavi
+                            });   //vaishnavi
+                            PrimeDropDownProgram = modal.find('.modal-body #prime_dd');
+                            PrimeDropDownProgram.empty();
+                            // Jignesh-25-03-2021
+                            //if (wbsTree.getLocalStorage().role === "Admin") {
+                            if (wbsTree.getLocalStorage().role.indexOf('Admin') != -1) {
+                                PrimeDropDownProgram.append('<option value="Add New"> ----------Add New---------- </option>');
+                            }
+                            for (var x = 0; x < primeList.length; x++) {
+                                if (primeList[x].Name == primeName) {
+                                    PrimeDropDownProgram.append('<option value="' + primeList[x].id + '" selected> ' + primeList[x].Name + '</option>');
+                                }
+                                else {
+                                    PrimeDropDownProgram.append('<option value="' + primeList[x].id + '"> ' + primeList[x].Name + '</option>');
+                                }
+                            }
+                        });
+                        $('#cancel_addNewPrimeModal_x').trigger('click');
+                        dhtmlx.alert(response.data.result);
+                    } else {
+                        dhtmlx.alert('No changes to be saved.');
+                    }
+                    //$state.reload();
+                }, function error(response) {
+                    dhtmlx.alert("Failed to save. Please contact your Administrator.");
+                });
+            });
+            //========================================================//
+            //======================================= Tanmay-AddNewClientModal-29/12/2021 ==========================================
+            $('#btnSaveClient').unbind('click').on('click', function ($files) {
+                var clientName = $('#txtClientName').val();
+                var clientPhone = $('#txtClientPhone').val();
+                var clientEmail = $('#txtClientEmail').val();
+                var clientAddressLine1 = $('#txtClientAddressLine1').val();
+                var clientAddressLine2 = $('#txtClientAddressLine2').val();
+                var clientCity = $('#txtClientCity').val();
+                var clientState = $('#txtClientState').val();
+                var clientPONo = $('#txtClientPONo').val();
+                var uniqueIdentityNumber = $('#txtUniqueIdentityNumber').val();
+
+                if (clientName == "" || clientName.length == 0) {
+                    dhtmlx.alert('Enter Client Name');
+                    return;
+                }
+                if (clientPhone == "" || clientPhone.length == 0) {
+                    dhtmlx.alert('Enter Phone Number.');
+                    return;
+                }
+                if (clientPhone != null) {
+                    if (clientPhone.length > 0) {
+                        if (clientPhone.length != 12) {
+                            dhtmlx.alert('Enter valid 10 digit Client Phone.');
+                            isFilled = false;
+                            return true;
+                        }
+                    }
+                }
+                if (clientEmail == "" || clientEmail.length == 0) {
+                    dhtmlx.alert('Enter Email Address.');
+                    return;
+                }
+                if (clientEmail != null) {
+                    if (clientEmail.length > 0) {
+                        var testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+                        if (!testEmail.test(clientEmail)) {
+                            dhtmlx.alert('Please enter valid Email Address.');
+                            isFilled = false;
+                            return;
+                        }
+                    }
+                }
+                if (clientAddressLine1 == "" || clientAddressLine1.length == 0) {
+                    dhtmlx.alert('Enter Address Line 1');
+                    return;
+                }
+                if (clientAddressLine2 == "" || clientAddressLine2.length == 0) {
+                    dhtmlx.alert('Enter Address Line 2');
+                    return;
+                }
+                if (clientCity == "" || clientCity.length == 0) {
+                    dhtmlx.alert('Enter City');
+                    return;
+                }
+                if (clientState == "" || clientState.length == 0) {
+                    dhtmlx.alert('Enter State');
+                    return;
+                }
+                if (clientPONo == "" || clientPONo.length == 0) {
+                    dhtmlx.alert('Enter Zip Code');
+                    return;
+                }
+                if (clientName == "" || uniqueIdentityNumber == "") {
+                    dhtmlx.alert({
+                        text: "Please fill data to all required fields before save (Row " + value.displayId + ")",
+                        width: "400px"
+                    });
+                    okToExit = false;
+                    isFilled = false;
+                    return;
+                }
+
+                
+
+                var listToSave = [];
+                var dataObj = {
+                    Operation: '1',
+                    ClientName: clientName,
+                    ClientPhone: clientPhone,
+                    ClientEmail: clientEmail,
+                    ClientAddressLine1: clientAddressLine1,
+                    ClientAddressLine2: clientAddressLine2,
+                    ClientCity: clientCity,
+                    ClientState: clientState,
+                    ClientPONo: clientPONo,
+                    UniqueIdentityNumber: uniqueIdentityNumber
+                }
+                listToSave.push(dataObj);
+                
+                var url = serviceBasePath + 'response/Client/';
+                $http({
+                    url: url,
+                    method: "POST",
+                    data: JSON.stringify(listToSave),
+                    headers: { 'Content-Type': 'application/json' }
+                }).then(function success(response) {
+                    debugger;
+                    response.data.result.replace(/[\r]/g, '\n');
+                    if (response.data.result) {
+                        Client.get({}, function (response) {
+                            debugger;
+                            wbsTree.setClientList(response.result);
+                            var clientDropDownProgram;
+                           
+                            var clientList = wbsTree.getClientList();   
+                            clientList.sort(function (a, b) {                 //vaishnavi
+                                return a.ClientName.localeCompare(b.ClientName); //vaishnavi
+                            });   //vaishnavi
+                            clientDropDownProgram = modal.find('.modal-body #program_client_poc');
+                            clientDropDownProgram.empty();
+                            // Jignesh-25-03-2021
+                            //if (wbsTree.getLocalStorage().role === "Admin") {
+                            if (wbsTree.getLocalStorage().role.indexOf('Admin') != -1) {
+                                clientDropDownProgram.append('<option value="Add New"> ----------Add New---------- </option>');
+                            }
+                            for (var x = 0; x < clientList.length; x++) {
+                                if (clientList[x].ClientName == clientName) {
+                                    clientDropDownProgram.append('<option value="' + clientList[x].ClientID + '" selected> ' + clientList[x].ClientName + '</option>');
+                                }
+                                else {
+                                    clientDropDownProgram.append('<option value="' + clientList[x].ClientID + '"> ' + clientList[x].ClientName + '</option>');
+                                }
+                            }
+                        });
+                        //$http({
+                        //    url: serviceBasePath + "Request/Client",
+                        //    method: "GET"
+                        //}).then(function success(response) {
+                        //    wbsTree.setClientList(response.data.result);
+                        //    var clientDropDownProgram;
+                            
+                        //    var clientList = wbsTree.getClientList();
+                        //    clientDropDownProgram = modal.find('.modal-body #program_client_poc');
+                        //    clientDropDownProgram.empty();
+                        //    // Jignesh-25-03-2021
+                        //    if (wbsTree.getLocalStorage().role === "Admin") {
+                        //        clientDropDownProgram.append('<option value="Add New"> ----------Add New---------- </option>');
+                        //    }
+                        //    for (var x = 0; x < clientList.length; x++) {
+                        //        if (clientList[x].ClientName == clientName) {
+                        //            clientDropDownProgram.append('<option value="' + clientList[x].ClientID + '" selected> ' + clientList[x].ClientName + '</option>');
+                        //        }
+                        //        else {
+                        //            clientDropDownProgram.append('<option value="' + clientList[x].ClientID + '"> ' + clientList[x].ClientName + '</option>');
+                        //        }
+                        //    }
+                        //});
+                        $('#cancel_addNewClientModal_x').trigger('click');
+                        dhtmlx.alert(response.data.result);
+                    } else {
+                        dhtmlx.alert('No changes to be saved.');
+                    }
+                    //$state.reload();
+                }, function error(response) {
+                    dhtmlx.alert("Failed to save. Please contact your Administrator.");
+                });
+            });
+            //=======================================================================================================
 
             //====================================== Jignesh-24-03-2021 Modification Changes =======================================
 
-            $('#btnSaveModification').unbind('click').on('click', function ($files) {
-                var programId = wbsTree.getSelectedProgramID();
-                var createdBy = wbsTree.getSelectedProgramElementID();
+            $('#btnSaveModification').unbind().on('click', function (event) {
+                var operation = wbsTree.getContractModificationOperation();
+                var programId = wbsTree.getSelectedNode().ProgramID;
+                var createdBy = _selectedNode.ProgramElementID;
                 //var modNumber = $('#modification_number').val();
                 var title = $('#modification_title').val();
                 var date = $('#modification_date').val();
@@ -1731,6 +1962,9 @@ angular.module('cpp.controllers').
                 var modType = $('#ddModificationType').val();
                 var pgmcurrentstartdate = $('#program_current_start_date').val();
                 var pgmcurrentenddate = $('#program_current_end_date').val();
+
+
+                var pgmogenddate = $('#program_original_end_date').val(); // Aditya ogDate
                 
                 //================ Jignesh-24-03-2021 Modification Changes
                 //var durationDate = $('#duration_date').val();
@@ -1751,15 +1985,31 @@ angular.module('cpp.controllers').
                     dhtmlx.alert('Enter Date.');
                     return;
                 }
-                if (pgmcurrentstartdate == "" || pgmcurrentstartdate.length == 0) {
-                    dhtmlx.alert('Enter Contract Start Date.');
-                    return;
+
+                //Vaishnavi 08-02-2022
+                if (date) {
+
+                    var testDate = moment(date, 'M/D/YYYY', true).isValid();
+                    if (!testDate){
+                        dhtmlx.alert('Date Should be in MM/DD/YYYY Format.');
+                        return;
+                    }
                 }
-                if (pgmcurrentenddate == "" || pgmcurrentenddate.length == 0) {
-                    dhtmlx.alert('Enter Contract End Date.');
-                    return;
-                    
+                //Nivedita 03-02-2022
+                if (modType != 1)
+                {
+                    //if (pgmcurrentstartdate == "" || pgmcurrentstartdate.length == 0) {
+                    //    dhtmlx.alert('Enter Contract Start Date.');
+                    //    return;
+                    //}
+                    //Aditya ogDate
+                    if (pgmogenddate == "" || pgmogenddate.length == 0) {
+                        dhtmlx.alert('Enter Original Contract End Date.');
+                        return;
+
+                    }
                 }
+                
                 //if (_selectedNode.CurrentEndDate == "") {
                 //    _selectedNode.CurrentEndDate = pgmcurrentenddate;
                 //}
@@ -1808,6 +2058,7 @@ angular.module('cpp.controllers').
 
                 var contractModification = {
                     //ModificationNo: modNumber,
+                    Operation: operation,
                     Title: title,
                     Reason: reason,
                     Description: description,
@@ -1817,9 +2068,60 @@ angular.module('cpp.controllers').
                     //DurationDate: durationDate,
                     ProgramID: programId,
                     CreatedBy: createdBy,
-                    ScheduleImpact: scheduleImpact
+                    ScheduleImpact: scheduleImpact,
+                    originalEndDate: pgmogenddate // Aditya ogDate
+                    
                 };
+                
+                if (modType != 1)
+                {
+                    contractModification.ProgramStartDt = pgmcurrentstartdate;
+                    contractModification.ProgramEndDt = pgmcurrentenddate;
+                    $('#program_current_end_date').attr('disabled', true); // Aditya ogDate
+                    $('#program_original_end_date').attr('disabled', true); // Aditya ogDate
+                }
+                if (operation == 2) {
+                    contractModification.Id = $('#primaryKeyId').val();
+                    contractModification.ModificationNo = $('#txtModNum').val();
+                }
 
+                PerformOperationOnContractModification(contractModification);
+
+                $('#btnDeleteConModification').attr('disabled', 'disabled');
+                $('#btnEditConModification').attr('disabled', 'disabled');
+                return;
+            });
+
+            $('#btnDeleteConModification').unbind().on('click', function () {
+                var pgmogenddate = $('#program_original_end_date').val(); // Aditya ogDate
+                $("#gridModificationList tbody").find('input[name="rbModHistory"]').each(function () {
+                    if ($(this).is(":checked")) {
+                        var modID = $(this).parents("tr").attr('id');//
+                        if ($(this).closest("tr").find("td:eq(1)").text() == 0) {
+                            $('input[name="rbModHistory"]').prop('checked', false);
+                            $('#btnDeleteConModification').attr('disabled', 'disabled');
+                            $('#btnEditConModification').attr('disabled', 'disabled');
+                            dhtmlx.alert('Original Contract Value can not be deleted.');
+                            return;
+                        }
+                        wbsTree.setContractModificationOperation(3);
+                        var contractModification = {
+                            Operation: 3,
+                            Id: $(this).parents("tr").attr('id'),
+                            ProgramID: wbsTree.getSelectedNode().ProgramID,
+                            originalEndDate: pgmogenddate // Aditya ogDate
+                        };
+                        PerformOperationOnContractModification(contractModification);
+
+                        $('input[name="rbModHistory"]').prop('checked', false);
+                        $('#btnDeleteConModification').attr('disabled', 'disabled');
+                        $('#btnEditConModification').attr('disabled', 'disabled');
+                    }
+                });
+            });
+
+            function PerformOperationOnContractModification(contractModification) {
+                debugger;
                 var request = {
                     method: 'POST',
                     url: serviceBasePath + 'contractModification/saveContractModification',
@@ -1828,14 +2130,18 @@ angular.module('cpp.controllers').
 
                 $http(request).then(function success(d) {
                     if (d.data.result == "success") {
-                        //$('#modification_number').val('');
-                        $('#modification_title').val('');
-                        $('#modification_reason').val('');
-                        $('#modification_date').val('');
-                        $('#modification_value').val('');
-                        $('#modification_description').val('');
-                        $('#schedule_impact').val('');
-                        //$('#duration_date').val('');
+                        wbsTree.getContractModificationOperation();
+                        if (wbsTree.getContractModificationOperation() == 1) {
+                            dhtmlx.alert("Modification Added Successfully!!!.");
+                        }
+                        else if (wbsTree.getContractModificationOperation() == 2) {
+                            dhtmlx.alert("Modification Updated Successfully!!!.");
+                        }
+                        else if (wbsTree.getContractModificationOperation() == 3) {
+                            dhtmlx.alert("Modification Deleted Successfully!!!.");
+                        }
+                        wbsTree.setContractModificationOperation(1);
+                        ResetContModificationFields();
                         var updatedContractEndDate = "";
                         _modificationList = d.data.data;
                         var gridModification = $("#gridModificationList tbody")// modal.find('#gridUploadedDocumentProgram tbody');
@@ -1852,9 +2158,9 @@ angular.module('cpp.controllers').
                                 _modificationList[x].ModificationType == 0 ? 'NA' :
                                     _modificationList[x].ModificationType == 2 ? 'Duration' : 'Value & Duration';
 
-                            gridModification.append('<tr id="' + _modificationList[x].Id + '">' +//<td style="width: 20px">' +
-                                //'<input id=rb' + _documentList[x].DocumentID + ' type="radio" name="rbCategories" value="' + serviceBasePath + 'Request/DocumentByDocID/' + _documentList[x].DocumentID + '" />' +
-                                //'</td >' +
+                            gridModification.append('<tr id="' + _modificationList[x].Id + '">' + '<td style="width: 20px">' +
+                                '<input id=rb' + _modificationList[x].Id + ' type="radio" name="rbModHistory" />' + //value="' + serviceBasePath + 'Request/DocumentByDocID/' + _documentList[x].DocumentID + '"
+                                '</td >' +
                                 '<td style=" overflow: hidden; text-overflow: ellipsis; white-space: nowrap; "' +
                                 '><a>' + _modificationList[x].ModificationNo + '</a></td> ' +
                                 '<td style=" overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width:200px;width:100%;" ' +
@@ -1868,7 +2174,16 @@ angular.module('cpp.controllers').
                                 //'>' + durationDate + '</td>' +
                                 '<td>' + moment(_modificationList[x].Date).format('MM/DD/YYYY') + '</td>' +
                                 '<tr > ');
+
+                            if (_modificationList[x].ModificationNo == 0) {
+                                $('#rb' + _modificationList[x].Id).hide();
+                            }
                         }
+
+                        $('input[name=rbModHistory]').on('click', function (event) {
+                            $('#btnDeleteConModification').removeAttr('disabled');
+                            $('#btnEditConModification').removeAttr('disabled');
+                        });
                         //============================ Jignesh-24-02-2021 ===================================
                         if (_modificationList.length > 0) {
                             $('#updateDMBtnContModification').removeAttr('disabled');
@@ -1880,7 +2195,7 @@ angular.module('cpp.controllers').
                         var totalValue = 0;
                         var totalDaysOfScheduleImpact = 0;
                         for (var x = 1; x < _modificationList.length; x++) {
-                            totalValue = totalValue + parseFloat(_modificationList[x].Value);
+                            totalValue = totalValue + parseFloat((_modificationList[x].ModificationNo != "0" ? (_modificationList[x].Value != "" ? _modificationList[x].Value : 0 ) : 0 ));
                             totalDaysOfScheduleImpact = totalDaysOfScheduleImpact + parseInt(_modificationList[x].ScheduleImpact);
                             //if (_modificationList[x].DurationDate != "" && _modificationList[x].DurationDate != null) {
                             //    updatedContractEndDate = _modificationList[x].DurationDate;
@@ -1895,7 +2210,19 @@ angular.module('cpp.controllers').
                         $('#current_contract_value').focus(); // Jignesh 01-12-2020
                         $('#current_contract_value').blur();  // Jignesh 01-12-2020
                         var modal = $('#ProgramModal'); //.format(sqlDateFormat);
-                        modal.find('.modal-body #program_current_end_date').val(_selectedNode.CurrentEndDate ? moment(_selectedNode.CurrentEndDate).add(totalDaysOfScheduleImpact, 'days').format('MM/DD/YYYY') : "");
+                        //Nivedita 03-02-2022
+                        if (contractModification.ModificationType != 1)
+                        {
+                            var temp = wbsTree.getSelectedNode();
+                            temp.CurrentEndDate = moment(d.data.CurrentEndDate).format('MM/DD/YYYY');
+                            wbsTree.updateTreeNodes(temp);
+                            $('#program_current_end_date').attr('disabled', true); // Aditya ogDate
+                            $('#program_original_end_date').attr('disabled', true); // Aditya ogDate
+                            modal.find('.modal-body #program_original_end_date').val(moment(contractModification.originalEndDate).format('MM/DD/YYYY')); // Aditya ogDate
+                            modal.find('.modal-body #program_current_end_date').val(moment(d.data.CurrentEndDate).format('MM/DD/YYYY'));
+                        }
+                        
+                        //modal.find('.modal-body #program_current_end_date').val(_selectedNode.CurrentEndDate ? moment(_selectedNode.CurrentEndDate).add(totalDaysOfScheduleImpact, 'days').format('MM/DD/YYYY') : "");
                         //if (updatedContractEndDate != "" && updatedContractEndDate != null && updatedContractEndDate != undefined) {
                         //    modal.find('.modal-body #program_current_end_date').val(moment(updatedContractEndDate).format('MM/DD/YYYY'));  // Jignesh-26-02-2021
                         //}
@@ -1904,8 +2231,27 @@ angular.module('cpp.controllers').
                         //}
                     }
                 });
+            }
 
+            $('#btnClearModification').unbind().on('click', function (event) {
+                wbsTree.setContractModificationOperation(1);
+                ResetContModificationFields();
+                return;
             });
+            function ResetContModificationFields() {
+                $('#modification_title').val('');
+                $('#modification_date').val('');
+                $('#modification_reason').val('');
+                $('#modification_description').val('');
+                $('#ddModificationType').val(1);
+                $('#schedule_impact').val('');
+                $('#modification_value').val('');
+                $('#divModificationValue').show();
+                $('#divModDurationDate').hide();
+                $('input[name="rbModHistory"]').prop('checked', false);
+                $('#btnDeleteConModification').attr('disabled', 'disabled');
+                $('#btnEditConModification').attr('disabled', 'disabled');
+            }
             //====================================================================================================================
 
             //=========================  Jignesh-ModificationPopUpChanges =====================================================
@@ -1987,7 +2333,7 @@ angular.module('cpp.controllers').
                 // Jignesh-24-02-2021 Remove ''&ExecutionDate=' + ExecutionDate.replace(/\//g, "") +' from url from below request.
                 var request = {
                     method: 'POST',
-                    url: serviceBasePath + 'uploadModificationDoc/Post/' + wbsTree.getSelectedProgramID() + '/' + moddID + '/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName),
+                    url: serviceBasePath + 'uploadModificationDoc/Post/' + wbsTree.getSelectedNode().ProgramID + '/' + moddID + '/' + docTypeID + '?SpecialNote=' + encodeURIComponent(SpecialNote) + '&DocumentName=' + encodeURIComponent(DocumentName),
                     data: formdata, //fileUploadTrend.files, //$scope.
                     ignore: true,
                     headers: {
@@ -2008,7 +2354,7 @@ angular.module('cpp.controllers').
                     //var gridUploadedModDocument = $('#gridUploadedDocumentContModification tbody');
                     //gridUploadedModDocument.empty();
 
-                    $http.get(serviceBasePath + "Request/Document/Program/" + wbsTree.getSelectedProgramID())
+                    $http.get(serviceBasePath + "Request/Document/Program/" + wbsTree.getSelectedNode().ProgramID)
                         .then(function success(response) {
                             console.log(response);
                             wbsTree.setDocumentList(response.data.result);
@@ -2021,7 +2367,7 @@ angular.module('cpp.controllers').
                             gridUploadedModDocument.empty();
                             var gridUploadedContDocument = moda2.find("#gridUploadedDocumentProgramNew tbody");
                             gridUploadedContDocument.empty();
-                            _Document.getModificationByProgramId().get({ programId: wbsTree.getSelectedProgramID() }, function (response) {
+                            _Document.getModificationByProgramId().get({ programId: wbsTree.getSelectedNode().ProgramID }, function (response) {
                                 _modificationList = response.data;
                                 for (var x = 0; x < _documentList.length; x++) {
                                     if (_documentList[x].ModificationNumber >= 0 && _documentList[x].ModificationNumber != null) {
@@ -2175,7 +2521,7 @@ angular.module('cpp.controllers').
                 }
 
                 console.log('get files', $files);
-                var x = wbsTree.getSelectedProgramID();
+                var x = wbsTree.getSelectedNode().ProgramID;
                 console.log(x)
                 var docTypeID = $("#document_type_program option").filter(":selected").val();
                 var files = fileUploadProgram.files;
@@ -2243,7 +2589,7 @@ angular.module('cpp.controllers').
 
                 var request = {
                     method: 'POST',
-                    url: serviceBasePath + '/uploadFiles/Post/Program/0/0/' + wbsTree.getSelectedProgramID() + '/0/0/' + docTypeID,
+                    url: serviceBasePath + '/uploadFiles/Post/Program/0/0/' + wbsTree.getSelectedNode().ProgramID + '/0/0/' + docTypeID,
                     data: formdata, //fileUploadProject.files, //$scope.
                     ignore: true,
                     headers: {
@@ -2263,7 +2609,7 @@ angular.module('cpp.controllers').
                     //    for (var x = 0; x < _documentList.length; x++) {
                     //        gridUploadedDocument.append('<tr><td style="width: 20px"><input type="checkbox" name="record"></td><td style="display:none">' + _documentList[x].DocumentID + '</td><td><a href="' + serviceBasePath + '/Request/DocumentByDocID/' + _documentList[x].DocumentID + '" download>' + _documentList[x].DocumentName + '</a></td><td>' + _documentList[x].DocumentTypeName + '</td><tr>');
                     //    }
-                    $http.get(serviceBasePath + "Request/Document/Program/" + wbsTree.getSelectedProgramID())
+                    $http.get(serviceBasePath + "Request/Document/Program/" + wbsTree.getSelectedNode().ProgramID)
                         .then(function success(response) {
                             console.log(response);
                             wbsTree.setDocumentList(response.data.result);
@@ -2316,6 +2662,202 @@ angular.module('cpp.controllers').
                     }
                 });
             });
+
+            //----------------------------Vaishnavi 30-03-2022 Start Here-------------------------------------------------//
+            $('#closed_button').unbind('click').on('click', function () {
+                var selectedNode = wbsTree.getSelectedNode();
+                var type = $("#contextMenu").attr('contextType');
+                //if(selectedNode.level === "Root"){ Ivan here
+                //    modal_mode = "Update";
+                //}
+                // business logic...
+                $('#ClosedModal').modal('hide');
+                if (typeof modal_mode == 'undefined') {
+                }
+               
+                if (modal_mode == 'Create') {
+
+                }
+
+                else {
+                    var parentNode = selectedNode.parent;
+
+                    //
+
+                    $('#ClosedModal').appendTo("body");
+                    if (wbsTree.getScope().trend) {
+                        console.log(wbsTree.getScope().trend);
+                        console.log(selectedNode);
+                        if (wbsTree.getScope().trend.metadata.level = "FutureTrend") {
+                            var obj = {
+                                "Operation": 6,
+                                "OrganizationID": wbsTree.getScope().trend.metadata.OrganizationID,
+                                "ProjectID": wbsTree.getScope().trend.metadata.ProjectID,
+                                "ProjectName": wbsTree.getScope().trend.metadata.ProjectName,
+                                "TrendNumber": wbsTree.getScope().trend.metadata.TrendNumber,
+                                //Added by Nivedita on 23022022 for soft delete
+                                "DeletedBy": wbsTree.getLocalStorage().userName
+
+                            };
+                            _Trend.persist().save(obj, function (response) {
+                                //$('#FutureTrendModal').modal('hide');
+                                //$('#DeleteModal').modal('hide');
+
+                                wbsTree.getProgramFund().lookup().get({ "ProgramID": selectedNode.parent.parent.ProgramID }, function (response) {
+                                    selectedNode.parent.parent.programFunds = response.result;
+                                    if ($('#FutureTrendModal').hasClass('in'))
+                                        $('#FutureTrendModal').css({ "opacity": "1" }).modal('toggle');
+                                    wbsTree.getWBSTrendTree().setSelectedTreeNode(null);
+                                    wbsTree.getWBSTrendTree().trendGraph(true);  //Manasi
+                                    wbsTree.getScope().trend = null;
+                                   // window.location.reload();
+                                    var pgmId = $("#selectProgram").val();
+                                    var orgId = $("#selectOrg").val();
+                                    $scope.loadWBSData(orgId, pgmId, null, null, null, null, null);
+
+                                });
+
+
+                            });
+
+                            //updateTreeNodes(parentNode);
+                        }
+                    }
+                    else {
+                        if (selectedNode.level === "Root") {
+                            console.log(selectedNode);
+                            var s = $("#update_organization");
+                            console.debug("UPDATE", s);
+                            var rootScope = wbsTree.getRootScope();
+                            var Organization = wbsTree.getOrganizationService();
+                            var scope = wbsTree.getScope();
+                            Organization.persist().save({
+                                "Operation": 3,
+                                "OrganizationID": selectedNode.organizationID,
+                                "OrganizationName": selectedNode.name
+                            }).$promise.then(function (response) {
+                                if (response.result === 'Success') {
+                                    //  $scope.organizationList.splice(index,1);
+
+                                    console.log(scope);
+                                    var orgList = wbsTree.getOrganizationList();
+                                    var index = 0;
+                                    for (var i = 0; i < orgList.length; i++) {
+                                        if (orgList[i].OrganizationName == selectedNode.name) {
+                                            index = i;
+
+                                        }
+                                    }
+                                    console.debug("orgList", orgList);
+                                    orgList.splice(index, 1);
+                                    // wbsTree.setOrganizationList(orgList);
+                                    //  $("#selectOrg").val(orgList[0].OrganizationID);
+                                    console.debug("orgList", orgList);
+                                    scope.filterOrg = orgList[0].OrganizationID;
+                                    $("#selectOrg").val(orgList[0].OrganizationID);
+                                    scope.filterChangeOrg();
+                                    //$scope.selectedOrg = null;
+                                    //$scope.init();
+                                    //console.log("-------DELETED ORGANIZATION--------");
+                                    //wbsTree.updateTreeNodes(selectedNode);
+                                    //if (!displayMap)
+                                    wbsTree.loadFullGridView();
+                                    //wbsTree.loadContextMenu();
+                                    rootScope.modalInstance.close();
+                                    //wbsTree.getWBSTrendTree().trendGraph();
+                                }
+                                else {
+                                    dhtmlx.alert("Close failed");
+                                }
+                            });
+
+
+                        } else
+                            if (selectedNode.level === "Program") {
+                                wbsTree.getProgram().persist().save({
+                                    "Operation": 5,
+                                    "ProgramID": selectedNode.ProgramID,
+                                    "ProgramName": selectedNode.name,
+                                    "ProgramManager": selectedNode.ProgramManager,
+                                    "ProgramSponsor": selectedNode.ProgramSponsor,
+                                    "programFunds": selectedNode.programFunds,
+                                    "DeletedBy": wbsTree.getLocalStorage().userName
+
+                                }, function (response) {
+                                    console.log("-------DELETED PROGRAM--------");
+                                    if ($('#ProgramModal').hasClass('in'))
+                                        $('#ProgramModal').css({ "opacity": "1" }).modal('toggle');
+                                    // wbsTree.updateTreeNodes(selectedNode.parent);
+                                    ////if (!displayMap)
+                                    //wbsTree.loadFullGridView();
+                                    //wbsTree.getWBSTrendTree().trendGraph();
+
+                                    var pgmId = $("#selectProgram").val();
+                                    var orgId = $("#selectOrg").val();
+                                    $scope.loadWBSData(orgId, pgmId, null, null, null, null, null);
+                                });
+                            } else if (selectedNode.level === "ProgramElement") {
+                                wbsTree.getProgramElement().persist().save({
+                                    "Operation": 5,
+                                    "ProgramID": selectedNode.ProgramID,
+                                    "ProgramElementID": selectedNode.ProgramElementID,
+                                    "ProgramElementName": selectedNode.name,
+                                    "ProgramElementManager": selectedNode.ProgramElementManager,
+                                    "ProgramElementSponsor": selectedNode.ProgramElementSponsor,
+                                    "DeletedBy": wbsTree.getLocalStorage().userName
+
+                                }, function (response) {
+                                    console.log("-------DELETED PROGRAM ELEMENT--------");
+
+
+                                    if ($('#ProgramElementModal').hasClass('in'))
+                                        $("#ProgramElementModal").css({ "opacity": "1" }).modal('toggle');
+                                    //if (!displayMap)
+                                    //wbsTree.loadFullGridView();
+                                    //wbsTree.getWBSTrendTree().trendGraph();
+                                    //// wbsTree.loadFullGridView();
+                                    //window.location.reload();
+                                    var pgmId = $("#selectProgram").val();
+                                    var orgId = $("#selectOrg").val();
+                                    $scope.loadWBSData(orgId, pgmId, null, null, null, null, null);
+
+                                })
+                            } else if (selectedNode.level === "Project" && !wbsTree.getScope().trend) {
+                                wbsTree.getProject().persist().save({
+                                    "Operation": 5,
+                                    "ProjectID": selectedNode.ProjectID,
+                                    "ProjectName": selectedNode.name,
+                                    "ProjectManager": selectedNode.ProjectManager,
+                                    "ProjectSponsor": selectedNode.ProjectSponsor,
+                                    "LatLong": wbsTree.getProjectMap().getCoordinates(),
+                                    "DeletedBy": wbsTree.getLocalStorage().userName
+                                }, function (response) {
+                                    console.log("-------DELETED PROJECT--------");
+                                    console.log(selectedNode);
+                                   
+                                    var pgmId = $("#selectProgram").val();
+                                    var orgId = $("#selectOrg").val();
+                                    $scope.loadWBSData(orgId, pgmId, null, null, null, null, null);
+                                    var firstGNode = $('#trendSvg').children()[0];
+                                    //$(firstGNode).children().remove();
+                                   // window.location.reload();
+                                });
+                            }
+                        //Find  index of selected node
+                        if (selectedNode.level == "Root") return;
+                        var i = parentNode.children.indexOf(selectedNode);
+                        //Remove selected child index from parent
+                        parentNode.children.splice(i, 1);
+                        var tooltip = d3.select("#toolTip").style("opacity", 0);
+
+                    }
+                }
+                _selectedProjectID = null;
+                //$('#project_name').hide();
+               // $('svg.trendTree g').hide();
+
+            });
+           //----------------------------Vaishnavi 30-03-2022 Ends Here-------------------------------------------------//
 
 
 
@@ -2478,8 +3020,474 @@ angular.module('cpp.controllers').
 
             });
 
+            //03-05-2022
+            ////Program element change order
+            //function populateProgramElementChangeOrderTableNew() {
+            //    $('#program_element_change_order_table_id').empty();
+            //    //  alert(FileName);
+            //    for (var x = 0; x < g_program_element_change_order_draft_list.length; x++) {
+            //        var singeChangeOrder = {};
+
+            //        singeChangeOrder = g_program_element_change_order_draft_list[x];
+
+            //        console.log(singeChangeOrder);
+            //        //  alert(singeChangeOrder.DocumentName);
+
+            //        $('#program_element_change_order_table_id').append(
+            //            '<tr id="' + singeChangeOrder.ChangeOrderID + '" class="fade-selection-animation clickable-row">' +
+            //            '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.DocumentName + '</td>' + /**/
+            //            '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ChangeOrderName + '</td>' +
+            //            '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.OrderType + '</td>' +
+            //            '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ChangeOrderNumber + '</td>' +
+            //            '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ChangeOrderAmount + '</td>' +
+            //            '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.OrderDate + '</td>' +
+            //            '<td class="class-td-LiveView" style="font-family:Verdana, Arial, sans-serif !important;color:#333 !important;text-overflow: ellipsis;white-space: nowrap;">' + singeChangeOrder.ChangeOrderScheduleChange + '</td>' +
+            //            '</tr>'
+            //        );
 
 
+
+            //        //$('#program_element_change_order_table_id').append(
+            //        //    '<tr id="' + singeChangeOrder.ChangeOrderName + '" class="fade-selection-animation clickable-row">' +
+            //        //   // '<td class="class-td-LiveView" style="width:20%;">' + singeChangeOrder.DocumentName + '</td>' +
+            //        //    '<td class="class-td-LiveView" style="width:20%;">' + singeChangeOrder.ChangeOrderName + '</td>' +
+            //        //    '<td class="class-td-LiveView" style="width:20%;">' + singeChangeOrder.OrderType + '</td>' +
+            //        //    '<td class="class-td-LiveView" style="width:15%;">' + singeChangeOrder.ChangeOrderNumber + '</td>' +
+            //        //    '<td class="class-td-LiveView" style="width:15%;">' + singeChangeOrder.ChangeOrderAmount + '</td>' +
+            //        //    '<td class="class-td-LiveView" style="width:20%;">' + singeChangeOrder.OrderDate + '</td>' +
+            //        //    '<td class="class-td-LiveView" style="width:50%;">' + singeChangeOrder.ChangeOrderScheduleChange + '</td>' +
+            //        //    '</tr>'
+            //        //);
+            //    }
+            //}
+
+            //03-05-2022
+            //$('#update_program_element_change_order_modal').unbind('click').on('click', function ($files) {
+            //    //03-05-2022
+            //    // $('#fileUploadProgramElementChangeOrderModal').prop('disabled', false);  //Manasi 20-08-2020
+            //    //$('#uploadBtnProgramelmtCOspinRow').show();   //Manasi 20-08-2020
+            //    debugger;
+            //    var selectedNode = wbsTree.getSelectedNode();
+            //    if (selectedNode.level == "Program") {
+            //        dhtmlx.alert('Change Order only work in edit mode.');
+            //        return;
+            //    }
+            //    console.log('get files', $files);
+            //    console.log(g_newProgramElementChangeOrder);
+            //    // var files = fileUploadProgramElementChangeOrderModal.files;
+            //    // var fileName = "";
+            //    //if (files.length != 0 || files.length) {
+            //    //    angular.forEach(fileUploadProgramElementChangeOrderModal.files, function (value, key) {
+            //    //        fileName = value.name;
+            //    //    });
+            //    //}
+            //    var g_newProgramElement = $("#g_newProgramElement").val();
+            //    var CoTitle = $("#program_element_change_order_name_modal").val();
+            //    var ChangeOrderTypedd = $("#program_element_change_order_ddModificationType").val();;
+            //    var OrderNo = $("#program_element_change_order_number_modal").val();
+            //    var OrderDte = $("#ChangeOrderDate").val();
+            //    var AmtOrder = $("#program_element_change_order_amount_modal").val();
+            //    var SpNote = $("#program_element_change_order_schedule_change_modal").val();
+            //    var Reason = $("#program_element_change_order_Reason_modal").val();
+            //    var modType = $('#program_element_change_order_ddModificationType').val();
+            //    //var durationDate = $('#program_element_change_order_duration_date').val(); // Jignesh-24-03-2021
+            //    var scheduleImpact = $('#program_element_change_order_schedule_impact').val(); // Jignesh-24-03-2021
+
+            //    if (CoTitle == "" || CoTitle.length == 0) {
+            //        dhtmlx.alert('Enter Title.');
+            //        return;
+            //    }
+            //    if (OrderDte == "" || OrderDte.length == 0) {
+            //        dhtmlx.alert('Enter Date.');
+            //        return;
+            //    }
+            //    //Vaishnavi 08-02-2022
+            //    if (OrderDte) {
+
+            //        var testDate = moment(OrderDte, 'M/D/YYYY', true).isValid();
+            //        if (!testDate) {
+            //            dhtmlx.alert('Date Should be in MM/DD/YYYY Format.');
+            //            return;
+            //        }
+            //    }
+
+            //    if (Reason == "" || Reason.length == 0) {
+            //        dhtmlx.alert('Enter Reason.');
+            //        return;
+            //    }
+            //    if (SpNote == "" || SpNote.length == 0) {
+            //        dhtmlx.alert('Enter Description.'); // Jignesh-18-02-2021
+            //        return;
+            //    }
+            //    if (OrderNo == "" || OrderNo.length == 0) {
+            //        dhtmlx.alert('Enter Client Change Order No.'); // Jignesh-08-02-2021
+            //        return;
+            //    }
+            //    if (ChangeOrderTypedd == null || ChangeOrderTypedd == 0) {
+            //        dhtmlx.alert('Select Order Type.');
+            //        return;
+            //    }
+            //    //if (AmtOrder == "" || AmtOrder.length == 0) {
+            //    //    dhtmlx.alert('Enter Amount.');
+            //    //    return;
+            //    //}
+
+            //    if (modType != "" || modType.length != 0) {
+            //        if (modType == 1) {
+            //            if (AmtOrder == "" || AmtOrder.length == 0) {
+            //                dhtmlx.alert('Enter Value.');
+            //                return;
+            //            }
+            //        }
+            //        else if (modType == 2) {//changeOrderScheduleImpact
+            //            // Jignesh-24-03-2021
+            //            //if (durationDate == "" || durationDate.length == 0) {
+            //            //    dhtmlx.alert('Enter Duration Date.');
+            //            //    return;
+            //            //}
+            //            if (scheduleImpact == "" || scheduleImpact.length == 0) {
+            //                dhtmlx.alert('Enter Schedule Impact.');
+            //                return;
+            //            }
+            //        }
+            //        else if (modType == 3) {
+            //            if (AmtOrder == "" || AmtOrder.length == 0) {
+            //                dhtmlx.alert('Enter Value.'); // Jignesh-18-02-2021
+            //                return;
+            //            }
+            //            // Jignesh-24-03-2021
+            //            if (scheduleImpact == "" || scheduleImpact.length == 0) {
+            //                dhtmlx.alert('Enter Schedule Impact.');
+            //                return;
+            //            }
+            //            //if (durationDate == "" || durationDate.length == 0) {
+            //            //    dhtmlx.alert('Enter Duration Date.');
+            //            //    return;
+            //            //}
+            //        }
+            //    }
+            //    //  alert(fileName);
+            //    // alert(g_newProgramElementChangeOrder);
+            //    if (!g_newProgramElementChangeOrder) {   //Update  ppuu
+            //        var updatedChangeOrder = g_selectedProgramElementChangeOrder;
+            //        var isModified = true;
+
+            //        updatedChangeOrder.ChangeOrderName = modal.find('.modal-body #program_element_change_order_name_modal').val();
+            //        updatedChangeOrder.ChangeOrderNumber = modal.find('.modal-body #program_element_change_order_number_modal').val();
+            //        updatedChangeOrder.ChangeOrderAmount = modal.find('.modal-body #program_element_change_order_amount_modal').val();
+            //        updatedChangeOrder.ChangeOrderScheduleChange = modal.find('.modal-body #program_element_change_order_schedule_change_modal').val();
+            //        updatedChangeOrder.OrderType = modal.find('.modal-body #ChangeOrderType').val();
+            //        updatedChangeOrder.OrderDate = modal.find('.modal-body #ChangeOrderDate').val();
+
+            //        //================== Jignesh-ChangeOrderPopUpChanges ====================================
+            //        updatedChangeOrder.Reason = modal.find('.modal-body #program_element_change_order_Reason_modal').val();
+            //        updatedChangeOrder.ModificationTypeId = modal.find('.modal-body #program_element_change_order_ddModificationType').val();
+            //        //updatedChangeOrder.DurationDate = modal.find('.modal-body #program_element_change_order_duration_date').val(); // Jignesh-24-03-2021
+            //        updatedChangeOrder.ScheduleImpact = modal.find('.modal-body #program_element_change_order_schedule_impact').val(); // Jignesh-24-03-2021
+            //        //=======================================================================================
+
+            //        if (g_newProgramElement) {
+            //            //Find the one in the draft list
+            //            for (var x = 0; x < g_program_element_change_order_draft_list.length; x++) {
+            //                if (g_program_element_change_order_draft_list[x].ChangeOrderName == g_selectedProgramElementChangeOrder.ChangeOrderName
+            //                    && g_program_element_change_order_draft_list[x].ChangeOrderNumber == g_selectedProgramElementChangeOrder.ChangeOrderNumber
+            //                    && g_program_element_change_order_draft_list[x].ChangeOrderAmount == g_selectedProgramElementChangeOrder.ChangeOrderAmount
+            //                    && g_program_element_change_order_draft_list[x].ChangeOrderScheduleChange == g_selectedProgramElementChangeOrder.ChangeOrderScheduleChange) {
+            //                    //  g_program_element_change_order_draft_list[x].DocumentName = fileName;
+            //                    g_program_element_change_order_draft_list[x].ChangeOrderName = updatedChangeOrder.ChangeOrderName;
+            //                    g_program_element_change_order_draft_list[x].ChangeOrderNumber = updatedChangeOrder.ChangeOrderNumber;
+            //                    g_program_element_change_order_draft_list[x].ChangeOrderAmount = updatedChangeOrder.ChangeOrderAmount;
+            //                    g_program_element_change_order_draft_list[x].ChangeOrderScheduleChange = updatedChangeOrder.ChangeOrderScheduleChange;
+            //                    g_program_element_change_order_draft_list[x].OrderType = updatedChangeOrder.OrderType;
+            //                    g_program_element_change_order_draft_list[x].OrderDate = updatedChangeOrder.OrderDate;
+            //                    //================== Jignesh-ChangeOrderPopUpChanges ====================================
+            //                    g_program_element_change_order_draft_list[x].Reason = updatedChangeOrder.Reason;
+            //                    g_program_element_change_order_draft_list[x].ModificationTypeId = updatedChangeOrder.ModificationTypeId;
+            //                    //g_program_element_change_order_draft_list[x].DurationDate = updatedChangeOrder.DurationDate; // Jignesh-24-03-2021
+            //                    g_program_element_change_order_draft_list[x].ScheduleImpact = updatedChangeOrder.ScheduleImpact; // Jignesh-24-03-2021
+            //                    //=======================================================================================
+
+            //                    if (wbsTree.getProgramElementChangeOrderFileDraft().length > 0) {
+            //                        g_program_element_change_order_draft_list[x].DocumentDraft = wbsTree.getProgramElementChangeOrderFileDraft();
+            //                    }
+            //                }
+            //            }
+            //            populateProgramElementChangeOrderTableNew();
+            //            $('#ProgramElementChangeOrderModal').modal('hide');
+            //            $("#ProgramElementModal").css({ "opacity": "1" });
+            //            return;
+            //        }
+
+            //        debugger;
+            //        //update- Added by Amruta to save end date on change order
+
+            //        if (updatedChangeOrder.ScheduleImpact != "") {
+            //            var curendt = new Date($('#program_element_PEnd_Date').val());
+            //            curendt.setDate(curendt.getDate() - parseInt(progelem_scheduleImp));
+            //            curendt.setDate(curendt.getDate() + parseInt(updatedChangeOrder.ScheduleImpact));
+            //            $('#program_element_PEnd_Date').val(moment(curendt).format('MM/DD/YYYY')); //.change(); //Added by Amruta for confirmation popup
+            //        }
+            //        debugger;
+            //        var pendDate = $('#program_element_PEnd_Date').val();
+            //        var projectEndDate = moment(pendDate).format('MM/DD/YYYY');
+
+            //        var obj = {
+            //            "Operation": 2,
+            //            "ChangeOrderID": updatedChangeOrder.ChangeOrderID,
+            //            "ChangeOrderName": updatedChangeOrder.ChangeOrderName,
+            //            "ChangeOrderNumber": updatedChangeOrder.ChangeOrderNumber,
+            //            "ChangeOrderAmount": updatedChangeOrder.ChangeOrderAmount.replace('$', ''),
+            //            "ChangeOrderScheduleChange": updatedChangeOrder.ChangeOrderScheduleChange,
+            //            "ProgramElementID": selectedNode.ProgramElementID,
+            //            "ProjectEndDateCO": projectEndDate,
+            //            "OrderType": updatedChangeOrder.OrderType,
+            //            "OrderDate": updatedChangeOrder.OrderDate,
+            //            //================== Jignesh-ChangeOrderPopUpChanges ====================================
+            //            "Reason": updatedChangeOrder.Reason,
+            //            "ModificationTypeId": updatedChangeOrder.ModificationTypeId,
+            //            //"DurationDate": updatedChangeOrder.DurationDate // Jignesh-24-03-2021
+            //            "ScheduleImpact": updatedChangeOrder.ScheduleImpact // Jignesh-24-03-2021
+            //            //=======================================================================================
+            //        }
+
+            //        var listToSave = [];
+            //        listToSave.push(obj);
+
+            //        //API to Insert/Update ppbb
+            //        wbsTree.getUpdateChangeOrder({ ProjectID: 1 }).save(listToSave, function (response) {
+            //            //alert(response.result.split(',')[0]); //Manasi
+            //            //if (response.result.split(',')[0].trim() === "Success") {successfully
+            //            if (response.result.indexOf('successfully') >= 0) {  //Manasi
+            //                //Added by Amruta for populating the end date post exit modal -1
+            //                selectedNode.ProjectPEndDate = $('#ProgramElementModal').find('.modal-body #program_element_PEnd_Date').val();
+            //                wbsTree.updateTreeNodes(selectedNode);
+            //                dhtmlx.alert({
+            //                    text: response.result,
+            //                    width: '500px'
+            //                });
+            //                //-------Manasi
+            //                $('#ProgramElementChangeOrderModal').modal('hide');
+            //                $("#ProgramElementModal").css({ "opacity": "1" });
+
+            //                //Manu: 11/01/2022 
+            //                /*  var curendt = new Date($('#program_element_PEnd_Date').val());
+            //                  curendt.setDate(curendt.getDate() - parseInt(progelem_scheduleImp));
+            //                  curendt.setDate(curendt.getDate() + parseInt(updatedChangeOrder.ScheduleImpact));
+            //                  $('#program_element_PEnd_Date').val(moment(curendt).format('MM/DD/YYYY')).change();*/ //Added by Amruta for confirmation popup
+
+
+            //                //$('#ProgramModal').modal('hide');
+            //            } else {
+            //                if (response.result == '' || response.result == null || response.result == undefined)
+            //                    dhtmlx.alert('Something went wrong. Please try again..');
+            //                else {
+            //                    dhtmlx.alert({
+            //                        text: response.result,
+            //                        width: '500px'
+            //                    });
+            //                }
+
+            //                return;  //Manasi
+            //            }
+
+            //            $('#ProgramElementChangeOrderModal').modal('hide');
+            //            $("#ProgramElementModal").css({ "opacity": "1" });
+            //            debugger;
+            //            populateProgramElementChangeOrderTable(selectedNode.ProgramElementID);
+
+            //            g_selectedProgramElementChangeOrder = null; 	//Manasi
+            //            //$('#uploadBtnProgramelmtCOspinRow').hide()     //Manasi 20-08-2020
+            //            document.getElementById("uploadBtnProgramelmtCOspinRow").style.display = "none";   //Manasi 20-08-2020
+            //        });
+
+            //    }
+
+            //    if (g_newProgramElementChangeOrder) {
+            //        var newNode = { name: "New Program Element Change Order" };
+            //        var newChangeOrder = {};
+
+            //        newChangeOrder.ChangeOrderName = modal.find('.modal-body #program_element_change_order_name_modal').val();
+            //        newChangeOrder.ChangeOrderNumber = modal.find('.modal-body #program_element_change_order_number_modal').val();
+            //        newChangeOrder.ChangeOrderAmount = modal.find('.modal-body #program_element_change_order_amount_modal').val();
+            //        newChangeOrder.ChangeOrderScheduleChange = modal.find('.modal-body #program_element_change_order_schedule_change_modal').val();
+            //        newChangeOrder.OrderType = modal.find('.modal-body #ChangeOrderType').val();
+            //        newChangeOrder.OrderDate = modal.find('.modal-body #ChangeOrderDate').val();
+            //        //================== Jignesh-ChangeOrderPopUpChanges ====================================
+            //        newChangeOrder.Reason = modal.find('.modal-body #program_element_change_order_Reason_modal').val();
+            //        newChangeOrder.ModificationTypeId = modal.find('.modal-body #program_element_change_order_ddModificationType').val();
+            //        //newChangeOrder.DurationDate = modal.find('.modal-body #program_element_change_order_duration_date').val(); // Jignesh-24-03-2021
+            //        newChangeOrder.ScheduleImpact = modal.find('.modal-body #program_element_change_order_schedule_impact').val(); // Jignesh-24-03-2021
+            //        //=======================================================================================
+            //        var orgendt = new Date($('#program_element_PEnd_Date').val());
+
+            //        if (newChangeOrder.ScheduleImpact != "") {
+            //            var curendt = new Date($('#program_element_PEnd_Date').val());
+            //            curendt.setDate(curendt.getDate() - parseInt(progelem_scheduleImp));
+            //            curendt.setDate(curendt.getDate() + parseInt(newChangeOrder.ScheduleImpact));
+            //            $('#program_element_PEnd_Date').val(moment(curendt).format('MM/DD/YYYY'));//.change(); Added by Amruta for confirmation popup-1
+            //            debugger;
+            //        }
+
+            //        var pendDate = $('#program_element_PEnd_Date').val();
+            //        var projectEndDate = moment(pendDate).format('MM/DD/YYYY');
+
+            //        var obj = {
+            //            "Operation": 1,
+            //            "ChangeOrderID": 0,
+            //            "ChangeOrderName": newChangeOrder.ChangeOrderName,
+            //            "ChangeOrderNumber": newChangeOrder.ChangeOrderNumber,
+            //            "ChangeOrderAmount": newChangeOrder.ChangeOrderAmount.replace('$', ''),
+            //            "ChangeOrderScheduleChange": newChangeOrder.ChangeOrderScheduleChange,
+            //            "ProgramElementID": selectedNode.ProgramElementID,
+            //            "ProjectEndDateCO": projectEndDate,
+            //            "OrderType": newChangeOrder.OrderType,
+            //            "OrderDate": newChangeOrder.OrderDate, //.replace(/\//g, ""),
+            //            //================== Jignesh-ChangeOrderPopUpChanges ====================================
+            //            "Reason": newChangeOrder.Reason,
+            //            "ModificationTypeId": newChangeOrder.ModificationTypeId,
+            //            //"DurationDate": newChangeOrder.DurationDate // Jignesh-24-03-2021
+            //            "ScheduleImpact": newChangeOrder.ScheduleImpact // Jignesh-24-03-2021
+            //            //=======================================================================================
+            //        }
+
+            //        var listToSave = [];
+            //        listToSave.push(obj);
+
+            //        //   alert(g_newProgramElement);
+            //        if (g_newProgramElement) {
+            //            g_program_element_change_order_draft_list.push({
+            //                "Operation": 1,
+            //                "ChangeOrderID": 0,
+            //                //"DocumentName": fileName,
+            //                "ChangeOrderName": newChangeOrder.ChangeOrderName,
+            //                "ChangeOrderNumber": newChangeOrder.ChangeOrderNumber,
+            //                "ChangeOrderAmount": newChangeOrder.ChangeOrderAmount.replace('$', ''),
+            //                "ChangeOrderScheduleChange": newChangeOrder.ChangeOrderScheduleChange,
+            //                "ProgramElementID": wbsTree.getSelectedProgramElementID(),
+            //                "ProjectEndDateCO": projectEndDate,
+            //                "OrderType": newChangeOrder.OrderType,
+            //                "OrderDate": newChangeOrder.OrderDate,
+            //                //================== Jignesh-ChangeOrderPopUpChanges ====================================
+            //                "Reason": newChangeOrder.Reason,
+            //                "ModificationTypeId": newChangeOrder.ModificationTypeId,
+            //                //"DurationDate": newChangeOrder.DurationDate // Jignesh-24-03-2021
+            //                "ScheduleImpact": newChangeOrder.ScheduleImpact // Jignesh-24-03-2021
+            //                //=======================================================================================
+            //            });
+
+            //            // alert(fileName);
+            //            //ppaaa
+            //            populateProgramElementChangeOrderTableNew();
+            //            $('#ProgramElementChangeOrderModal').modal('hide');
+            //            $("#ProgramElementModal").css({ "opacity": "1" });
+            //            return;
+            //        }
+
+            //        console.log(listToSave);
+
+            //        //API to Insert Program Element CHANGE ORDER
+            //        wbsTree.getUpdateChangeOrder({ ProjectID: 1 }).save(listToSave,
+            //            function (response) {
+            //                console.log(response);
+            //                //var newChangeOrderID = response.result.split(',')[1].trim();
+            //                if (response.result.split(',')[0].trim() === "Success") {
+            //                    //Added by Amruta for populating the end date post exit modal -2
+            //                    selectedNode.ProjectPEndDate = $('#ProgramElementModal').find('.modal-body #program_element_PEnd_Date').val();
+            //                    wbsTree.updateTreeNodes(selectedNode);
+            //                    var newChangeOrderID = response.result.split(',')[1].trim();
+
+            //                    //Upload draft documents
+            //                    var index = 0;
+
+            //                    var apiUpload = function () {
+            //                        //03-05-2022
+            //                        //if ($('#program_element_change_order_file_name').html().length == 0) {
+            //                        //    return;
+            //                        //}
+            //                        ////if (index >= wbsTree.getProgramElementChangeOrderFileDraft().length) {
+            //                        ////    return;
+            //                        ////}
+            //                        //docTypeID = 1;
+            //                        //// docTypeID = wbsTree.getProgramElementChangeOrderFileDraft()[index].docTypeID;
+            //                        ////  formdata = wbsTree.getProgramElementChangeOrderFileDraft()[index].formdata;
+
+            //                        //formdata = new FormData();
+            //                        //var fileName = "";
+
+            //                        //angular.forEach(fileUploadProgramElementChangeOrderModal.files, function (value, key) {
+            //                        //    fileName = value.name;
+            //                        //    formdata.append(key, value);
+            //                        //});
+            //                        //var request = {
+            //                        //    method: 'POST',
+            //                        //    url: serviceBasePath + '/uploadFiles/Post/ProgramElementChangeOrder/0/0/0/0/' + newChangeOrderID + '/' + docTypeID,
+            //                        //    data: formdata, //fileUploadProject.files, //$scope.
+            //                        //    ignore: true,
+            //                        //    headers: {
+            //                        //        'Content-Type': undefined
+            //                        //    }
+            //                        //};
+
+            //                        //var angularHttp = wbsTree.getAngularHttp();
+            //                        //angularHttp(request).then(function success(d) {
+            //                        //    console.log(d);
+            //                        //    debugger;
+            //                        //    populateProgramElementChangeOrderTable(selectedNode.ProgramElementID);  //Manasi
+            //                        //    $('#program_element_change_order_file_name').empty();
+
+            //                        //    document.getElementById("fileUploadProgramElementChangeOrderModal").value = "";
+
+            //                        //    //$('#uploadBtnProgramelmtCOspinRow').hide();     //Manasi 20-08-2020
+            //                        //    document.getElementById("uploadBtnProgramelmtCOspinRow").style.display = "none";   //Manasi 20-08-2020
+            //                        //});
+            //                    }
+
+            //                    apiUpload();// Paa
+
+            //                    populateProgramElementChangeOrderTableNew(); //Manasi
+            //                    $('#ProgramElementChangeOrderModal').modal('hide');
+            //                    $("#ProgramElementModal").css({ "opacity": "1" });
+
+            //                    //Manu: 11/01/2022
+            //                   /* var curendt = new Date($('#program_element_PEnd_Date').val());
+            //                    curendt.setDate(curendt.getDate() - parseInt(progelem_scheduleImp));
+            //                    curendt.setDate(curendt.getDate() + parseInt(newChangeOrder.ScheduleImpact));
+            //                    $('#program_element_PEnd_Date').val(moment(curendt).format('MM/DD/YYYY')).change()*/;//Added by Amruta for confirmation popup-1
+            //                    //
+
+            //                } else {
+            //                    //$('#uploadBtnProgramelmtCOspinRow').hide();     //Manasi 20-08-2020
+            //                    document.getElementById("uploadBtnProgramelmtCOspinRow").style.display = "none";   //Manasi 20-08-2020
+            //                    debugger;
+            //                    if (response.result == '' || response.result == null || response.result == undefined) {
+            //                        $('#program_element_PEnd_Date').val(moment(orgendt).format('MM/DD/YYYY'));
+            //                        dhtmlx.alert('Something went wrong. Please try again..');
+            //                    }
+
+            //                    else {
+            //                        dhtmlx.alert({ text: response.result, width: '500px' });
+            //                    }
+            //                    //$('#ProgramElementChangeOrderModal').modal('hide');  Manasi
+            //                    //$("#ProgramElementModal").css({ "opacity": "1" });
+            //                    return; //Manasi
+            //                }
+            //                $('#ProgramElementChangeOrderModal').modal('hide');
+            //                $("#ProgramElementModal").css({ "opacity": "1" });
+            //                debugger;
+            //                populateProgramElementChangeOrderTable(selectedNode.ProgramElementID);
+
+            //                g_selectedProgramElementChangeOrder = null; 	//Manasi
+            //                //  $('#program_element_change_order_file_name').empty(); // manasi 7 jul 2020
+            //            });
+
+            //        //$('#program_element_change_order_file_name').empty();
+
+            //        //document.getElementById("fileUploadProgramElementChangeOrderModal").value = ""; prith commented on 24jul2020 as was not abe to save
+            //    }
+
+
+
+            //});
 
             $scope.getTheFiles = function ($files) {
                 console.log('get files', $files);
@@ -2612,6 +3620,14 @@ angular.module('cpp.controllers').
                 console.log(response);
                 wbsTree.setClientList(response.result);
             });
+            ClientPOC.get({}, function (response) {                      //Tanmay - 15/12/2021
+                console.log(response);
+                wbsTree.setClientPOCList(response.result);
+            });
+            Prime.get({}, function (response) {
+                console.log(response);
+                wbsTree.setPrimeList(response.result);
+            });
             Location.get({}, function (response) {
                 console.log(response);
                 wbsTree.setLocationList(response.result);
@@ -2632,6 +3648,15 @@ angular.module('cpp.controllers').
             ProjectWhiteList.get({}, function (response) {
                 console.log(response);
                 wbsTree.setProjectWhiteList(response.result);
+            });
+           //vaishnavi 12-04-2022
+            CertifiedPayroll.get({}, function (response) {
+                console.log(response);
+                wbsTree.setCertifiedPayrollList(response.result);
+            });
+            Wrap.get({}, function (response) {
+                console.log(response);
+                wbsTree.setWrapList(response.result);
             });
 
             //Document.get({ ProjectID: localStorage.getItem('selectProjectIdDash') }, function (response) { // _selectedProjectID
@@ -2811,7 +3836,12 @@ angular.module('cpp.controllers').
 
             $('#btnQuickSearch').unbind('click').on('click', function () {
                 var pagedata = Page;
-                console.log('Called Org...');
+                $("#btnQuickSearch").prop('disabled', 'disabled');  //vaishnavi 02-03-2022
+                $("#FilterTrend").prop('disabled', 'disabled');   //vaishnavi 02-03-2022
+                //console.log('Called Org...');
+                //Narayan - clear trend map before search
+                var firstGNode = $('#trendSvg').children()[0];
+                $(firstGNode).children().remove();
                 $scope.filterProgramId = "";
                 $scope.filterProgramElement = "";
                 $scope.filterProject = "";
@@ -2880,29 +3910,48 @@ angular.module('cpp.controllers').
                             localStorage.setItem('selectProjectCapitalProjectAssistantIDDash', null);
                             //dhtmlx('at #project_name  $http.get orgId:' + orgId + ' else...');
                         }
+/*
+                        usSpinnerService.stop('spinner-1');
+                        $scope.showSpinner = false;
+                        $('#spin').removeClass('fademe');*/
 
                     });
                 var sreachTxt = $('#txtQuickSearch').val();
                 $scope.SearchText = sreachTxt;
                 localStorage.setItem('SearchText', sreachTxt);
                 
-                var loadfunc = $scope.loadWBSData(orgId, null, null, null, $scope.SearchText, '1');
+                var loadfunc = $scope.loadWBSData(orgId, null, null, null, $scope.SearchText, '1', null);
             });
             $scope.FilterTrend = function (e) {
                 var oldsvg = d3.select("#wbs-tree");
                 oldsvg.selectAll("*").remove();
                 var orgId = myLocalStorage.get('userSelectedOrgId');
-
+                $("#FilterTrend").prop('disabled', 'disabled');  //vaishnavi 02-03-2022
+                $("#btnQuickSearch").prop('disabled', 'disabled');  //vaishnavi 02-03-2022
+                $("#btnQuickSearch").css('background-color', 'darkgrey'); //vaishnavi 02-03-2022
                 if ($("#FilterTrend").prop('checked') == true) {
-                    $scope.loadWBSData(orgId, null, null, null,null, '0');
+
+                    $("#FilterTrend").prop('disabled', 'disabled');   //vaishnavi 02-03-2022
+                    $("#btnQuickSearch").prop('disabled', 'disabled');   //vaishnavi 02-03-2022
+                    $("#btnQuickSearch").css('background-color', 'darkgrey');   //vaishnavi 02-03-2022
+                    $scope.loadWBSData(orgId, null, null, null, null, '0', null);
+                  
+                  
                 } else {
-                    $scope.loadWBSData(orgId, null, null, null, null, '1');
+                    $("#FilterTrend").prop('disabled', 'disabled');   //vaishnavi 02-03-2022
+                    $("#btnQuickSearch").prop('disabled', 'disabled');   //vaishnavi 02-03-2022
+                    $("#btnQuickSearch").css('background-color', 'darkgrey'); //vaishnavi 02-03-2022
+                    $scope.loadWBSData(orgId, null, null, null, null, '1', null);
+                    
+                   
                 }
 
             }
        
-            $scope.loadWBSData = function (orgId, pgmId, pgmEltId, projId, searchText, allData) {
-
+            $scope.loadWBSData = function (orgId, pgmId, pgmEltId, projId, searchText, allData, deptID) {
+                $("#btnQuickSearch").prop('disabled', 'disabled');  //vaishnavi 02-03-2022
+                $("#FilterTrend").prop('disabled', 'disabled');   //vaishnavi 02-03-2022
+                $("#btnQuickSearch").css('background-color', 'darkgrey');   //vaishnavi 02-03-2022
                 searchText = myLocalStorage.get('SearchText');
                 $scope.SearchText = searchText;
                 var pagedata = Page;
@@ -2912,24 +3961,37 @@ angular.module('cpp.controllers').
                 $('#spin').addClass('fademe');
                 $('#spinTrend').removeClass('fademe');
                 //********** Jignesh-18-10-2021 ************
-                var userList = wbsTree.getUserList();
-                var uName = _localStorage.userName;
-                var uID = 0;
-                $.each(userList, function (i, data) {
-                    if (data.UserID == uName) {
-                        uID = data.Id; 
-                    }
-                });
+                //var userList = wbsTree.getUserList();
+                //var uName = _localStorage.userName;
+                var uID = _localStorage.userId;
+                //$.each(userList, function (i, data) {
+                //    if (data.UserID == uName) {
+                //        uID = data.Id; 
+                //    }
+                //});
                 if (searchText == 'undefined' || searchText == null || searchText == '') {
                     searchText = null;
                 }
+                if (pgmId == "" || pgmId == '') {
+                    pgmId = null;
+                }
+                if (pgmEltId == "" || pgmEltId == '') {
+                    pgmEltId = null;
+                }
+                if (projId == "" || projId == '') {
+                    projId = null;
+                }
                 //*******************************************
                 //$http.get(serviceBasePath + "Request/WBS/" + uID + "/" + orgId + "/" + pgmId + "/" + pgmEltId + "/" + projId + "/null/null/null/null/null/" + searchText + "/" + allData,
-                WbsService.getWBS(uID, orgId, pgmId, pgmEltId, projId, searchText, allData).get({})
+                WbsService.getWBS(uID, orgId, pgmId, pgmEltId, projId, searchText, allData, deptID).get({})
                     .$promise.then(function (response) {
-                       
-
+                        $("#FilterTrend").removeAttr('disabled');   //vaishnavi 02-03-2022
+                        $("#btnQuickSearch").removeAttr('disabled');   //vaishnavi 02-03-2022
+                        $("#btnQuickSearch").css('background-color', 'black');   //vaishnavi 02-03-2022
+                        $('#wbs-tree').html('');    //vaishnavi 02-03-2022
+                        $('#wbsGridView').html('');   //vaishnavi 02-03-2022
                         console.log(response);
+                        _wbsTreeData = response;
                         var treeData = response;
                         $scope.getDefaultFirstProjectElement(treeData);
                         $scope.treeData = treeData;
@@ -2939,23 +4001,91 @@ angular.module('cpp.controllers').
                         //$rootScope.fromWBS = true;
                         // Rename the project and project element nodes to include project number and project element number.
                         var organization = response;
-                        var str = "<table class='gridView'>" +
-                            "<tr><th>Organization11</th><th>Contract</th><th>Project</th><th>Project Element</th></tr>";
+                        var str = "<div class='row row-padding'>"+
+                            "<div class='gadget color-my' style = 'height: 733px;' >"+
+                              //  "<div class='gadget-head' style='display: block'>"+
+                                   // "<h3 style='margin-top:1px;'>"+
+                                  //   "   Interface Definition"+
+                                    //"<small style='color:white;' ng-show='data.length' class='page-title-subtle-white'>[ {{ data.length }}  Records(s) ]</small>"+
+                                 //   "</h3>"+
+
+                                    
+                             //   "<input class='wild-card-search pull-right' ng-model='SearchValue'>"+
+                             //    "           <span class='pull-right' style='margin-right:5px;font-weight:bold;'>Search:</span>"+
+                                  
+                           // "</div>"+
+                                   " <div class='gadget-content' style='height: 91%;'>"+
+                                    "    <table class='table  table-condensed'>  <thead style='position: -webkit-sticky;position: sticky;top:0; '>" +
+                            "<tr><th class='th-c sortable' scope='col' style='position: relative; width: 14.28%;' data-sortable='true'>Organization</th>"+
+                            "<th class='th-c sortable' scope='col' style='position: relative; width: 14.28%;' data-sortable='true'> Contract</th>" +
+                            "<th class='th-c sortable' scope='col' style='position: relative; width: 14.28%;' data-sortable='true'>Project</th>" +
+                            "<th class='th-c sortable' scope='col' style='position: relative; width: 14.28%;' data-sortable='true'>Department</th>" +
+                            "<th class='th-c sortable' scope='col' style='position: relative; width: 14.28%;' data-sortable='true'>Project Element</th>" +
+                            "<th class='th-c sortable' scope='col' style='position: relative; width: 14.28%;' data-sortable='true'>Service</th>" +
+                            "<th class='th-c sortable' scope='col' style='position: relative; width: 14.28%;' data-sortable='true'>Value</th>" +
+                            "</tr>  <thead><tfoot></tfoot> " +
+                            " <tbody>" +
+                            "<tr style = 'background-color:white !important;'>" +
+                            "    <td colspan='7'>" +
+                            "       <div class='scrolable-table' style='overflow:auto;overflow-x:hidden;height: 100% !important;'>" +
+                            "          <table id='gridTable'; class='table striped table-condensed table-responsive table-bordered'>" +
+                            "             <tbody>" ;
                         var currentProgramCost, currentProjectCost, currentProjectElementCost;
-                        for (programI = 0; programI < organization.children.length; programI++) {
+                       
+                        for (programI = 0; programI < organization.children.length; programI++)
+                        {
+                            var CalCulateProgramCost = 0;
+                            //Nivedita
                             var program = organization.children[programI];
                             if (program.CurrentCost == null || program.CurrentCost == "" || program.CurrentCost == 0 || isNaN(program.CurrentCost)) {
                                 currentProgramCost = "";
                             } else {
-                                currentProgramCost = "$" + addCommas(program.CurrentCost);
+                                for (var i = 0; i < program.children.length; i++) {
+                                    var CalCulateProjectCost = 0;
+                                    var project = program.children[i];
+                                    for (var j = 0; j < project.children.length; j++) {
+                                        var projectElement = project.children[j];
+                                        CalCulateProjectCost += Number(projectElement.CurrentCost);
+                                       // CalCulateProgramCost += Number(projectElement.CurrentCost);
+                                        //alert(program.ProgramID + 'Cost=' + CalCulateProgramCost);
+                                        //CalCulateProjectCost += CalCulateProgramCost;
+                                        //alert(CalCulateProjectCost);
+                                    }
+                                    CalCulateProgramCost += Number(CalCulateProjectCost);
+                                    if (CalCulateProjectCost == 0) {
+                                        currentProjectCost = "";
+                                        project.CurrentCost = 0;
+                                    }
+                                    else {
+                                        project.CurrentCost = CalCulateProjectCost;
+                                    }
+                                    
+                                }
+                                if (CalCulateProgramCost == 0) {
+                                    currentProgramCost = "";
+                                    program.CurrentCost = 0;
+                                }
+                                else {
+                                    currentProgramCost = CalCulateProgramCost;
+                                    program.CurrentCost = CalCulateProgramCost;
+                                   currentProgramCost = "$" + addCommas(currentProgramCost);
+                                }
+                                
                             }
+                            
+                            console.log("Check program details===>");
+                            console.log(program);
 
                             if (program.children.length == 0) {
-                                str += "<tr>" +
-                                    "<td><a level=" + organization.level + " OrganizationId=" + organization.organizationID + ">" + organization.name + "</a></td>" +
-                                    "<td><a level=" + program.level + " ProgramId=" + program.ProgramID + " title=" + currentProgramCost + ">" + program.name + "</a></td>" +
-                                    "<td ></td>" +
-                                    "<td></td></tr >";
+                                str += 
+                                    "<tr class='fade-selection-animation'> " +
+                                    "<td class='my-word-wrap orgcell' style='width: 14.28%;'><a level=" + organization.level + " OrganizationId=" + organization.organizationID + ">" + organization.name + "</a></td>" +
+                                    "<td class='my-word-wrap' style='width: 14.28%;'><a level=" + program.level + " ProgramId=" + program.ProgramID + " title=" + currentProgramCost + ">" + program.name + "</a></td>" +
+                                    "<td class='my-word-wrap' style='width: 14.28%;'></td>" +
+                                    "<td class='my-word-wrap' style='width: 14.28%;'></td>" +
+                                    "<td class='my-word-wrap' style='width: 14.28%;'></td>" +
+                                    "<td class='my-word-wrap' style='width: 14.28%;'></td>" +
+                                    "<td class='my-word-wrap' style='width: 14.28%;'></td></tr >";
                             }
                             for (projectI = 0; projectI < program.children.length; projectI++) {
                                 var project = program.children[projectI];
@@ -2964,12 +4094,33 @@ angular.module('cpp.controllers').
                                 } else {
                                     currentProjectCost = "$" + addCommas(project.CurrentCost);
                                 }
+
+                              
+                               
+
+                                //organization --- contract -- project
+                                
+                                console.log("Project Details====>");
+                                console.log(project);
                                 if (project.children.length == 0) {
-                                    str += "<tr>" +
-                                        "<td><a level=" + organization.level + "  OrganizationId=" + organization.organizationID + ">" + organization.name + "</a></td>" +
-                                        "<td><a level=" + program.level + " ProgramId=" + program.ProgramID + " title=" + currentProgramCost + ">" + program.name + "</a></td>" +
-                                        "<td><a level=" + project.level + " ProgramelementId=" + project.ProgramElementID + " title=" + currentProjectCost + ">" + project.name + "</a></td>" +
-                                        "<td></td></tr >";
+                                    var projectClassName = '';
+                                   // ProjectClass.get({}, function (Projectresponse) {
+                                      //  console.log(Projectresponse);
+                                        var projectClassList = wbsTree.getProjectClassList();
+                                        for (var x = 0; x < projectClassList.length; x++) {
+                                            if (projectClassList[x].ProjectClassID == project.ProjectClassID) {
+                                                projectClassName = projectClassList[x].ProjectClassName
+                                            }
+                                        }
+                                    //});
+                                    str += "<tr class='fade-selection-animation'>" +
+                                        "<td class='my-word-wrap orgcell' style='width: 14.28%;'><a level=" + organization.level + "  OrganizationId=" + organization.organizationID + ">" + organization.name + "</a></td>" +
+                                        "<td class='my-word-wrap' style='width: 14.28%;'><a level=" + program.level + " ProgramId=" + program.ProgramID + " title=" + currentProgramCost + ">" + program.name + "</a></td>" +
+                                        "<td class='my-word-wrap' style='width: 14.28%;'><a level=" + project.level + " ProgramelementId=" + project.ProgramElementID + " title=" + currentProjectCost + ">" + project.name + "</a></td>" +
+                                        "<td class='my-word-wrap' style='width: 14.28%;' ProjectClassId=" + project.ProgramElementID+">" + project.ProjectClassName + "</td>" +
+                                        "<td class='my-word-wrap' style='width: 14.28%;'></td>" +
+                                        "<td class='my-word-wrap' style='width: 14.28%;' ></td>" +
+                                        "<td class='my-word-wrap' style='width: 14.28%;'></td></tr>";
                                 }
                                 project.name = project.ProjectNumber + ". " + project.name;
                                 for (projectElementI = 0; projectElementI < project.children.length; projectElementI++) {
@@ -2979,11 +4130,35 @@ angular.module('cpp.controllers').
                                     } else {
                                         currentProjectElementCost = "$" + addCommas(projectElement.CurrentCost);
                                     }
-                                    str += "<tr>" +
-                                        "<td><a level=" + organization.level + "  OrganizationId=" + organization.organizationID + ">" + organization.name + "</a></td>" +
-                                        "<td><a level=" + program.level + " ProgramId=" + program.ProgramID + " title=" + currentProgramCost + ">" + program.name + "</a></td>" +
-                                        "<td><a level=" + project.level + " ProgramelementId=" + project.ProgramElementID + " title=" + currentProjectCost + ">" + project.name + "</a></td>" +
-                                        "<td><a level=" + projectElement.level + " ProjectId=" + projectElement.ProjectID + " title=" + currentProjectElementCost + ">" + projectElement.name + "</a></td></tr>";
+
+                                    
+                                    console.log("Project Element Details====>");
+                                    console.log(projectElement);
+                                    var projectServiceName = '';
+                                   // ServiceClass.get({}, function (response) {
+                                      //  console.log(response);
+                                        
+                                       // var serviceClassList = response.result;
+                                    var serviceClassList = wbsTree.getServiceClassList();
+
+                                        for (var x = 0; x < serviceClassList.length; x++) {
+                                            if (serviceClassList[x].ID == projectElement.ProjectClassID) {
+                                                projectServiceName = serviceClassList[x].Description
+                                            }
+                                        }
+                                       
+                                       
+                                   // });
+                                    str += "<tr class='fade-selection-animation'>" +
+                                        "<td class='my-word-wrap orgcell' style='width: 14.28%;'><a level=" + organization.level + "  OrganizationId=" + organization.organizationID + ">" + organization.name + "</a></td>" +
+                                        "<td class='my-word-wrap' style='width: 14%;'><a level=" + program.level + " ProgramId=" + program.ProgramID + " title=" + currentProgramCost + ">" + program.name + "</a></td>" +
+                                        "<td class='my-word-wrap' style='width: 14.50%;'><a level=" + project.level + " ProgramelementId=" + project.ProgramElementID + " title=" + currentProjectCost + ">" + project.name + "</a></td>" +
+                                        "<td class='my-word-wrap' style='width: 14.50%;' ProjectClassId=" + project.ProgramElementID + ">" + project.ProjectClassName + "</td>" +
+                                        "<td class='my-word-wrap' style='width: 14.60%;'><a level=" + projectElement.level + " ProjectId=" + projectElement.ProjectID + " title=" + currentProjectElementCost + ">" + projectElement.name + "</a></td>" +
+                                        "<td class='my-word-wrap' style='width: 14.40%;'>" + projectElement.ServiceName+"</td>" +
+                                        "<td class='my-word-wrap' style='width: 13.94%;'>" + currentProjectElementCost +"</td></tr>";
+
+
                                     projectElement.name = projectElement.ProjectElementNumber + ". " + projectElement.name;
                                     if (!isProjectIdSet) {
 
@@ -3051,16 +4226,20 @@ angular.module('cpp.controllers').
                         //    return table;
                         //}
 
-
+                        str += "</tbody></table ></div ></td ></tr > </tbody ></table ></div></div></div>";
                         $('#wbsGridView').append(str);
 
                         var column1 = $('#wbsGridView Table td:first-child');
                         var column2 = $('#wbsGridView Table td:nth-child(2)');
                         var column3 = $('#wbsGridView Table td:nth-child(3)');
+                        var column4 = $('#wbsGridView Table td:nth-child(4)');
 
-                        modifyTableFirstColumnRowspan(column1, column2);
-                        modifyTableRowspan(column2);
-                        modifyTableRowspan(column3);
+                        //modifyTableFirstColumnRowspan(column1, column2);
+
+                        modifyTableRowspan(column1);
+                        //modifyTableRowspan(column2);
+                      //  modifyTableRowspan(column3);
+                       // modifyTableRowspan(column4);
 
                         function modifyTableRowspan(column) {
 
@@ -3312,13 +4491,15 @@ angular.module('cpp.controllers').
                             setUserNode();
                             $rootScope.fromWBS = false;
                         }
+
+                        
                     }).
                     finally(function () {
                         console.log($rootScope);
                         // $rootScope.buttonDisabled =false;
-                        usSpinnerService.stop('spinner-1');
+                       /* usSpinnerService.stop('spinner-1');
                         $scope.showSpinner = false;
-                        $('#spin').removeClass('fademe');
+                        $('#spin').removeClass('fademe');*/
                     })
             }
 
@@ -3470,12 +4651,12 @@ angular.module('cpp.controllers').
 
 
             $scope.loadOrganizations = function () {
-                debugger;
                 Organization.lookup().get({}, function (organizationData) {
                     $scope.organizationList = organizationData.result;
 
                     if ($scope.organizationList.length == 0) {
-                        if (localStorage.get("authorizationData").role == "Admin") {
+                        //if (localStorageService.get("authorizationData").role == "Admin") {
+                        if (localStorageService.get("authorizationData").role.indexOf('Admin') != -1) {
                             window.location.hash = '#/app/admin-organization';
                         }
                     }
@@ -3490,9 +4671,10 @@ angular.module('cpp.controllers').
                     console.log($scope.organizationList);
                     if (orgId == null) {
                         orgId = $scope.organizationList[0].OrganizationID;
-                        $scope.filterOrgId = orgId;
                         myLocalStorage.set('userSelectedOrgId', orgId);
+                        $scope.filterOrgId = myLocalStorage.get('userSelectedOrgId');
                     } else {
+                        $('#closed,#approved,#unapproved,#contract,#project').show();
                         var checkIfExisted = isOrgExisted(orgId, $scope.organizationList);
                         if (checkIfExisted == false)
                             orgId = $scope.organizationList[0].OrganizationID;
@@ -3503,10 +4685,13 @@ angular.module('cpp.controllers').
                             $("#selectOrg option[value='" + orgId + "']").attr('selected', true);
                             wbsTree.getProjectMap().initProjectMap(wbsTree.getSelectedNode(), wbsTree.getOrganizationList());
                         }, 500);
-                    }
+                    } 
 
                     Program.lookup().get({ OrganizationID: orgId }, function (programData) {
                         $scope.programList = programData.result;
+                        $scope.programList.sort(function (a, b) {
+                            return a.ProgramName.localeCompare(b.ProgramName);
+                        });
                     });
 
                     console.log($scope.programList);
@@ -3553,7 +4738,7 @@ angular.module('cpp.controllers').
                                     console.log(testobj);
                                     $scope.filterProject = (testobj.ProjectID).toString();
                                     console.log('ProjectId--' + $scope.filterProject);
-                                    $scope.loadWBSData(orgId, $scope.filterProgramId, $scope.filterProgramElement, $scope.filterProject, null,'1');
+                                    $scope.loadWBSData(orgId, $scope.filterProgramId, $scope.filterProgramElement, $scope.filterProject, null,'1',null);
                                 });
                             });
                         });
@@ -3572,7 +4757,7 @@ angular.module('cpp.controllers').
                                 console.log(testobj);
                                 $scope.filterProgramElement = (testobj.ProgramElementID).toString();
                                 console.log('PrgmElmnt:' + $scope.filterProgramElement);
-                                $scope.loadWBSData(orgId, $scope.filterProgramId, $scope.filterProgramElement, null, null,'1');
+                                $scope.loadWBSData(orgId, $scope.filterProgramId, $scope.filterProgramElement, null, null,'1',null);
                                 Project.lookup().get({ ProgramID: $scope.filterProgramId, ProgramElementID: $scope.filterProgramElement }, function (projectData) {
                                     $scope.projectList = projectData.result;
                                 });
@@ -3586,7 +4771,7 @@ angular.module('cpp.controllers').
                             $scope.programList = programData.result;
                             var testobj = ($scope.programList.find(elem => elem.ProgramID == parseInt(localStorage.getItem('pgmId'))));
                             $scope.filterProgramId = (testobj.ProgramID).toString();
-                            $scope.loadWBSData(orgId, $scope.filterProgramId, null, null, null,'1');
+                            $scope.loadWBSData(orgId, $scope.filterProgramId, null, null, null,'1',null);
                             ProgramElement.lookup().get({ ProgramID: $scope.filterProgramId }, function (programElementData) {
                                 $scope.programElementList = programElementData.result;
                                 $("#selectProgramElement").val("");
@@ -3596,7 +4781,7 @@ angular.module('cpp.controllers').
                     }
 
                     else
-                        $scope.loadWBSData(orgId, null, null, null, null,'1');
+                        $scope.loadWBSData(orgId, null, null, null, null,'1',null);
 
                 });
 
@@ -3631,7 +4816,6 @@ angular.module('cpp.controllers').
                     if (data.isCancel == true) {
                         return;
                     }
-                    debugger;
                     Organization.lookup().get({}, function (organizationData) {
                         //rename the node when renaming from wbstree
                         console.log(organizationData);
@@ -3758,7 +4942,7 @@ angular.module('cpp.controllers').
                         }
 
                     });
-                var loadfunc = $scope.loadWBSData(orgId, null, null, null, null,'1');
+                var loadfunc = $scope.loadWBSData(orgId, null, null, null, null,'1',null);
 
             }
 
@@ -3782,11 +4966,23 @@ angular.module('cpp.controllers').
                     localStorage.setItem('pgmId', pgmId);
                     ProgramElement.lookup().get({ ProgramID: pgmId }, function (programElementData) {
                         $scope.programElementList = programElementData.result;
+                        $scope.programElementList.sort(function (a, b) {    //vaishnavi
+                            return a.ProgramElementName.localeCompare(b.ProgramElementName);  //vaishnavi
+                        }); //vaishnavi
                         $("#selectProgramElement").val("");
+                    });
+
+                    debugger;
+
+                    ProjectClassByProgramId.get({ programID: pgmId }, function (response) {
+                        debugger;
+                        var data = response;
+                        $scope.projectClassListDD = response.result;
+                        //$("#selectProgramElement").val("");
                     });
                 }
                 console.log($scope.programElementList);
-
+                var treedataaaa = _wbsTreeData;
                 var oldsvg = d3.select("#wbs-tree");
                 oldsvg.selectAll("*").remove();
                 console.log(pgmId);
@@ -3825,7 +5021,7 @@ angular.module('cpp.controllers').
                                 localStorage.setItem('selectProjectCapitalProjectAssistantIDDash', null);
                                 //dhtmlx('at $scope.filterChangeProgram $http.get pgmId:' + pgmId + ' else...');
                             }
-                            $scope.loadWBSData(orgId, pgmId, null, null, null);
+                            $scope.loadWBSData(orgId, pgmId, null, null, null,null,null);
 
                         });
                 }
@@ -3848,7 +5044,7 @@ angular.module('cpp.controllers').
                             localStorage.setItem('selectProjectFinancialAnalystIDDash', response.data.result[0].FinancialAnalystID);
                             localStorage.setItem('selectProjectCapitalProjectAssistantIDDash', response.data.result[0].CapitalProjectAssistantID);
                             //dhtmlx('at $scope.filterChangeProgram $http.get orgId:' + orgId);
-                            $scope.loadWBSData(orgId, pgmId, null, null, null,'1');
+                            $scope.loadWBSData(orgId, pgmId, null, null, null,'1',null);
 
                         });
                 }
@@ -3859,6 +5055,8 @@ angular.module('cpp.controllers').
                 console.log('Called program element');
                 $scope.filterProject = "";
                 $scope.projectList = "";
+                $scope.projectClassListDD = "";
+                $scope.filterDepartment = "";
                 var orgId = $("#selectOrg").val();
                 var pgmId = $("#selectProgram").val();
                 var pgmEltId = $("#selectProgramElement").val();
@@ -3871,9 +5069,20 @@ angular.module('cpp.controllers').
                     localStorage.setItem('pgmEltId', pgmEltId);
                     Project.lookup().get({ ProgramID: pgmId, ProgramElementID: pgmEltId }, function (projectData) {
                         $scope.projectList = projectData.result;
+                        $scope.projectList.sort(function (a, b) {    //vaishnavi
+                            return a.ProjectName.localeCompare(b.ProjectName);   //vaishnavi
+                        });  //vaishnavi
+                    });
+                    ProjectClassByProgramElementId.get({ programElemID: pgmEltId }, function (response) {
+                        var data = response;
+                        $scope.projectClassListDD = response.result;
                     });
                 }
-
+                else if (pgmId != null && pgmId != "") {
+                    ProjectClassByProgramId.get({ programID: pgmId }, function (response) {
+                        $scope.projectClassListDD = response.result;
+                    });
+                }
                 var oldsvg = d3.select("#wbs-tree");
                 oldsvg.selectAll("*").remove();
                 if (pgmEltId != "") {
@@ -3914,7 +5123,7 @@ angular.module('cpp.controllers').
                                 localStorage.setItem('selectProjectCapitalProjectAssistantIDDash', null);
                                 //dhtmlx('at $scope.filterChangeProgramElement $http.get pgmId:' + pgmId + ' pgmEltId:' + pgmEltId + ' else...');
                             }
-                            $scope.loadWBSData(orgId, pgmId, pgmEltId, null, null,'1');
+                            $scope.loadWBSData(orgId, pgmId, pgmEltId, null, null,'1',null);
                         });
                 } else {
                     $http.get(serviceBasePath + "Request/Project/" + pgmEltId)
@@ -3935,9 +5144,31 @@ angular.module('cpp.controllers').
                             localStorage.setItem('selectProjectFinancialAnalystIDDash', response.data.result[0].FinancialAnalystID);
                             localStorage.setItem('selectProjectCapitalProjectAssistantIDDash', response.data.result[0].CapitalProjectAssistantID);
                             //dhtmlx('at $scope.filterChangeProgramElement $http.get pgmId:' + pgmId);
-                            $scope.loadWBSData(orgId, pgmId, pgmEltId, null, null,'1');
+                            $scope.loadWBSData(orgId, pgmId, pgmEltId, null, null,'1',null);
                         });
                 }
+                //filterChangeProject();
+
+            }
+
+            $scope.filterChangeDepartment = function () {
+                
+                var orgId = $("#selectOrg").val();
+                var pgmId = $("#selectProgram").val();
+                var pgmEltId = $("#selectProgramElement").val();
+                var deptEltId = $("#selectManagingDepartment").val();
+
+                localStorage.removeItem('pgmEltId');
+                localStorage.removeItem('projId');
+                localStorage.removeItem('SearchText');
+
+                if (pgmEltId == null || pgmEltId == "") {
+                    pgmEltId = null;
+                }
+
+                var oldsvg = d3.select("#wbs-tree");
+                oldsvg.selectAll("*").remove();
+                $scope.loadWBSData(orgId, pgmId, pgmEltId, null, null, '1', deptEltId);
                 //filterChangeProject();
 
             }
@@ -3998,7 +5229,7 @@ angular.module('cpp.controllers').
                         });
                 }
 
-                $scope.loadWBSData(orgId, pgmId, pgmEltId, projId, null,'1');
+                $scope.loadWBSData(orgId, pgmId, pgmEltId, projId, null,'1',null);
 
             }
 

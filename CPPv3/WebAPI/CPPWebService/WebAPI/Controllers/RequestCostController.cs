@@ -30,9 +30,16 @@ namespace WebAPI.Controllers
             stopWatch.Start();
             List<Cost> CostList = WebAPI.Models.Cost.getCosts(ProjectID, TrendNumber, PhaseCode, ActivityID, Granularity, BudgetID, BudgetCategory, BudgetSubCategory, ViewLabor);
 
-            CostList = CostList.OrderBy(a => a.CostLineItemID).ToList();
+            //CostList = CostList.OrderBy(a => Convert.ToDecimal(a.CostLineItemID)).ToList();
 
-            CostList = CostList.OrderBy(a => a.CostLineItemID.Substring(17,2)).ToList();
+            CostList = CostList.OrderBy(
+                                            a => 
+                                            { 
+                                                var orderID = a.CostLineItemID.Substring(18, 2); 
+                                                return int.Parse(orderID); 
+                                            }
+                                       ).ToList();
+            //CostList = CostList.OrderBy(a => a.DT_RowID).ToList();
 
             /*var jsonNew = new
             {

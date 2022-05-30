@@ -240,6 +240,8 @@ namespace WebAPI.Models
 
 
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@FundName", programFund.FundName);
+                command.Parameters.AddWithValue("@ProgramID", programFund.ProgramID);
                 using (reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -256,16 +258,23 @@ namespace WebAPI.Models
                 {
                     //write to DB
                     query = "update program_fund";
-                    query += " set FundAmount = " + programFund.FundAmount + ",";
-                    query += " FundUsed = " + programFund.FundUsed + ",";
-                    query += " FundRemaining = " + programFund.FundRemaining + ",";
-                    query += " UpdatedDate = '" + todayDate + "',";
-                    query += " FundRequest = " + programFund.FundRequest + "";
-                    query += " Where FundName = '" + programFund.FundName + "'";
-                    query += " And ProgramID = " + programFund.ProgramID;
+                    query += " set FundAmount = @FundAmount,";
+                    query += " FundUsed = @FundUsed,";
+                    query += " FundRemaining = @FundRemaining,";
+                    query += " UpdatedDate = @todayDate,";
+                    query += " FundRequest = @FundRequest";
+                    query += " Where FundName = @FundName";
+                    query += " And ProgramID = @ProgramID" ;
 
 
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@FundAmount", programFund.FundAmount);
+                    command.Parameters.AddWithValue("@FundUsed", programFund.FundUsed);
+                    command.Parameters.AddWithValue("@FundRemaining", programFund.FundRemaining);
+                    command.Parameters.AddWithValue("@todayDate", todayDate);
+                    command.Parameters.AddWithValue("@FundRequest", programFund.FundRequest);
+                    command.Parameters.AddWithValue("@FundName", programFund.FundName);
+                    command.Parameters.AddWithValue("@ProgramID", programFund.ProgramID);
                     command.ExecuteNonQuery();
 
 

@@ -98,7 +98,10 @@ namespace WebAPI.Models
         public byte MonthlyBilling { get; set; }
         public byte CertifiedPayroll { get; set; }
         public byte Lumpsum { get; set; }
-
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
+        public string Status { get; set; }   //----Vaishnavi 30-03-2022----//
 
         [ForeignKey("ProjectTypeID")]
         public virtual ProjectType ProjectType { get; set; }
@@ -174,7 +177,7 @@ namespace WebAPI.Models
                     if (ProjectID != "null" && ProjectID != null)
                     {
                         int projectId = int.Parse(ProjectID);
-                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.ProjectID == projectId);
+                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.ProjectID == projectId && p.IsDeleted == false);
       
                         MatchedProjectList = projects.ToList<Project>();
                         for (int i = 0; i < MatchedProjectList.Count; i++)
@@ -187,26 +190,26 @@ namespace WebAPI.Models
                     else if (ProgramElementID != "null" && ProgramElementID != null)
                     {
                         int pgmEltId = int.Parse(ProgramElementID);
-                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.ProgramElement.ProgramElementID == pgmEltId);
+                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.ProgramElement.ProgramElementID == pgmEltId && p.ProgramElement.IsDeleted == false);
                         MatchedProjectList = projects.ToList<Project>();
                       
                     }
                     else if (ProgramID != "null" && ProgramID != null)
                     {
                         int pgmId = int.Parse(ProgramID);
-                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.Program.ProgramID == pgmId);
+                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.Program.ProgramID == pgmId && p.Program.IsDeleted == false);
                         MatchedProjectList = projects.ToList<Project>();
                       
                     }   
                     else if (KeyStroke != "null" && KeyStroke != null)
                     {
-                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.ProjectName.Contains(KeyStroke));
+                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.ProjectName.Contains(KeyStroke) && p.IsDeleted == false);
                         MatchedProjectList = projects.ToList<Project>();
                         
                     }
                     else 
                     {
-                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement");
+                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.IsDeleted == false);
                         MatchedProjectList = projects.ToList<Project>();
                        
                     }
@@ -247,14 +250,14 @@ namespace WebAPI.Models
                     ctx.Database.Log = msg => Trace.WriteLine(msg);
                     if (OrganizationID != "null")
                     {
-                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.OrganizationID == OrganizationID);
+                        IQueryable<Project> projects = ctx.Project.Include("Program").Include("ProgramElement").Where(p => p.OrganizationID == OrganizationID && p.IsDeleted == false);
                         MatchedProjectList = projects.ToList<Project>();
                     }
                 }
             }
             catch (Exception ex)
             {
-                var stackTrace = new StackTrace(ex, true);
+                var stackTrace = new StackTrace(ex.InnerException, true);
                 var line = stackTrace.GetFrame(0).GetFileLineNumber();
             }
             return MatchedProjectList;
@@ -271,7 +274,7 @@ namespace WebAPI.Models
             {
                 using (var ctx = new CPPDbContext())
                 {
-                    IQueryable<Project> projects = ctx.Project.Where(p => p.ProgramElementID == project.ProgramElementID && p.ProjectName == project.ProjectName);
+                    IQueryable<Project> projects = ctx.Project.Where(p => p.ProgramElementID == project.ProgramElementID && p.ProjectName == project.ProjectName && p.IsDeleted == false);
 
                     //    Project retreivedProject = ctx.Project.Where(f => f.ProjectNumber == project.ProjectNumber && f.ProjectElementNumber == project.ProjectElementNumber).FirstOrDefault();
                     ////  ProjectNumber retreivedProject = ctx.ProjectNumber.Where(f => f.projectNumber == project.ProjectNumber).FirstOrDefault();
@@ -352,7 +355,7 @@ namespace WebAPI.Models
 
 
                         project.VersionId = latestVersion.Id.ToString();
-
+                        project.Status= "Active";    //----Vaishnavi 30-03-2022----//
                         ctx.Project.Add(project);
                         ctx.SaveChanges();
 
@@ -453,10 +456,10 @@ namespace WebAPI.Models
                                 if (approverUserID != 10000)
                                 {
 
-                                    User userID = ctx.User.Where(u => u.EmployeeID == approverUserID).FirstOrDefault();
+                                    //User userID = ctx.User.Where(u => u.EmployeeID == approverUserID).FirstOrDefault();
 
                                     ProjectAccessControl projectAccessControl1 = new ProjectAccessControl();
-                                    projectAccessControl1.UserId = userID.Id;
+                                    projectAccessControl1.UserId = ApproversDetails[x].UserId;
                                     projectAccessControl1.ProgramElementID = ApproversDetails[x].ProjectElementId;
 
                                     projectAccessControl1.ProgramId = project.ProgramID;
@@ -672,10 +675,11 @@ namespace WebAPI.Models
                                         int approverUserID = prj.ApproversDetails[x].EmpId;
                                         if (approverUserID != 10000) {
 
-                                            User userID = ctx.User.Where(u => u.EmployeeID == approverUserID).FirstOrDefault();
+                                            //User userID = ctx.User.Where(u => u.EmployeeID == approverUserID).FirstOrDefault();
+                                            //User userID = prj.ApproversDetails[x].UserId;
 
                                             ProjectAccessControl projectAccessControl = new ProjectAccessControl();
-                                            projectAccessControl.UserId = userID.Id;
+                                            projectAccessControl.UserId = prj.ApproversDetails[x].UserId;
                                             projectAccessControl.ProgramElementID = prj.ApproversDetails[x].ProjectElementId;
 
                                             projectAccessControl.ProgramId = project.ProgramID;
@@ -685,27 +689,27 @@ namespace WebAPI.Models
                                               && project.ProgramID == p.ProgramId && project.ProjectID == p.ProjectID)
                                               .FirstOrDefault();
 
-                                        if (checkDataExist1 != null)
-                                        {
-                                            projectAccessControl.Id = checkDataExist1.Id;
-                                            checkDataExist1.IsProjectApprover = true;
-                                            projectAccessControl.ProjectID = checkDataExist1.ProjectID;
-                                            projectAccessControl.IsProgramEleCreator = checkDataExist1.IsProgramEleCreator;
-                                            projectAccessControl.IsProjectCreator = checkDataExist1.IsProjectCreator;
-                                            projectAccessControl.IsProgramCreator = checkDataExist1.IsProgramCreator;
-                                            //ctx.ProjectAccessControl.Add(projectAccessControl);
-                                            ctx.SaveChanges();
-                                        }
-                                        else
-                                        {
-                                            projectAccessControl.ProjectID = project.ProjectID;
-                                            projectAccessControl.ProgramElementID = project.ProgramElementID;
-                                            projectAccessControl.IsProjectApprover = true;
-                                            projectAccessControl.ProgramId = project.ProgramID;
-                                            ctx.ProjectAccessControl.Add(projectAccessControl);
-                                            ctx.SaveChanges();
-                                        }
-                                        approverDetailsList.Add(projectAccessControl.UserId);
+                                            if (checkDataExist1 != null)
+                                            {
+                                                projectAccessControl.Id = checkDataExist1.Id;
+                                                checkDataExist1.IsProjectApprover = true;
+                                                projectAccessControl.ProjectID = checkDataExist1.ProjectID;
+                                                projectAccessControl.IsProgramEleCreator = checkDataExist1.IsProgramEleCreator;
+                                                projectAccessControl.IsProjectCreator = checkDataExist1.IsProjectCreator;
+                                                projectAccessControl.IsProgramCreator = checkDataExist1.IsProgramCreator;
+                                                //ctx.ProjectAccessControl.Add(projectAccessControl);
+                                                ctx.SaveChanges();
+                                            }
+                                            else
+                                            {
+                                                projectAccessControl.ProjectID = project.ProjectID;
+                                                projectAccessControl.ProgramElementID = project.ProgramElementID;
+                                                projectAccessControl.IsProjectApprover = true;
+                                                projectAccessControl.ProgramId = project.ProgramID;
+                                                ctx.ProjectAccessControl.Add(projectAccessControl);
+                                                ctx.SaveChanges();
+                                            }
+                                            approverDetailsList.Add(projectAccessControl.UserId);
 
                                         }
                                         
@@ -898,8 +902,9 @@ namespace WebAPI.Models
             return result;
         }
         
-        public static String deleteProject(int ProjectID)
+        public static String deleteProject(Project proj)
         {
+            int ProjectID = proj.ProjectID;
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
             Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "", Logger.logLevel.Debug);
             MySqlConnection conn = null;
@@ -913,28 +918,39 @@ namespace WebAPI.Models
                     ctx.Database.Log = msg => Trace.WriteLine(msg);
                     int projectId = ProjectID;
                     Project project = ctx.Project.First(p => p.ProjectID == projectId);
-                    List<ProjectScope> projectScopes = new List<ProjectScope>();
+                    List<ProjectScope> projectScopes = new List<ProjectScope>(); 
                     projectScopes = ctx.ProjectScope.Where(ps => ps.ProjectID == ProjectID).ToList();
                     programElement = ctx.ProgramElement.Where(p => p.ProgramElementID == project.ProgramElementID).FirstOrDefault();
                     List<Trend> trendList = ctx.Trend.Where(tr => tr.ProjectID == ProjectID).Select(trendItem => trendItem).ToList();
                     List<Document> documents = ctx.Document.Where(a => a.ProjectID == ProjectID).ToList();
-                    
+
+                    //Nivedita 02 - 12 - 2021
                     if (trendList.Count > 0)
                     {
                         foreach (var trend in trendList)
                         {
+                            trend.DeletedBy = proj.DeletedBy;
                             Trend.deleteTrend(trend); //this will also delete trend Funds assigned to the trend
                         }
                     }
                     foreach (var scope in projectScopes)
                     {
-                        ctx.ProjectScope.Remove(scope);
+                        //Nivedita 10022022
+                        //ctx.ProjectScope.Remove(scope);
+                        scope.IsDeleted = true;
+                        scope.DeletedDate = DateTime.Now;
+                        scope.DeletedBy = proj.DeletedBy;
                         ctx.SaveChanges();
                     }
                     //Remove all documents
                     foreach(Document doc in documents)
                     {
-                        ctx.Entry(doc).State = System.Data.Entity.EntityState.Deleted;
+                        //Nivedita 10022022
+                        //ctx.Entry(doc).State = System.Data.Entity.EntityState.Deleted;
+                        doc.IsDeleted = true;
+                        doc.DeletedDate = DateTime.Now;
+                        doc.DeletedBy = proj.DeletedBy;
+                        ctx.SaveChanges();
                     }
                     ctx.SaveChanges();
 
@@ -942,10 +958,14 @@ namespace WebAPI.Models
                     using (var DbCtx = new CPPDbContext())
                     {
                         //Delete documents
-                       
 
+                        //Nivedita 02-12-2021
                         Project projectToBeDeleted = DbCtx.Project.First(p => p.ProjectID == ProjectID);
-                        DbCtx.Project.Remove(projectToBeDeleted);
+                        projectToBeDeleted.IsDeleted = true;
+                        projectToBeDeleted.DeletedDate= DateTime.Now;
+                        projectToBeDeleted.DeletedBy = proj.DeletedBy;
+                        projectToBeDeleted.Status = "Archived";    //----Vaishnavi 30-03-2022----//
+                        //DbCtx.Project.Remove(projectToBeDeleted); 
                         DbCtx.SaveChanges();
                         updateCostOnProjectDelete(programElement.ProgramElementID);
                         result = "Success";
@@ -1014,6 +1034,85 @@ namespace WebAPI.Models
 
             }
         }
+        //----Vaishnavi 30-03-2022----//
+        public static String closeProject(Project proj)
+        {
+            int ProjectID = proj.ProjectID;
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "", Logger.logLevel.Debug);
+            MySqlConnection conn = null;
+            MySqlDataReader reader = null;
+            ProgramElement programElement = new ProgramElement();
+            String result = "";
+            try
+            {
+                using (var ctx = new CPPDbContext())
+                {
+                    ctx.Database.Log = msg => Trace.WriteLine(msg);
+                    int projectId = ProjectID;
+                    Project project = ctx.Project.First(p => p.ProjectID == projectId && p.IsDeleted == false);
+                    //List<ProjectScope> projectScopes = new List<ProjectScope>();
+                    //projectScopes = ctx.ProjectScope.Where(ps => ps.ProjectID == ProjectID).ToList();
+                    //programElement = ctx.ProgramElement.Where(p => p.ProgramElementID == project.ProgramElementID).FirstOrDefault();
+                    List<Trend> trendList = ctx.Trend.Where(tr => tr.ProjectID == ProjectID && tr.IsDeleted == false).Select(trendItem => trendItem).ToList();
+                    //List<Document> documents = ctx.Document.Where(a => a.ProjectID == ProjectID).ToList();
 
+                    //Nivedita 02 - 12 - 2021
+                    if (trendList.Count > 0)
+                    {
+                        foreach (var trend in trendList)
+                        {
+                           // trend.DeletedBy = proj.DeletedBy;
+                            Trend.closeTrend(trend); //this will also delete trend Funds assigned to the trend
+                        }
+                    }
+                    //foreach (var scope in projectScopes)
+                    //{
+                    //    //Nivedita 10022022
+                    //    //ctx.ProjectScope.Remove(scope);
+                    //    scope.IsDeleted = true;
+                    //    scope.DeletedDate = DateTime.Now;
+                    //    scope.DeletedBy = proj.DeletedBy;
+                    //    ctx.SaveChanges();
+                    //}
+                    ////Remove all documents
+                    //foreach (Document doc in documents)
+                    //{
+                    //    //Nivedita 10022022
+                    //    //ctx.Entry(doc).State = System.Data.Entity.EntityState.Deleted;
+                    //    doc.IsDeleted = true;
+                    //    doc.DeletedDate = DateTime.Now;
+                    //    doc.DeletedBy = proj.DeletedBy;
+                    //    ctx.SaveChanges();
+                    //}
+                    //ctx.SaveChanges();
+
+                    //using different context to delete Project
+                    using (var DbCtx = new CPPDbContext())
+                    {
+                        //Delete documents
+
+                        //Nivedita 02-12-2021
+                        Project projectToBeDeleted = DbCtx.Project.First(p => p.ProjectID == ProjectID);
+                        //projectToBeDeleted.IsDeleted = true;
+                        //projectToBeDeleted.DeletedDate = DateTime.Now;
+                        //projectToBeDeleted.DeletedBy = proj.DeletedBy;
+                        projectToBeDeleted.Status = "Closed";
+                        //DbCtx.Project.Remove(projectToBeDeleted); 
+                        DbCtx.SaveChanges();
+                        //updateCostOnProjectDelete(programElement.ProgramElementID);
+                        result = "Success";
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+            }
+            return result;
+        }
     }
 }

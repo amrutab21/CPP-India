@@ -7,6 +7,7 @@
     overflow-anchor: none;
 }
 
+
 #red-square, #green-square {
     width: 10px;
     height: 10px;
@@ -48,6 +49,10 @@
     overflow-x: hidden !important;
     text-overflow: ellipsis;
     overflow-y: hidden !important;
+}
+
+#tree-container .my-word-wrap a {
+    font-weight: 600 !important;
 }
 
 h5 {
@@ -357,7 +362,8 @@ label input[type="checkbox"] {
     width: 180px;
     position: relative;
     text-align: center;
-    height: 50px;
+    height: 45px;
+    margin-bottom:0;
 }
 
 .c-btn-save {
@@ -390,7 +396,6 @@ label input[type="checkbox"] {
     width: 230px;
     font-weight: bold;
     margin-top: 15px !important;
-    margin-top: 22px !important;
 }
 
 #address-bar {
@@ -773,7 +778,7 @@ fieldset.scheduler-border {
 }
 
 body {
-    overflow-y: scroll;
+    overflow-y: hidden !important;
     height: 100%;
     padding-right: 0 !important;
 }
@@ -852,12 +857,13 @@ body {
     cursor: pointer;
 }
 .pl39p {
-    padding-left: 39% !important;
+    padding-left: 37% !important;
     padding-right: 0 !important
 }
 .filterCheckBoxWrap {
     display: inline-block;
-    float: left;
+    /*float: left;*/
+    vertical-align:top;
     padding: 5px 10px;
 }
 .filterCheckBoxWrap label{padding-top:3px;}
@@ -867,29 +873,20 @@ body {
 .txt-gray{color:#333;}
 /*shweta -3-9-2021*/
 .pl42p {
-    padding-left: 42% !important;
+    padding-left: 40.8% !important;
     padding-right: 0 !important
 }
 /*shweta -3-9-2021*/
 /*purchase order details modal css*/
 #AddContractBtn {
-    float: left;
+   /* float: left;
     margin-bottom: 0;
-    margin-top: 5px;
-}
-.filterCheckBoxWrap {
-    display: inline-block;
-    float: left;
-    padding: 5px 10px;
-}
-
-.filterCheckBoxWrap label {
-    padding-top: 3px;
+    margin-top: 5px;*/
 }
 .quicksearchwrap {
     display: inline-block;
     margin-top: 4px;
-    min-width: 48%;
+    min-width: 40%;
 }
 .quicksearchwrap .quickSearch {
     margin: 0
@@ -1176,6 +1173,15 @@ html {
     border: 1px solid black !important;
     color: black;
 }
+/*gantt-grid-input-border-changes21-1-2022*/
+.gantt_task_content .costBox input {
+    border: 1px solid transparent;
+}
+
+.gantt_task_content .costBox {
+    border: 1px solid #ebebeb !important;
+    border-top: 0 !important;
+}
 
 .costBar {
     border: none !important;
@@ -1285,4 +1291,44 @@ option[value='-1'] {
 .wbs-contextmenu {
     margin-left: -2%;
     margin-top: -5%;
+}
+
+
+/*Aditya 15032022 Hilight selected row*/
+.gridRowClass {
+    background-color: #c9dde1 !important;
+}
+
+.gridWBS tr:hover {
+    background-color: #c9dde1 !important;
+}
+
+.gridWBS tr:hover td.orgcell.my-word-wrap {
+    background: #fff !important;
+}
+
+#tree-container .table-responsive > tbody > tr > td {
+    white-space: normal !important;
+}
+/* Extra Space under last row of user management table */ 
+.usermanagementtbl .ui-grid-viewport
+{
+    padding-bottom:70px;
+}
+.usermanagementtbl .ui-grid-viewport .ui-grid-canvas {
+    border-bottom: 1px solid #d4d4d4;
+}
+input.control-group[type=radio] {margin: 4px 5px 0 0 !important;}
+
+.open > .multiselect-container {
+    position: absolute;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    height: max-content;
+    overflow: auto;
+    overflow-y: auto;
+    max-height: 150px;
+    width: inherit;
+    background: #fff;
 }

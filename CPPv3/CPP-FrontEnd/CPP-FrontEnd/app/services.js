@@ -85,6 +85,7 @@ angular.module('xenon.services', []).
 
 		this.prepareSidebarMenu = function() {
 			var wbs = this.addItem('Program Navigation', '/app/wbs', 'linecons-database');
+			//var userReports = this.addItem('userReports', '/app/user-report', 'linecons-desktop');
 			//add dashboard back if we need it
 		//	var dashboard    = this.addItem('Dashboard','/app/dashboard','linecons-note');
 			//var baseline_project = this.addItem('Baseline Project','/app/baseline-project/105/1/13', 'linecons-note');
@@ -93,18 +94,22 @@ angular.module('xenon.services', []).
 			var s = localStorageService.get('authorizationData');
 			console.log(s);
 			if (s) {
-                if (localStorageService.get('authorizationData').role === "Admin") {
+                //if (localStorageService.get('authorizationData').role === "Admin") {
+				//Nivedita 22-03-2022
+				if (localStorageService.get('authorizationData').role.indexOf('Admin') != -1) {
 					var admin = this.addItem('Administration', '/app/admin', 'linecons-desktop');
 					admin.addItem('Actuals Upload', '-/actuals-upload');
 					admin.addItem('Application Security', '-/access-control'); // "-/" will append parents link
 					admin.addItem('Client', '-/client'); // Commented by Manasi
+					admin.addItem('Client POC', '-/clientPOC');  // Commented by Tanmay - 07-12-2021
 					admin.addItem('Department', '-/project-class');
 					//admin.addItem('Department to Phase Mapping', '-/project-class-phase');
 					admin.addItem('Services', '-/service-class');
 					admin.addItem('Services to Subservices Mapping', '-/service-to-subservice-mapping');
 					admin.addItem('Document Type', '-/document-type');
-					admin.addItem('Location', '-/location'); //territoryCtrl
+					//admin.addItem('Location', '-/location'); //territoryCtrl // Aditya ---hide location from sidebar---
 					admin.addItem('Organization', '-/organization');
+					admin.addItem('Prime', '-/prime'); // Prime Aditya 30032022
 					//admin.addItem('Project Approval Requirements', '-/approval-matrix'); //Manasi
                     admin.addItem('Trend Approval Requirements', '-/approval-matrix'); // Manasi
 					admin.addItem('Subservices', '-/phase-code');
@@ -114,6 +119,8 @@ angular.module('xenon.services', []).
 					admin.addItem('Vendor', '-/vendor');
 					admin.addItem('Manufacturer', '-/manufacturer');
 					admin.addItem('Inventory', '-/inventory');
+					admin.addItem('Certified Payroll', '-/certified-payroll');   //Vaishnavi 12-04-2022
+					admin.addItem('Wrap', '-/wrap');    //Vaishnavi 12-04-2022
 					admin.addItem('Work Breakdown Structure', '-/budget-categories'); // "-/" will append parents link					
 					//admin.addItem('File Download', '-/filedownload'); Commented Manasi
 					//admin.addItem('Whitelist', '-/whitelist'); Commented by Manasi
@@ -134,7 +141,8 @@ angular.module('xenon.services', []).
 
                     var statistic = this.addItem('Statistics', '/app/admin-Chart', 'glyphicon glyphicon-signal');   //Manasi 11-09-2020
 				}
-				else if (localStorageService.get('authorizationData').role === "Accounting")
+				//else if (localStorageService.get('authorizationData').role === "Accounting") Nivedita 22-03-2022
+				if (localStorageService.get('authorizationData').role.indexOf('Accounting') != -1)
 				{
 					var accounting = this.addItem('Purchase Order', '/app/po-Approval/', 'linecons-desktop');
 				}
@@ -283,7 +291,8 @@ angular.module('xenon.services', []).
 			//var cost_gantt    = this.addItem('Cost Gantt', 		'/app/cost-gantt', 			'linecons-note');
 			var project_location    = this.addItem('Project Location', 		'/app/project-location', 			'linecons-globe');
 			var const_timeline = this.addItem('Construction Timeline', 		'/app/const-timeline', 			'linecons-params');
-			if (localStorageService.get('authorizationData').role === "Admin")
+			//if (localStorageService.get('authorizationData').role === "Admin")
+			if (localStorageService.get('authorizationData').role.indexOf('Admin') != -1)
 			{
 				var admin    = this.addItem('Administration', 		'/app/admin', 			'linecons-note');
 
@@ -433,6 +442,12 @@ angular.module('xenon.services', []).
 
 		this.toStatePath = function(path)
 		{
+			if (path != 'app.wbs') {
+				$('#closed,#approved,#unapproved,#contract,#project').hide();
+			}
+			else {
+				$('#closed,#approved,#unapproved,#contract,#project').show();
+            }
 			return path.replace(/\//g, '.').replace(/^\./, '');
 		};
 

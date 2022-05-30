@@ -1,6 +1,6 @@
 ﻿angular.module('cpp.controllers').
-    controller('AdminReportManagerCtrl', ['$scope', '$timeout', '$uibModal', '$rootScope', '$http', 'Program', 'ProgramElement', 'Page', 'Project', 'Trend', 'MaterialCategory', 'SubcontractorType', 'fteposition', 'Organization', 'PhaseCode', 'ProjectClass', 'ProjectClassPhase',
-        function ($scope, $timeout, $uibModal, $rootScope, $http, Program, ProgramElement, Page, Project, Trend, MaterialCategory, SubcontractorType, fteposition, Organization, PhaseCode, ProjectClass, ProjectClassPhase) {
+    controller('AdminReportManagerCtrl', ['$scope', '$timeout', '$uibModal', '$rootScope', '$http', 'Program', 'ProgramElement', 'Page', 'Project', 'Trend', 'MaterialCategory', 'SubcontractorType', 'fteposition', 'Organization', 'PhaseCode', 'ProjectClass', 'ProjectClassPhase', 'VersionDetails', 'Category',
+        function ($scope, $timeout, $uibModal, $rootScope, $http, Program, ProgramElement, Page, Project, Trend, MaterialCategory, SubcontractorType, fteposition, Organization, PhaseCode, ProjectClass, ProjectClassPhase, VersionDetails, Category) {
 
             Page.setTitle('Admin Report Manager');
 
@@ -24,6 +24,7 @@
             $scope.selectedSubcontractorType = {};
             $scope.selectedPosition = {};
 
+            $scope.allVersionList = [];
             $scope.allOrganizationList = [];
             $scope.allProgramList = [];
             $scope.allProgramElementList = [];
@@ -76,13 +77,13 @@
                 { filterName: 'Client Admin Report', reportPathName: 'ClientAdminReport', fileName: 'Client Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
                 { filterName: 'Cost Overhead Admin Report', reportPathName: 'CostOverheadAdminReport', fileName: 'Cost Overhead Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
                 { filterName: 'Department Admin Report', reportPathName: 'ProjectClassAdminReport', fileName: 'Division Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
-                { filterName: 'Department To Phase Mapping Admin Report', reportPathName: 'ProjectClassToPhaseMappingAdminReport', fileName: 'Division To Phase Mapping Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
+                { filterName: 'Service To Subservice Mapping Admin Report', reportPathName: 'ProjectClassToPhaseMappingAdminReport', fileName: 'Division To Phase Mapping Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
                 { filterName: 'Document Type Admin Report', reportPathName: 'DocumentTypeAdminReport', fileName: 'Document Type Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
                 { filterName: 'Organization Admin Report', reportPathName: 'OrganizationAdminReport', fileName: 'Organization Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
                 // { filterName: 'Project Type Admin Report',								reportPathName: 'ProjectTypeAdminReport',						fileName: 'Project Type Admin Report',                  reportGroup: 'Administration',  filterLess: true}, Commneted By Manasi
                 { filterName: 'Project Approval Requirement Admin Report', reportPathName: 'ProjectApprovalRequirementAdminReport', fileName: 'Project Approval Requirement Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
                 { filterName: 'Project Element List Admin Report', reportPathName: 'ProjectElementListAdminReport', fileName: 'Project Element List Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: false },
-                { filterName: 'Project Phase Admin Report', reportPathName: 'ProjectPhaseAdminReport', fileName: 'Project Phase Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
+                { filterName: 'Project Subservice Admin Report', reportPathName: 'ProjectPhaseAdminReport', fileName: 'Project Phase Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
                 { filterName: 'Trend Status Code Admin Report', reportPathName: 'TrendStatusCodeAdminReport', fileName: 'Trend Status Code Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
                 { filterName: 'Unit Type Admin Report', reportPathName: 'UnitTypeAdminReport', fileName: 'Unit Type Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
                 { filterName: 'User Management Admin Report', reportPathName: 'UserManagementAdminReport', fileName: 'User Management Admin Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: true },
@@ -98,6 +99,15 @@
                 { filterName: 'Cost Type Report', reportPathName: 'CostTypeReport', fileName: 'Cost Type Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: false },
                 // Jignesh 31-12-2020
                 { filterName: 'Trend Status Report', reportPathName: 'TrendStatusReport', fileName: 'Trend Status Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: false },
+
+                //Added by Amruta 15-03-2022
+                { filterName: 'Procurement Report', reportPathName: 'ProcurementReport', fileName: 'Procurement Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: false },
+		
+		//Added by Amruta 
+                { filterName: 'Resource Availability Report', reportPathName: 'ResourceReport', fileName: 'Resource Availability Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: false },
+
+            
+                { filterName: 'Billing Exception Report', reportPathName: 'BillingExceptionReport', fileName: 'Billing Exception Report' + '_' + + $scope.filedateformat, reportGroup: 'Administration', filterLess: false },
             ]
 
             // Jignesh 21-12-2020
@@ -296,16 +306,28 @@
                 else if ($scope.reportTypeFilter.filterName == 'Work Breakdown Structure Admin Report') {            //Work Breakdown Structure Admin Report - MySQL
                     baseUrl = serviceBasePath + 'Request/WorkBreakdownStructureAdminReport';
 
+                    if (!allFilters.organizationID) {
+                        dhtmlx.alert('Must select an organization for Work Breakdown Structure Admin Report');
+                        return;
+                    }
+
+                    if (!allFilters.version) {
+                        dhtmlx.alert('Must select a Version for Work Breakdown Structure Admin Report');
+                        return;
+                    }
+
                     var pdfUrl = baseUrl
                         + '?OrganizationID=' + allFilters.organizationID
                         + '&ProjectClassID=' + allFilters.projectClassID
                         + '&PhaseCode=' + allFilters.phaseCode
+                        + '&Version=' + allFilters.version
                         + '&FileType=' + 'PDF';
 
                     var excelUrl = baseUrl
                         + '?OrganizationID=' + allFilters.organizationID
                         + '&ProjectClassID=' + allFilters.projectClassID
                         + '&PhaseCode=' + allFilters.phaseCode
+                        + '&Version=' + allFilters.version
                         + '&FileType=' + 'excel';
 
                     openReportViewer(baseUrl, pdfUrl, excelUrl, $scope.reportTypeFilter.fileName);
@@ -379,6 +401,68 @@
 
                     openReportViewer(baseUrl, pdfUrl, excelUrl, $scope.reportTypeFilter.fileName);
                 }
+                    //Added by Amruta 
+                else if ($scope.reportTypeFilter.filterName == 'Procurement Report') {            //Procurement Report - MySQL
+                    baseUrl = serviceBasePath + 'Request/ProcurementReport';
+
+                    var pdfUrl = baseUrl
+                        + '?ProgramID=' + allFilters.programID
+                        + '&ProgramElementID=' + allFilters.programElementID
+                        + '&ProjectID=' + allFilters.projectID
+                        + '&FileType=' + 'PDF';
+
+                    var excelUrl = baseUrl
+                        + '?ProgramID=' + allFilters.programID
+                        + '&ProgramElementID=' + allFilters.programElementID
+                        + '&ProjectID=' + allFilters.projectID
+                        + '&FileType=' + 'excel';
+
+                    openReportViewer(baseUrl, pdfUrl, excelUrl, $scope.reportTypeFilter.fileName);
+                }
+
+//Added by Amruta 
+                else if ($scope.reportTypeFilter.filterName == 'Resource Availability Report') {            //Resource Availability Report - MySQL
+                    baseUrl = serviceBasePath + 'Request/ResourceAvailabilityReport';
+					if (!allFilters.FromDate) {
+                        dhtmlx.alert('Must select from date');
+                        return;
+                    }
+                    if (!allFilters.ToDate) {
+                        dhtmlx.alert('Must select to date');
+                        return;
+                    }
+                    var pdfUrl = baseUrl
+                        + '?PositionID=' + allFilters.positionID
+                        + '&FromDate=' + allFilters.FromDate
+                        + '&ToDate=' + allFilters.ToDate
+                        + '&FileType=' + 'PDF';
+
+                    var excelUrl = baseUrl
+                        + '?PositionID=' + allFilters.positionID
+                        + '&FromDate=' + allFilters.FromDate
+                        + '&ToDate=' + allFilters.ToDate
+                        + '&FileType=' + 'excel';
+
+                    openReportViewer(baseUrl, pdfUrl, excelUrl, $scope.reportTypeFilter.fileName);
+                }
+                else if ($scope.reportTypeFilter.filterName == 'Billing Exception Report') {            //Procurement Report - MySQL
+                    baseUrl = serviceBasePath + 'Request/BillingExceptionReport';
+
+                    var pdfUrl = baseUrl
+                        + '?ProgramID=' + allFilters.programID
+                        + '&ProgramElementID=' + allFilters.programElementID
+                        + '&ProjectID=' + allFilters.projectID
+                        + '&FileType=' + 'PDF';
+
+                    var excelUrl = baseUrl
+                        + '?ProgramID=' + allFilters.programID
+                        + '&ProgramElementID=' + allFilters.programElementID
+                        + '&ProjectID=' + allFilters.projectID
+                        + '&FileType=' + 'excel';
+
+                    openReportViewer(baseUrl, pdfUrl, excelUrl, $scope.reportTypeFilter.fileName);
+                }
+
             }
 
             //Select cost type
@@ -395,9 +479,12 @@
                 $scope.selectedProgramElement = undefined;
                 $scope.selectedProject = undefined;
                 $scope.selectedTrend = undefined;
+                $scope.selectedVersion = undefined;
 
                 //get new list of program elements
                 $scope.currentProgramElementList = filterProgramElementsByOrganizationID(organization.OrganizationID);
+                $scope.versionList = filterVersionByOrganizationID(organization.OrganizationID);
+
                 console.log($scope.currentProgramElementList);
             }
 
@@ -414,6 +501,12 @@
                 //get new list of program elements
                 $scope.currentProgramElementList = filterProgramElementsByProgramID(program.ProgramID);
                 console.log($scope.currentProgramElementList);
+            }
+            //Select version
+            $scope.selectVersion = function (version) {
+                $scope.selectedVersion = version;
+
+
             }
 
             //Select programelementid
@@ -543,7 +636,10 @@
                     positionID: 0,
                     CostTypeID: 'A',
                     projectClassID: 0,
-                    phaseCode: 'All'
+                    phaseCode: 'All',
+                    version: 0,
+                    fromDate: '',
+                    ToDate: ''
                 }
 
                 //Process cost type
@@ -558,6 +654,13 @@
                     allFilters.organizationID = $scope.selectedOrganization.OrganizationID;
                 } else {
                     allFilters.organizationID = 0;
+                }
+
+                //Process Version
+                if ($scope.selectedVersion != undefined && $scope.selectedVersion != null && $scope.selectedVersion.Id) {
+                    allFilters.version = $scope.selectedVersion.Id;
+                } else {
+                    allFilters.version = 0;
                 }
 
                 //Process program filter 
@@ -629,6 +732,23 @@
                     allFilters.phaseCode = 'All';
                 }
 
+                //Process Start Date
+                $scope.selectedFromDate = $("#fromDate").val();
+                $scope.selectedToDate = $("#toDate").val();
+                if ($scope.selectedFromDate != undefined && $scope.selectedFromDate != null && $scope.selectedFromDate) {
+                    console.log(" $scope.selectedFromDate ::");
+                    console.log($scope.selectedFromDate);
+                    allFilters.FromDate = $scope.selectedFromDate
+                } else {
+                    allFilters.FromDate = 0;
+                }
+                //Process End Date
+                if ($scope.selectedToDate != undefined && $scope.selectedToDate != null && $scope.selectedToDate) {
+                    allFilters.ToDate = $("#toDate").val();
+                } else {
+                    allFilters.ToDate = 0;
+                }
+
                 return allFilters
             }
 
@@ -650,6 +770,21 @@
                 for (var x = 0; x < $scope.allProgramElementList.length; x++) {
                     if ($scope.allProgramElementList[x].OrganizationID == organizationID) {
                         tempList.push(angular.copy($scope.allProgramElementList[x]));
+                    }
+                }
+
+                return tempList;
+            }
+
+
+            //Get new list of Version based on Organization
+            function filterVersionByOrganizationID(organizationID) {
+                var tempList = [];
+                debugger;
+
+                for (var x = 0; x < $scope.allVersionList.length; x++) {
+                    if ($scope.allVersionList[x].OrganizationID == organizationID) {
+                        tempList.push(angular.copy($scope.allVersionList[x]));
                     }
                 }
 
@@ -832,6 +967,16 @@
                     $scope.allProgramElementList = response.result;
                     $scope.currentProgramElementList = response.result;
                 });
+
+
+                //initialize list of versions
+                VersionDetails.lookup().get({ operation: '0', programElementID: '0', organizationID: '0' }, function (response) {
+                    console.log(response);
+                    $scope.allVersionList = response.result;
+                    //$scope.currentProgramElementList = response.result;
+                });
+
+
 
                 //initialize list of projects
                 Project.lookup().get({}, function (response) {

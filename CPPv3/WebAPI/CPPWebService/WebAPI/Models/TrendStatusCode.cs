@@ -72,7 +72,11 @@ namespace WebAPI.Models
                 using (var ctx = new CPPDbContext())
                 {
                     TrendStatusCode retrievedTrendStatusCode = new TrendStatusCode();
-                    retrievedTrendStatusCode = ctx.TrendStatusCode.Where(u => u.TrendStatusCodeName == trendStatusCode.TrendStatusCodeName).FirstOrDefault();
+                    retrievedTrendStatusCode = ctx.TrendStatusCode.Where(u => u.TrendStatusCodeName == trendStatusCode.TrendStatusCodeName || u.TrendStatusCodeNumber == trendStatusCode.TrendStatusCodeNumber).FirstOrDefault();
+
+                    TrendStatusCode duplicateTrendStatusCode = new TrendStatusCode();
+                    duplicateTrendStatusCode = ctx.TrendStatusCode.Where(u => (u.TrendStatusCodeNumber == trendStatusCode.TrendStatusCodeNumber)).FirstOrDefault();
+
 
                     if (retrievedTrendStatusCode == null)
                     {
@@ -82,9 +86,13 @@ namespace WebAPI.Models
                         //result = "Success";
                         result += trendStatusCode.TrendStatusCodeName + " has been created successfully.\n";
                     }
+                    else if (duplicateTrendStatusCode != null)
+                    {
+                        result += trendStatusCode.TrendStatusCodeName + " failed to be created, code already exist.\n";
+                    }
                     else
                     {
-                        result += trendStatusCode.TrendStatusCodeName + "' failed to be created, it already exist.\n";
+                        result += trendStatusCode.TrendStatusCodeName + " failed to be created, it already exist.\n";
                     }
                 }
 

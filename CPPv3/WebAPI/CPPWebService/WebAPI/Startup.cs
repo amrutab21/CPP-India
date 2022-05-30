@@ -23,10 +23,10 @@ namespace WebAPI
             WebApiConfig.Register(config);
             app.UseWebApi(config);
 
-            //logger.Info("Before scheduler start");
-            //Scheduler scheduler = new Scheduler();  //MPPNoRespondKillerJob
-            //scheduler.start();
-            //logger.Info("After scheduler start");
+            logger.Info("Before scheduler start");
+            Scheduler scheduler = new Scheduler();  //MPPNoRespondKillerJob
+            scheduler.start();
+           logger.Info("After scheduler start");
 
             //WebAPI.Models.Employee employee = new WebAPI.Models.Employee();
             //employee.FirstName = "Luan";

@@ -1,0 +1,26 @@
+INFO  2022-04-22 23:14:43,976 [1] WebAPI.Startup Configuration - Before scheduler start
+INFO  2022-04-22 23:14:44,246 [1] WebAPI.Startup Configuration - After scheduler start
+INFO  2022-04-22 23:14:45,025 [DefaultQuartzScheduler_Worker-1] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:14:45,053 [DefaultQuartzScheduler_Worker-1] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:14:48,003 [DefaultQuartzScheduler_Worker-2] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:14:48,008 [DefaultQuartzScheduler_Worker-2] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:14:51,006 [DefaultQuartzScheduler_Worker-4] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:14:51,011 [DefaultQuartzScheduler_Worker-4] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:14:54,003 [DefaultQuartzScheduler_Worker-5] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:14:54,010 [DefaultQuartzScheduler_Worker-5] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:14:57,008 [DefaultQuartzScheduler_Worker-6] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:14:57,013 [DefaultQuartzScheduler_Worker-6] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:15:00,008 [DefaultQuartzScheduler_Worker-7] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:15:00,026 [DefaultQuartzScheduler_Worker-7] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:15:03,002 [DefaultQuartzScheduler_Worker-9] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:15:03,007 [DefaultQuartzScheduler_Worker-9] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:15:06,005 [DefaultQuartzScheduler_Worker-10] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:15:06,011 [DefaultQuartzScheduler_Worker-10] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:15:09,003 [DefaultQuartzScheduler_Worker-1] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:15:09,008 [DefaultQuartzScheduler_Worker-1] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:15:12,006 [DefaultQuartzScheduler_Worker-2] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:15:12,010 [DefaultQuartzScheduler_Worker-2] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:15:15,004 [DefaultQuartzScheduler_Worker-4] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:15:15,008 [DefaultQuartzScheduler_Worker-4] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job
+INFO  2022-04-22 23:15:18,009 [DefaultQuartzScheduler_Worker-5] WebAPI.Models.MppNoRespondKillerJob Execute - before attempt process kill - killer job
+INFO  2022-04-22 23:15:18,013 [DefaultQuartzScheduler_Worker-5] WebAPI.Models.MppNoRespondKillerJob Execute - after attempt process kill - killer job

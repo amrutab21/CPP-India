@@ -271,21 +271,22 @@ WBSTrendTree = (function ($) {
                 });
 
                 //---------------------------------------- Swapnil 30/11/2020 ---------------------------------------------
-                //var xx = g.setNode(states.result.CurrentProjectList.level, {
-                //    metadata: states.result.CurrentProjectList,
-                //    label: "Current",
-                //    class: "CurrentProject",
-                //    shape: "iconCurrent",
-                //    labelStyle: "font-size:14px;font-weight:bold;"
-                //});
-
+                //Nivedita22-12-2021
                 var xx = g.setNode(states.result.CurrentProjectList.level, {
                     metadata: states.result.CurrentProjectList,
-                    label: "Budget vs Actual",
+                    label: "Current",
                     class: "CurrentProject",
                     shape: "iconCurrent",
                     labelStyle: "font-size:14px;font-weight:bold;"
                 });
+
+                //var xx = g.setNode(states.result.CurrentProjectList.level, {
+                //    metadata: states.result.CurrentProjectList,
+                //    label: "Budget vs Actual",
+                //    class: "CurrentProject",
+                //    shape: "iconCurrent",
+                //    labelStyle: "font-size:14px;font-weight:bold;"
+                //});
                 //----------------------------------------------------------------------------------------------------
 
                 var yy = g.setNode(states.result.ForecastProjectList.level, {
@@ -425,7 +426,13 @@ WBSTrendTree = (function ($) {
                     ];
                 var shapeSvg = parent.append("image")
                     .attr("xlink:href", function (d) {
-                        return "assets/js/wbs-tree/images/nodeB.png"
+                         //----Vaishnavi 30-03-2022----//
+                        if (node.metadata.Status == "Closed") 
+                            return "assets/js/wbs-tree/images/node.png";
+                        else
+                            return "assets/js/wbs-tree/images/nodeB.png";
+                         //----Vaishnavi 30-03-2022----//
+                       
                     })
                     .attr("x", "-7px")
                     .attr("y", "7px")
@@ -449,7 +456,12 @@ WBSTrendTree = (function ($) {
                     ];
                 var shapeSvg = parent.append("image")
                     .attr("xlink:href", function (d) {
-                        return "assets/js/wbs-tree/images/nodeC.png"
+                         //----Vaishnavi 30-03-2022----//
+                        if (node.metadata.Status == "Closed")
+                            return "assets/js/wbs-tree/images/node.png";
+                        else
+                            return "assets/js/wbs-tree/images/nodeC.png";
+                         //----Vaishnavi 30-03-2022----//
                     })
                     .attr("x", "-7px")
                     .attr("y", "7px")
@@ -605,8 +617,10 @@ WBSTrendTree = (function ($) {
                     }
                     else if (node.metadata.level == "CurrentProject") {
                         // window.location.href = "#/app/current-project/" + node.metadata.ProjectID + "/" + node.metadata.OrganizationID + "/" + "week";
-                        window.location.href = "#/app/cost-gantt/" + node.metadata.ProjectID + "/1000/" + node.metadata.OrganizationID;
-                    } else if (node.metadata.level == "ForecastProject") {
+                        //window.location.href = "#/app/cost-gantt/" + node.metadata.ProjectID + "/1000/" + node.metadata.OrganizationID;
+                        //Nivedita22-12-2021
+                        window.location.href = "#/app/cost-gantt/" + node.metadata.ProjectID + "/3000/" + node.metadata.OrganizationID;
+                    }  else if (node.metadata.level == "ForecastProject") {
                         // window.location.href = "#/app/future-project/" + node.metadata.ProjectID + "/" + node.metadata.OrganizationID + "/" + "week";
                         window.location.href = "#/app/cost-gantt/" + node.metadata.ProjectID + "/2000/" + node.metadata.OrganizationID;
                     }
@@ -636,15 +650,40 @@ WBSTrendTree = (function ($) {
                         $("#contextMenuEdit").parent().hide();
                         $("#contextMenuDelete").parent().hide();
                         $("#contextMenuMap").parent().hide();
+                        $("#contextMenuViewGantt").parent().hide();
 
                     } else if (node.metadata.level == "FutureTrend") { 
                         $("#contextMenuAdd").parent().hide();
+                         //----Vaishnavi 30-03-2022----//
+                        $("#contextMenuClosed").parent().hide();
+                        if (wbsTree.getLocalStorage().acl[6] == 1 && wbsTree.getLocalStorage().acl[7] != 0) {
+                            $("#contextMenuClosed").parent().show();
+                        }
+                        if (node.metadata.Status == "Closed")
+                        {
+                            $("#contextMenuDelete").parent().hide();
+                            $("#contextMenuClosed").parent().hide();
+                        }
+                        $("#contextMenuViewGantt").parent().hide();
+                         //----Vaishnavi 30-03-2022----//
                         modal_mode = "Update";
                     }
                     //========================= Jignesh-01-04-2021 =====================
                     else if (node.metadata.level == "PastTrend") {
                         $("#contextMenuDelete").parent().hide();
                         $("#contextMenuAdd").parent().hide();
+                         //----Vaishnavi 30-03-2022----//
+                        if (wbsTree.getLocalStorage().acl[6] == 1 && wbsTree.getLocalStorage().acl[7] != 0) {
+                            $("#contextMenuClosed").parent().show();
+                        }
+                        if (node.metadata.Status == "Closed")
+                        {
+                            $("#contextMenuEdit").html("Open Trend");
+                            $("#contextMenuDelete").parent().hide();
+                            $("#contextMenuClosed").parent().hide();
+                        }
+                        $("#contextMenuViewGantt").parent().hide();
+                         //----Vaishnavi 30-03-2022----//
                         modal_mode = "Update";
                     }
                     //==================================================================
@@ -694,6 +733,12 @@ WBSTrendTree = (function ($) {
                 } else {
                     $("#contextMenuEdit").html("Edit/Open Trend");
                 }
+                 //----Vaishnavi 30-03-2022----//
+                if (node.metadata.Status == "Closed") {
+                    $("#contextMenuEdit").html("Open Trend");
+                    
+                }
+                 //----Vaishnavi 30-03-2022----//
 
             }
             // alert("2");
@@ -704,7 +749,9 @@ WBSTrendTree = (function ($) {
                 $("#contextMenuDelete").parent().show();
             } else {
                 $("#contextMenuDelete").parent().hide();
+                
             }
+           
             $("#contextMenuMap").parent().hide();
             //var currentZoom = ((window.outerWidth - 10) / window.innerWidth);
             //currentZoom = (currentZoom > 1) ? currentZoom : 1;
@@ -1046,6 +1093,9 @@ WBSTrendTree = (function ($) {
                     laborRateDropDown.attr('disabled', false);
                     laborRateDropDown.val("");
                     trendStatusCodeList = response.result;
+                    trendStatusCodeList.sort(function (a, b) {   //vaishnavi 
+                        return a.TrendStatusCodeName.localeCompare(b.TrendStatusCodeName);  //vaishnavi 
+                    });  //vaishnavi 
 
                     TRENDSTATUSCODELIST = response.result;
 
@@ -1140,10 +1190,16 @@ WBSTrendTree = (function ($) {
                     gridUploadedDocument.empty(); // 15-01-2021
                     $('#DeleteUploadTrend').attr('disabled', 'disabled');
                     $('#updateDMBtnTrend').attr('disabled', 'disabled');
+                    $('#update_trend').removeAttr('disabled');  //----Vaishnavi 30-03-2022----//
                     $('#ViewUploadFileTrend').attr('disabled', 'disabled');
                     $('#EditBtnTrend').attr('disabled', 'disabled');
                     $('#downloadBtnTrend').attr('disabled', 'disabled');
                     $('#documentUploadTrend').attr('title', "A trend needs to be saved before the documents can be uploaded"); //Manasi 23-02-2021
+
+                    //Nivedita - Button changes to Grey on Add New  25-04-2022
+                    $('#delete_future_trend').removeClass('btn btn-primary c-btn-delete');
+                    $('#delete_future_trend').addClass('btn btn-black');
+                    $('#delete_future_trend').attr('style', 'width:150px;');
                     $('#delete_future_trend').attr('disabled', 'disabled');   //Manasi 24-02-2021
                     $('#spnBtndelete_future_trend').attr('title', "A trend needs to be saved before it can be deleted"); //Manasi 24-02-2021
                     //============================================================================================================
@@ -1198,6 +1254,11 @@ WBSTrendTree = (function ($) {
                 $('#EditBtnTrend').attr('disabled', 'disabled');
                 $('#downloadBtnTrend').attr('disabled', 'disabled');
                 $('#documentUploadTrend').removeAttr('title');   //Manasi 23-02-2021
+
+                //Nivedita - Button changes to Grey on Add New  25-04-2022
+                $('#delete_future_trend').removeClass('btn btn-black');
+                $('#delete_future_trend').addClass('btn btn-primary c-btn-delete');
+                $('#delete_future_trend').attr('style', 'width:150px;');
                 $('#delete_future_trend').removeAttr('disabled');   //Manasi 24-02-2021
                 $('#spnBtndelete_future_trend').removeAttr('title');   //Manasi 24-02-2021
                 //============================================================================================================
@@ -1293,14 +1354,34 @@ WBSTrendTree = (function ($) {
                 });
                 //============================================================================================================
                 if (wbsTree.getLocalStorage().acl[6] == 1 && wbsTree.getLocalStorage().acl[7] == 0) {
+                    //Nivedita - Button changes to Grey on Add New  25-04-2022
+                    $('#delete_future_trend').removeClass('btn btn-primary c-btn-delete');
+                    $('#delete_future_trend').addClass('btn btn-black');
+                    $('#delete_future_trend').attr('style', 'width:150px;');
                     $('#delete_future_trend').attr('disabled', 'disabled');
                     $('#update_trend').attr('disabled', 'disabled');
                     $('#updateDMBtnTrend').attr('disabled', 'disabled'); // Jignesh-05-03-2021
                 } else {
-                    $('#delete_future_trend').removeAttr('disabled');
+                    //Nivedita - Button changes to Grey on Add New  25-04-2022
+                    $('#delete_future_trend').removeClass('btn btn-primary c-btn-delete');
+                    $('#delete_future_trend').addClass('btn btn-black');
+                    $('#delete_future_trend').attr('style', 'width:150px;');
+                    $('#delete_future_trend').attr('disabled', 'disabled');  //----Vaishnavi 30-03-2022----//
                     $('#update_trend').removeAttr('disabled');
                     $('#updateDMBtnTrend').removeAttr('disabled'); // Jignesh-05-03-2021
+                   
                 }
+                 //----Vaishnavi 30-03-2022----//
+                if (metadata.Status == "Closed") {
+                    //Nivedita - Button changes to Grey on Add New  25-04-2022
+                    $('#delete_future_trend').removeClass('btn btn-primary c-btn-delete');
+                    $('#delete_future_trend').addClass('btn btn-black');
+                    $('#delete_future_trend').attr('style', 'width:150px;');
+                    $('#delete_future_trend').attr('disabled', 'disabled');
+                    $('#update_trend').attr('disabled', 'disabled');
+                    $('#updateDMBtnTrend').attr('disabled', 'disabled');
+                }
+                 //----Vaishnavi 30-03-2022----//
 
             });
 
@@ -1331,6 +1412,17 @@ WBSTrendTree = (function ($) {
                 if (TrendTileCheck == "" || TrendTileCheck.length == 0) {
                     dhtmlx.alert('Enter Trend Title.');
                     return false;
+                }
+
+                //Vaishnavi 08-02-2022
+                var testapproval_date = modal.find('.modal-body #approval_date').val();
+                if (testapproval_date) {
+
+                    var testDate = moment(testapproval_date, 'M/D/YYYY', true).isValid();
+                    if (!testDate) {
+                        dhtmlx.alert('Approval Needed By Date Should be in MM/DD/YYYY Format.');
+                        return false;
+                    }
                 }
                 if (modal_mode == 'Update') {
                     //luan here - Find the trend status code id
@@ -1535,6 +1627,16 @@ WBSTrendTree = (function ($) {
                 if (TrendTileCheck == "" || TrendTileCheck.length == 0) {
                     dhtmlx.alert('Enter Trend Title.');
                     return false;
+                }
+                //Vaishnavi 08-02-2022
+                var testapproval_date = modal.find('.modal-body #pasttrend_client_approved_date').val();
+                if (testapproval_date) {
+
+                    var testDate = moment(testapproval_date, 'M/D/YYYY', true).isValid();
+                    if (!testDate) {
+                        dhtmlx.alert('Approved Date Should be in MM/DD/YYYY Format.');
+                        return false;
+                    }
                 }
                 var pastTrendNumber = metadata.TrendNumber;
                 if (modal_mode == 'Update') {

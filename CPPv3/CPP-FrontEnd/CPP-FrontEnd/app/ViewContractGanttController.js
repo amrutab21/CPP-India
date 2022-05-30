@@ -3,13 +3,19 @@
  */
 angular.module('xenon.ViewContractGanttController', []).
     controller('ViewContractGanttCtrl', ['MainActivityCategory', 'currentTrend', 'TrendId', 'ProjectTitle', 'UnitType', 'Vendor', 'SubActivityCategory', 'Category', 'GetActivity', '$http', '$q', '$state', '$scope', '$compile', 'Program', 'ProgramElement',
-        'Project', 'Trend', 'Activity', 'Cost', 'InsertCost', 'fteposition', 'FTEPositionCost', 'delayedData', 'Page', 'UpdateActivity', 'localStorageService', 'RequestApproval', 'TrendStatus',
+        'Project', 'Trend', 'Activity', 'Cost', 'GanttViewCost', 'InsertCost', 'fteposition', 'FTEPositionCost', 'delayedData', 'Page', 'UpdateActivity', 'localStorageService', 'RequestApproval', 'TrendStatus',
         '$rootScope', '$uibModal', 'ProgramFund', 'TrendFund', '$timeout', 'usSpinnerService', '$filter', '$location', 'alertBox', 'usSpinnerConfig', 'GanttCategory', 'ProgramCategory', 'MaterialCategory', 'Material', 'ODCType', 'SubcontractorType', 'Subcontractor', 'PhaseCode', 'UserByEmployeeListID', 'AllEmployee', 'TrendStatusCode', '$stateParams', 'Employee',
         'LaborRate', 'PurchaseOrder', 'PurchaseOrderDetail', 'MFAConfiguration', 'ViewProjectGanttActivities',
         function (MainActivityCategory, currentTrend, TrendId, ProjectTitle, UnitType, Vendor, SubActivityCategory, Category, GetActivity, $http, $q, $state, $scope, $compile, Program, ProgramElement,
-            Project, Trend, Activity, Cost, InsertCost, FTEPositions, FTEPositionCost, delayedData, Page, UpdateActivity, localStorageSrevice, RequestApproval, TrendStatus,
+            Project, Trend, Activity, Cost, GanttViewCost, InsertCost, FTEPositions, FTEPositionCost, delayedData, Page, UpdateActivity, localStorageSrevice, RequestApproval, TrendStatus,
             $rootScope, $uibModal, ProgramFund, TrendFund, $timeout, usSpinnerService, $filter, $location, alertBox, usSpinnerConfig, GanttCategory, ProgramCategory, MaterialCategory, Material, ODCType, SubcontractorType, Subcontractor, PhaseCode, UserByEmployeeListID, AllEmployee, TrendStatusCode, $stateParams, Employee,
             LaborRate, PurchaseOrder, PurchaseOrderDetail, MFAConfiguration, ViewProjectGanttActivities) {
+
+            Page.setTitle('Baseline');
+            if (delayedData[2].result.length > 0) {
+                ProjectTitle.setTitle(delayedData[2].result[0].Program.ProgramName);
+            }
+            
 
             function roundToTwo(num) {
                 return +(Math.round(num + "e+2") + "e-2");
@@ -29,97 +35,7 @@ angular.module('xenon.ViewContractGanttController', []).
 
             $compile(htmlDelete)($scope);
 
-            $scope.luantest = function () {
-                alert('luan test');
-            }
-
-
-            var refreshCounter = 0;
-            function refreshHtmlDelete() {
-                //luan here 4/24
-                setTimeout(function () {
-                    //alert('ready');
-                    console.log('attempting refresh', $scope.costs.data);
-                    for (var x = 0; x < $scope.costs.data.length; x++) {
-                        var id = x + 1;
-                        var isCurrentTrend = ($scope.trend.TrendNumber == 1000);
-
-                        var isTrue = ($scope.trend.TrendNumber == 3000); // Swapnil 24-11-2020
-
-                        var row = $("#cost-gantt .gantt_row[task_id='" + (x + 1) + "']");
-                        console.log(row);
-                        var cells = row.find('.gantt_cell');
-
-                        var dropdown = ' <div class="dropdown" style="position:unset !important;">';
-                        dropdown += ' <button class="btn btn-xs btn-primary dropdown-toggle" type="button" data-toggle="dropdown">';
-                        dropdown += '<span class="caret"></span></button>';
-                        dropdown += ' <ul class="dropdown-menu">';
-                        if ($scope.isNewCost[id] == true) { //new cost disable it
-                            dropdown += '<li class="cost-dropdown-disable" disabled=true ng-click="costDetails()"><i class=" fa fa-info-circle"><a style="margin-left:0.5em;" >Cost Details</a></i></li>';
-                            dropdown += '<li class="cost-dropdown-disable" disabled=true ng-click="copyToClipboard()" ><i class=" fa fa-clipboard"><a style="margin-left:0.5em;" >Copy cost code to clipboard</a></i></li>';
-                        }
-                        else {
-                            dropdown += '<li class="cost-dropdown" ng-click="costDetails()" id="costDetailUnique_' + refreshCounter + '_' + id + '" ><i class=" fa fa-info-circle"><a style="margin-left:0.5em;" >Cost Details</a></i></li>';
-                            dropdown += '<li class="cost-dropdown" ng-click="copyToClipboard()" id="copyToClipboardUnique_' + refreshCounter + '_' + id + '" ><i class=" fa fa-clipboard"><a style="margin-left:0.5em;" >Copy cost code to clipboard</a></i></li>';
-                        }
-                        dropdown += ' <li class="cost-dropdown" ng-click="cancelCostDetail()" id="cancelUnique_' + refreshCounter + '_' + id + '"  ><i class=" fa fa-close"><a style="margin-left:0.5em;" >Cancel</a></i></li>';
-                        if (isCurrentTrend) //Disable it
-                            dropdown += ' <li class="cost-dropdown-disable" ng-click="deleteCost(' + id + ')" ><i class=" fa fa-trash"><a  style="margin-left:0.5em;" >Delete</a></i></li>';
-                        else
-                            dropdown += ' <li class="cost-dropdown" ng-click="deleteCost()" id="deleteCostUnique_' + refreshCounter + '_' + id + '" ><i class=" fa fa-trash"><a  style="margin-left:0.5em;" >Delete</a></i></li>';
-                        dropdown += '  </ul>';
-                        dropdown += ' </div>';
-                        // alert(dropdown);
-                        $scope.costs.data[x].delete = dropdown;
-
-                        console.log($scope.costs.data[x].delete);
-                        $(cells[0]).html($compile($scope.costs.data[x].delete)($scope));
-
-
-
-                        //$("#costDetailUnique_" + refreshCounter + "_" + id).click(function (e) {
-                        //	costDetailsCaller();
-                        //});
-
-                        //$("#copyToClipboardUnique_" + refreshCounter + "_" + id).click(function (e) {
-                        //	copyToClipboardCaller();
-                        //});
-
-                        //$("#cancelUnique_" + refreshCounter + "_" + id).click(function (e) {
-                        //	cancelCaller();
-                        //});
-
-                        //$("#deleteCostUnique_" + refreshCounter + "_" + id).click(function (e) {
-                        //	deleteCostCaller(id);
-                        //});
-                    }
-
-                    refreshCounter++;
-                }, 1000);	//for after the rendering
-            }
-
-            function costDetailsCaller() {
-                $scope.costDetails();
-                //refreshHtmlDelete();
-            }
-
-            function copyToClipboardCaller() {
-                alert('copyToClipboardCaller');
-                $scope.copyToClipboard();
-                //refreshHtmlDelete();
-            }
-
-            function cancelCaller() {
-                alert('cancelCaller');
-                $scope.cancelCostDetail();
-                //refreshHtmlDelete();
-            }
-
-            function deleteCostCaller(id) {
-                alert('deleteCostCaller ' + id);
-                $scope.deleteCost(id);
-                //refreshHtmlDelete();
-            }
+            
 
             var BILLABLE_RATE = "Billable";
             var BASE_RATE_WITH_MULTIPLIER = "Base";
@@ -135,15 +51,6 @@ angular.module('xenon.ViewContractGanttController', []).
             var PREVIOUSMAIN = '';
             var PREVIOUSSUB = '';
 
-            var rateType = {
-                company: "Company",
-                union: "Union",
-                GA: "G&A",
-                Other: ""
-            }
-
-            console.debug(SUBCONTRACTOR_RATE, MATERIAL_RATE, ODC_RATE);
-            console.debug(CUSTOM_SUBCONTRACTOR_RATE, CUSTOM_MATERIAL_RATE, CUSTOM_ODC_RATE);
             //Jquery
             setTimeout(function () {
                 $("<h6 style='color: black; font-weight: 1000; opacity: .75; padding-bottom: 5px'>WBS</h5>").insertBefore($("#schedule-gantt"));
@@ -217,25 +124,10 @@ angular.module('xenon.ViewContractGanttController', []).
 
             $scope.isTrendApproved = false;
 
-
-
-
-
-            //Set Title for the project
-            //ProjectTitle.setTitle(delayedData[2].result[0].ProjectName);    //07-01-2021
-
-            //Called everytime a cost method is changed
-
-
-
             // On changes end here 
             $scope.newEmployees = [];   //here
             $scope.newSubcontractors = [];  //here
             $scope.newMaterials = [];   //here
-
-
-
-
 
             //changedCost
             $scope.textBoxStyles = [];
@@ -261,7 +153,9 @@ angular.module('xenon.ViewContractGanttController', []).
             //(Math.max.apply(Math, delayedData[1].result.map(function (a) { return a.PhaseID })) + 1) * 1000;
             var programElementMaxId = "";
             //(Math.max.apply(Math, delayedData[2].result.map(function (a) { return a.ProjectID })) + 1) * 1000;
-            var contractMaxId = (Math.max.apply(Math, delayedData[8].result.map(function (a) { return a.ProgramElementID })) + 1) * 1000;
+            //var contractMaxId = (Math.max.apply(Math, delayedData[8].result.map(function (a) { return a.ProgramElementID })) + 1) * 1000;
+            var contractMaxId = 1;
+            //var contractMaxId = (delayedData[10] + 1) * 1000;
             //API call to get a list of unitypes
 
 
@@ -316,58 +210,42 @@ angular.module('xenon.ViewContractGanttController', []).
                 }, 100);
             });
 
-
-
             $scope.exit = function () {
                 window.location.href = "#/app/wbs";
             }
 
-            //assign dollar value for all the phases on page load
-            /* $scope.planning_value = $filter('currency')(phaseArray[0].totalCost,'$',formatCurrency(phaseArray[0].totalCost) );      //Total activities cost for phase planning
-             $scope.schematic_design_value =  $filter('currency')(phaseArray[1].totalCost,'$',formatCurrency(phaseArray[1].totalCost) ); //total activities cost for schematic design phase
-             $scope.design_bidding_value = $filter('currency')(phaseArray[2].totalCost,'$',formatCurrency(phaseArray[2].totalCost));  //total activity cost for design bidding phase
-             $scope.construction_value = $filter('currency')(phaseArray[3].totalCost,'$',formatCurrency(phaseArray[3].totalCost));   //total activity cost for construction phase
-             $scope.closeout_value = $filter('currency')(phaseArray[4].totalCost,'$',formatCurrency(phaseArray[4].totalCost));     //total activity cost for the closeout phse*/
-
-            //initialize activity object for the schedule Gantt
-
-
-          
             var trendTotalValue = 0;
             var trendTotalValueActual = 0;
             var trendTotalBudget = 0;
+
             var activities = delayedData[0].result;   //List of activites
             var projects = delayedData[2].result;
             var programElements = delayedData[8].result;
-            //var contract = {};
-            //contract["id"] = contractMaxId;
-            //contract["text"] = delayedData[9].result[0].ProgramName;
-            //contract["type"] = gantt.config.types.project;
-            //contract["open"] = true;
-            //contract["duration"] = 0;
-            //contract["totalCost"] = "" + "";
-            //console.log(delayedData);
-            ////luan mark - added for original start/end dates to show on columns 
-            //contract["originalStartDate"] = getProjectOriginalStartEndDate(programElements).originalStartDate;
-            //contract["originalEndDate"] = getProjectOriginalStartEndDate(programElements).originalEndDate;
-
-            //contract["percentage_completion"] = getProjectPercentageCompletion(programElements);
-            //contract["totalBudget"] = trendTotalBudget;
-            //$scope.schedule.data.push(contract);
-
-            programElements = initializeProgramElements(programElements);
-            projects = initializeProjects(projects);
-            //activities = initializeActivities(activities);
             var viewPhase = delayedData[1].result;   //List of Phases
-            viewPhase = initializePhases(viewPhase);
 
-            //var programElements = delayedData[8].result;
-
+            if (programElements.length > 0) {
+                programElements = initializeProgramElements(programElements);
+            }
+            if (projects.length > 0) {
+                projects = initializeProjects(projects);
+            }
+            if (viewPhase.length > 0) {
+                viewPhase = initializePhases(viewPhase);
+            }
             
+            
+            //var programElements = delayedData[8].result;
+            var currContractName;
+            $.each(delayedData[9].result, function (index) {
+                if (delayedData[9].result[index].ProgramID == delayedData[10]) {
+                    currContractName = delayedData[9].result[index].ProgramName;
+                    return false;
+                }
+            });
             var contract = {};
             contract["id"] = contractMaxId;
-            contract["text"] = delayedData[9].result[0].ProgramName;
-            contract["type"] = gantt.config.types.project;
+            contract["text"] = currContractName;
+            //contract["type"] = gantt.config.types.project;
             contract["open"] = true;
             contract["duration"] = 0;
             contract["totalCost"] = "" + "";
@@ -389,35 +267,15 @@ angular.module('xenon.ViewContractGanttController', []).
                 $scope.schedulePhase = null;
             }, 100);
 
-            //var MainCategory = delayedData[4].result;  //Main category
-
-            //project["totalCost"] = trendTotalValue;
-            //project["totalBudget"] = trendTotalBudget;
-            ////pritesh1
-            //// alert("First : " + trendTotalValue + " ---Second : " + trendTotalBudget + "-- Third : " + trendTotalValueActual);
-            ////luan quest 3
-            //project["totalCostActualForecast"] = trendTotalValueActual;
-
-
-
-            //var threshold = authData.threshold;
-            //$scope.threshold = parseFloat(threshold);
-
-            //luan here - No hiding approve btn 
-            //if (parseFloat(threshold) < trendTotalValue) {
-            //    $('#approveBtn').hide();
-            //}
-
-            //Add phases
-
-
-            activities = initializeActivities(activities);
-
+            if (activities.length > 0) {
+                activities = initializeActivities(activities);
+            }
+            
             setProjectStartEndDate(activities, projects);
             setPhaseOriginalStartEndDate(viewPhase, activities);
             setProgramElementOriginalStartEndDate(activities, programElements);
             setContractOriginalStartEndDate(activities);
-            //Manasi 13-01-2021
+            
             function setProjectStartEndDate(activities, projects) {
                 var maxDate = new Date(8640000000000000);
                 var minDate = new Date(-8640000000000000);
@@ -434,9 +292,6 @@ angular.module('xenon.ViewContractGanttController', []).
                             if (d1 == 'Invalid Date' || d2 == 'Invalid Date') {
                                 continue;
                             }
-
-                            //d1.setDate(d1.getDate() + 1);
-                            //d2.setDate(d2.getDate() + 1);
 
                             originalStartDate = new Date(Math.min(originalStartDate.getTime(), d1.getTime()));
                             originalEndDate = new Date(Math.max(originalEndDate.getTime(), d2.getTime()));
@@ -614,15 +469,10 @@ angular.module('xenon.ViewContractGanttController', []).
             // Get two instances of the Gantt object
             $scope.scheduleGanttInstance = Gantt.getGanttInstance();
             $scope.costGanttInstance = Gantt.getGanttInstance();
-            //console.log('getting $scope.actualBudgetGanttInstance Gantt_Controller');
-            //$scope.actualBudgetGanttInstance = Gantt.getGanttInstance();
-
 
             $scope.$watch($scope.description, function () {
                 console.log($scope.description);
             }, true);
-
-            //Save Cost
 
 
             // Schedule Gantt Chart Configuration
@@ -630,459 +480,6 @@ angular.module('xenon.ViewContractGanttController', []).
 
             //Schedule Gantt Event handler
             $scope.cancel = false; //use to check if the use click on the cancel button from lightbox
-
-            //onBeforeLightbox - load all the Budget main category according to the selected phase
-            $scope.scheduleGanttInstance.attachEvent("onBeforeLightBox", function (id) {    //collapsing star
-                var isEdited = false;
-                console.log(id);
-                //If Tren is Approved => lightbox cannot be opened
-                var auth = $scope.localStorageSrevice.get('authorizationData');
-                if (auth.acl[9] == 0) { // Pritesh modified acl[5] to acl [9] as per database entry on 4 Aug 2020
-                    dhtmlx.alert({
-                        text: "You do not have access to add Activity.",
-                        width: "400px"
-                    });
-                    $scope.isDeleteFromLightbox = false;
-                    $scope.scheduleGanttInstance.deleteTask(id);
-                    $scope.costGanttInstance.clearAll();
-                    return false;
-                }
-
-                console.log(isCurrentTrend);
-                setTimeout(function () {    //luan quest 3/6
-                    $scope.scheduleGanttInstance.getLightboxSection("mainphase").node.children[0].classList.add('form-control');
-                    $scope.scheduleGanttInstance.getLightboxSection("subphase").node.children[0].classList.add('form-control');
-
-                    var widthAr = ['25%', '50%', '40%'];
-
-                    //Luan here - For loop too slow?
-                    for (var x = 0; x < 3; x++) {
-                        $scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[x].classList.add('form-control');
-                        $scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[x].style.display = 'inline';
-                        $scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[x].style.width = widthAr[x];
-
-                        $scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[x].classList.add('form-control');
-                        $scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[x].style.display = 'inline';
-                        $scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[x].style.width = widthAr[x];
-                    }
-
-                    ////Day
-                    //$scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[0].classList.add('form-control');
-                    //$scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[0].style.display = 'inline';
-                    //$scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[0].style.width = '25%';
-
-                    //$scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[0].classList.add('form-control');
-                    //$scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[0].style.display = 'inline';
-                    //$scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[0].style.width = '25%';
-
-                    ////Month
-                    //$scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[1].classList.add('form-control');
-                    //$scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[1].style.display = 'inline';
-                    //$scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[1].style.width = '50%';
-
-                    //$scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[1].classList.add('form-control');
-                    //$scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[1].style.display = 'inline';
-                    //$scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[1].style.width = '50%';
-
-                    ////Year
-                    //$scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[2].classList.add('form-control');
-                    //$scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[2].style.display = 'inline';
-                    //$scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[2].style.width = '40%';
-
-                    //$scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[2].classList.add('form-control');
-                    //$scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[2].style.display = 'inline';
-                    //$scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[2].style.width = '40%';
-
-                    $scope.scheduleGanttInstance.getLightboxSection("percentage_completion").node.children[0].classList.add('form-control');
-                    $('label:contains("Percentage Completion")').parent().css('padding-bottom', '0');
-                    $('label:contains("Percentage Completion")').parent().css('padding-top', '10px');
-                }, 1);
-
-
-                var task = $scope.scheduleGanttInstance.getTask(id);
-
-                var denyOpenLightbox = false;
-                var denyMessage = "";
-
-                //  alert("Status Id : " + $scope.trend.TrendStatusID + " ---- Trend  number : " + $scope.trend.TrendNumber);
-                //luan 3/6 - ghetto fix
-                $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').remove();
-
-                if ($scope.trend.TrendNumber == 2000) {
-                    denyMessage = "Activity cannot be added or edited in forecast view";
-                    denyOpenLightbox = true;
-                } else if (isCurrentTrend && task.text == "Add") {
-                    denyMessage = "Activity cannot be added or edited in current view once it is approved";
-                    denyOpenLightbox = true;
-                } else if ($scope.trend.TrendStatusID === 1 && $scope.trend.TrendNumber == 0) { // && $scope.trend.TrendNumber == 0  Pritesh on 23jul2020 as this should also be considered for trend 
-                    denyMessage = "Activity cannot be added or edited in baseline view once it is approved";
-                    denyOpenLightbox = true;
-                }
-                else if ($scope.trend.TrendStatusID === 1 && ($scope.trend.TrendNumber > 0 && $scope.trend.TrendNumber < 1000)) { //   Pritesh on 10Aug2020 as this should also be considered for trend 
-                    denyMessage = "Activity cannot be added or edited in Trend view once it is approved";
-                    denyOpenLightbox = true;
-
-                }
-                debugger
-                // swapnil 02-10-2020
-                if ($scope.trend.TrendStatusID === 3 && $scope.trend.approvedList_EmployeeID != "" && $scope.trend.approvedList_EmployeeID != null && $scope.trend.approvedList_EmployeeID != "0") {
-                    denyMessage = "Activity cannot be added or edited in Trend view once it is approved";
-                    denyOpenLightbox = true;
-                }
-                //-------------------------------------------------
-                //luan quest 3/6
-                //if ($scope.trend.TrendStatusID === 1 || $scope.trend.TrendNumber == 2000) {
-                if (denyOpenLightbox) {
-
-                    dhtmlx.alert({
-                        //text: "Activity cannot be added if the trend is approved",
-                        text: denyMessage,
-                        width: "400px"
-                    });
-
-                    if (task.text == "Add") {
-                        $scope.isDeleteFromLightbox = false;
-                        $scope.scheduleGanttInstance.deleteTask(id);
-                        $scope.costGanttInstance.clearAll();
-                    }
-                    return false;
-                }
-
-                if ($scope.isCostEdited || $scope.isNewCost) {
-                    angular.forEach($scope.isCostEdited, function (item, key) {
-                        if (item === true) {
-                            isEdited = true;
-                        }
-                    });
-                }
-                //if(isEdited == true){
-                //    if(!$scope.changeTask){
-                //        $scope.changeTask={
-                //            promise:null,
-                //            pending:false
-                //        }
-                //    }
-                //    if(!$scope.changeTask.pending){
-                //        $scope.changeTask.pending = true;
-                //        $scope.changeTask.promise = $timeout(function(){
-                //            dhtmlx.alert({text:"A cost is being modified. Please save it first!",
-                //                width:'400px'});
-                //
-                //            $scope.changeTask.pending = false;
-                //            console.log(task);
-                //            if(task){
-                //                if(task.text == "Add"){
-                //                    $scope.scheduleGanttInstance.deleteTask(id);
-                //                }
-                //            }
-                //            //  $scope.scheduleGanttInstance.deleteTask(id);
-                //
-                //        }, 500);
-                //    }
-                //    return;
-                //}
-                var task = $scope.scheduleGanttInstance.getTask(id);
-                if ($scope.temp) {
-                    //  main.setValue($scope.temp);
-                    if ($scope.lightBoxStartDate) {
-                        console.log($scope.lightBoxStartDate, $scope.lightBoxEndDate);
-                        task.start_date = $scope.lightBoxStartDate.start_date;
-                        task.end_date = $scope.lightBoxEndDate.start_date;
-                    }
-                }
-                if (task.text === "Add") {
-                    //escape html tags
-                    //for (var x = 0; x < $scope.subCategory.length; x++) {
-                    //    $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62');
-                    //    $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62');
-                    //}
-
-                    $scope.scheduleGanttInstance.updateCollection('sub', $scope.subCategory);
-
-                }
-                else {
-                    //luan quest 3/6
-                    if (isCurrentTrend) {
-                        setTimeout(function () {
-                            $scope.scheduleGanttInstance.getLightboxSection("mainphase").node.children[0].disabled = true;
-                            $scope.scheduleGanttInstance.getLightboxSection("subphase").node.children[0].disabled = true;
-
-                            $scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[0].disabled = true;
-                            $scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[1].disabled = true;
-                            $scope.scheduleGanttInstance.getLightboxSection("start_date").node.children[0].children[2].disabled = true;
-
-                            $scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[0].disabled = true;
-                            $scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[1].disabled = true;
-                            $scope.scheduleGanttInstance.getLightboxSection("end_date").node.children[0].children[2].disabled = true;
-
-                            //vamos
-                            $('div.gantt_btn_set.gantt_left_btn_set.gantt_delete_btn_set').fadeTo(1, .4);
-                            $('div.gantt_btn_set.gantt_left_btn_set.gantt_delete_btn_set').css({ pointerEvents: "none" })
-                        }, 110);
-                    } else if ($scope.trend.TrendNumber == 0) {
-                    }
-                }
-
-                if ($scope.trend.TrendNumber == 0) {
-                    setTimeout(function () {
-                        $scope.scheduleGanttInstance.getLightboxSection("percentage_completion").node.children[0].disabled = true;
-                    }), 110;
-                }
-
-                //  GanttCategory.getMainCategory().get({"ProgramID": delayedData[2].result[0].ProgramID,"Phase": task.parent}, function (response) {
-                console.log(task.parent, $scope.OrganizationID);
-                var phaseid = $scope.scheduleGanttInstance.getTask(task.parent).PhaseID;
-                ProgramCategory.getMainActivityCategoryProgram().get({ "Phase": phaseid, "OrganizationID": $scope.OrganizationID }, function (response) {
-                    MainCategory = response.result;
-                    console.log(MainCategory);
-                    if (MainCategory.length == 0) {
-                        //if(task){
-                        //    if(task.text == "Add"){
-                        //        $scope.scheduleGanttInstance.deleteTask(id);
-                        //    }
-                        //}
-
-                        //dhtmlx.alert({ text: "There are no activities assigned to this phase. Please contact your Project Manager!", width: "500px" });
-                        //return;
-                    }
-
-                    //luan 3/28
-                    var temp = {};
-                    temp.key = 'Add New';
-                    temp.label = 'Add New';
-                    $scope.MainCategory.push(temp);
-
-                    //luan 3/28 - unnecessary?
-                    angular.forEach(MainCategory, function (value, key) {
-                        var obj = {};
-                        obj.key = value.CategoryDescription;
-                        obj.label = value.CategoryDescription;
-                        $scope.MainCategory.push(obj);
-                    });
-
-                    console.log($scope.MainCategory);
-
-                    //Update main Category - use only once the first time lightbox open
-                    console.log($scope.firstTime);
-                    if ($scope.firstTime === true) {
-                        $scope.firstTime = false;
-
-                        //escape html tags
-                        for (var x = 0; x < $scope.MainCategory.length; x++) {
-                            $scope.MainCategory[x].key = $scope.MainCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62');
-                            $scope.MainCategory[x].label = $scope.MainCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62');
-                        }
-
-                        $scope.scheduleGanttInstance.updateCollection("main", $scope.MainCategory);
-
-                        $scope.scheduleGanttInstance.updateCollection("options", $scope.percentages);
-                        $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
-                    }
-                });
-                return true;
-            });
-
-            //OnLightbox - get activity task (MainCategory-SubCategory) and display them as selection
-            $scope.scheduleGanttInstance.attachEvent("onLightBox", function (id, task, is_new) {
-                console.log('luan test');
-                $scope.lightBoxTask = $scope.scheduleGanttInstance.getTask(id);
-
-                $scope.oneTime = true;
-                $scope.isUpdateTaskFromLightbox = true;
-                var task = $scope.scheduleGanttInstance.getTask(id);
-
-                var taskList = task.text.split(' - ');
-
-                var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
-
-                if ($scope.temp) {
-                    main.setValue($scope.temp);
-                }
-                var main = $scope.scheduleGanttInstance.getLightboxSection("mainphase");
-                var sub = $scope.scheduleGanttInstance.getLightboxSection("subphase");
-                $scope.orgActivityStartDate = $scope.scheduleGanttInstance.getLightboxSection('start_date').getValue().start_date;
-                $scope.orgActivityEndDate = $scope.scheduleGanttInstance.getLightboxSection('end_date').getValue().end_date;
-
-                if (task.text === "Add") {
-                    $scope.cancel = true;
-                }
-                else {
-                    $scope.cancel = false;
-                }
-                $scope.id = main.section.id;
-                var taskList = task.text.split(' - ');
-                if ($scope.temp !== "") {
-
-                    $scope.temp = "";
-                }
-                else if ($scope.cancel === true) {
-                    //sub.setValue("");
-                    $scope.cancel = false;
-                    main.setValue("");
-                }
-                else {
-                    //luan 3/29
-                    //PREVIOUSMAIN = taskList[0];
-                    //PREVIOUSSUB = taskList[1];
-                    PREVIOUSMAIN = task.BudgetCategory;
-                    PREVIOUSSUB = task.BudgetSubCategory;
-
-
-                    //main.setValue(taskList[0]);
-                    //sub.setValue(taskList[1]);
-                    main.setValue(task.BudgetCategory);
-                    sub.setValue(task.BudgetSubCategory);
-                }
-                return true;
-            });
-
-            //onLightboxCancel - empty the MainCategory and SubCategory
-            $scope.scheduleGanttInstance.attachEvent("onLightboxCancel", function (id) {
-                console.log('cancel', id);
-
-                var obj = $scope.scheduleGanttInstance.getTask(id);
-
-                if (obj.text == 'Add') {
-                    $scope.costGanttInstance.clearAll();
-                    //return;
-                }
-                $scope.subCategory = [];
-                $scope.scheduleGanttInstance.updateCollection('sub', $scope.subCategory);
-                $scope.MainCategory = [];
-                $scope.scheduleGanttInstance.updateCollection('main', $scope.MainCategory);
-
-                var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-                sub.setValue("");
-
-                $scope.firstTime = true;
-                $scope.cancel = true;
-
-            });
-
-            //OnlightboxSave - Add new activity when the user click on the save button in lightbox
-            $scope.scheduleGanttInstance.attachEvent("onLightboxSave", function (id, task, is_new) {
-
-                console.log(id, task, is_new);
-
-                if (task.mainCategory.includes('\'') || task.mainCategory.includes('\"') || task.mainCategory.includes('\\')
-                    || task.subCategory.includes('\'') || task.subCategory.includes('\"') || task.subCategory.includes('\\')) {
-                    dhtmlx.alert('Special characters of single quote, double quote, and backslash are not allowed');
-                    return;
-                }
-
-                // date validation bug fix - 9/24/15
-                var task1 = $scope.scheduleGanttInstance.getTask(id);
-                var phase = task1.parent;
-                var mainCategory = $scope.scheduleGanttInstance.getLightboxSection('mainphase').getValue();
-                var subCateogry = $scope.scheduleGanttInstance.getLightboxSection('subphase').getValue();
-                var isTaskExist = false;
-
-                //Main and Sub category must be selected
-                if (mainCategory == undefined || mainCategory == null || mainCategory == ''
-                    || subCateogry == undefined || subCateogry == null || subCateogry == '') {
-                    //dhtmlx.alert('Main and Sub categories cannot be empty');
-                    dhtmlx.alert('Main and Sub tasks cannot be empty'); //Manasi
-                    return;
-                }
-
-                $scope.scheduleGanttInstance.eachTask(function (item) {
-                    if (item.parent == phase) {
-                        var category = item.text.split(' - ');
-                        if (mainCategory == category[0] && subCateogry == category[1]) {
-                            isTaskExist = true;
-                            return;
-                        }
-                    }
-                });
-
-                if (isTaskExist && (is_new == true)) {
-                    //alertBox.showAlert("Task is already exist");
-                    dhtmlx.alert("Task is already exist");
-                    return false;
-                }
-
-                console.log($scope.scheduleGanttInstance.getLightboxSection('start_date').getValue(), $scope.scheduleGanttInstance.getLightboxSection('end_date').getValue());
-
-                $scope.sDateObject = $scope.scheduleGanttInstance.getLightboxSection('start_date').getValue();
-                $scope.eDateObject = $scope.scheduleGanttInstance.getLightboxSection('end_date').getValue();
-                //$scope.originalSDateObject = $scope.scheduleGanttInstance.getLightboxSection('originalStartDate').getValue();
-                //$scope.originalEDateObject = $scope.scheduleGanttInstance.getLightboxSection('originalEndDate').getValue();
-                $scope.originalSDateObject = $scope.scheduleGanttInstance.getLightboxSection('start_date').getValue();
-                $scope.originalEDateObject = $scope.scheduleGanttInstance.getLightboxSection('end_date').getValue();
-                console.log($scope.originalSDateObject, $scope.originalEDateObject);
-
-                $scope.sDate = $scope.sDateObject.start_date;
-                $scope.eDate = $scope.eDateObject.end_date;
-                $scope.originalSDate = $scope.originalSDateObject.start_date;   //luan mark
-                $scope.originalEDate = $scope.originalEDateObject.end_date;
-
-                $scope.taskDuration = gantt.calculateDuration($scope.sDate, $scope.eDate);
-                if ($scope.taskDuration <= 0) {
-                    dhtmlx.alert("Start date must come before end date.");
-                    return false;
-                }
-
-                if (is_new) {
-                    $scope.is_new = is_new;
-                    var s = $scope.scheduleGanttInstance.getLightboxSection('mainphase').getValue();
-                    if (!s) {
-                        dhtmlx.alert("The Activity Category cannot be empty.");
-                        return false;
-                    }
-                    $scope.saveFromLightbox = true;
-                    $scope.scheduleGanttInstance.refreshData();
-                    $scope.scheduleGanttInstance.render();
-                    //
-
-                    console.log('special test 2/12', task);
-                    var onTaskSelected = $scope.scheduleGanttInstance.callEvent("customAdd", [id, task]);
-                } else {
-
-                    if (moment($scope.sDate).format(sqlDateFormat) != moment($scope.orgActivityStartDate).format(sqlDateFormat)
-                        && moment($scope.eDate).format(sqlDateFormat) != moment($scope.orgActivityEndDate).format(sqlDateFormat)) {
-                        dhtmlx.alert({
-                            text: "Modified end date and start date at the same time is not yet supported, please modify either the start date or end date!",
-                            width: "650px",
-                            callback: function (result) {
-                                //$scope.sDateObject.start_date = $scope.orgActivityStartDate;
-                                $scope.scheduleGanttInstance.showLightbox(id);
-                            }
-                        });
-
-                        return false;
-                    }
-                    $scope.duc = false;
-                    $scope.isUpdateTaskFromLightbox = true;
-
-                    $scope.MainCategoryName = $scope.scheduleGanttInstance.getLightboxSection('mainphase').getValue();
-                    $scope.SubCategoryName = $scope.scheduleGanttInstance.getLightboxSection('subphase').getValue();
-
-                    $scope.isScaleChanged = false;
-                    //  $scope.selectedActivity = $scope.scheduleGanttInstance.getTask(id);
-                }
-
-                //Empty Main and Sub Category
-                $scope.subCategory = [];
-                $scope.scheduleGanttInstance.updateCollection('sub', $scope.subCategory);
-                $scope.firstTime = true;
-                $scope.MainCategory = [];
-                $scope.scheduleGanttInstance.updateCollection('main', $scope.MainCategory);
-                return true;
-            });
-
-            //Fire when user click on the delete button in lightbox
-            $scope.scheduleGanttInstance.attachEvent("onLightboxDelete", function (id) {
-                //Empty the Main and Sub Budget Category
-                var task = $scope.scheduleGanttInstance.getTask(id);
-                $scope.isDeleteFromLightbox = true;
-                $scope.duc = false;
-
-                return true;
-            });
-
-            //Do Nothing if selected outside of gantt grid
-            $scope.scheduleGanttInstance.attachEvent("onEmptyClick", function () {
-            });
 
             // Schedule Gantt Chart Templates
             $scope.scheduleGanttInstance.templates.grid_indent = function (task) {
@@ -1519,24 +916,50 @@ angular.module('xenon.ViewContractGanttController', []).
                         bufferObj.employee_id = []; bufferObj.material_id = []; bufferObj.subcontractor_id = [];
                         $scope.taskBeingEdited = false;
                         var childProject = (childTask) ? Number(childTask.project) : null;
-                        $scope.selectedProject = isNaN(Number($scope.selectedActivity.project)) ? (childTask) ? Number(childTask.project) : null : Number($scope.selectedActivity.project);
+                        $scope.selectedProgram = isNaN(Number($scope.selectedActivity.program)) ? null : Number($scope.selectedActivity.program);
+                        $scope.selectedProgramElement = isNaN(Number($scope.selectedActivity.program_element)) ? null : Number($scope.selectedActivity.program_element);
+                        $scope.selectedProject = isNaN(Number($scope.selectedActivity.project)) ? null : Number($scope.selectedActivity.project);
+                        //$scope.selectedProject = isNaN(Number($scope.selectedActivity.project)) ? (childTask) ? Number(childTask.project) : null : Number($scope.selectedActivity.project);
                         $scope.selectedTrend = isNaN(Number($scope.selectedActivity.trend)) ? (childTask) ? Number(childTask.trend) : null : Number($scope.selectedActivity.trend);
                         var workingDaysInMonth = getWorkingDays($scope.selectedActivity.start_date, $scope.selectedActivity.end_date);
                         $scope.workingDays = workingDaysInMonth.split(",");
 
 
-                        if (Number(id) == projectMaxId) {
+                        if (Number(id) == contractMaxId) {
                             var phase = 'null';
                             var activity = 'null';
+                            var ContractID = delayedData[10];
+                            var ProjectID = 'null';
+                            var ElementID = 'null';
                         }
-                        else if (Number(id) >= 1000) {
+                        else if ($scope.selectedProgram != null && $scope.selectedProgramElement != null && $scope.selectedProject == null) {
+                            var phase = 'null';
+                            var activity = 'null';
+                            var ContractID = $scope.selectedProgram;
+                            var ProjectID = $scope.selectedProgramElement
+                            var ElementID = 'null';
+                        }
+                        else if ($scope.selectedProgram != null && $scope.selectedProgramElement != null && $scope.selectedProject != null) {
+                            var phase = 'null';
+                            var activity = 'null';
+                            var ContractID = $scope.selectedProgram;
+                            var ProjectID = $scope.selectedProgramElement
+                            var ElementID = $scope.selectedProject;
+                        }
+                        else if (isPhase) {
                             //luan here - replace Number(id) with Number(phaseID)
                             var phase = Number(phaseID) / 1000;
                             var activity = "null";
+                            var ContractID = "null";
+                            var ProjectID = "null";
+                            var ElementID = $scope.selectedActivity.ProjectID;
                         }
                         else {
                             var phase = "null";
                             var activity = Number(id);
+                            var ContractID = "null";
+                            var ProjectID = "null";
+                            var ElementID = "null";
                         }
                         //$scope.v_phase = phase;
                         // alert("isPhase: " + isPhase + " ---phaseID : " + phaseID + " -- Number ID :" + Number(id) + " -- Project MAxId : " + projectMaxId);
@@ -1622,7 +1045,9 @@ angular.module('xenon.ViewContractGanttController', []).
                             if (!$scope.selectedActivity.PhaseCode)
                                 activity = "null";
                             var obj = {
-                                ProjectID: delayedData[2].result[0].ProjectID,
+                                ContractID: ContractID,
+                                ProjectID: ProjectID,
+                                ElementID: ElementID,
                                 TrendNumber: delayedData[3],
                                 PhaseCode: phase,
                                 ActivityID: activity,
@@ -1634,7 +1059,7 @@ angular.module('xenon.ViewContractGanttController', []).
                             };
                             console.log(obj);
 
-                            Cost.get(obj, function (CostData) {
+                            GanttViewCost.get(obj, function (CostData) {
                                 //luan quest 2/14
                                 console.log(CostData);
                                 //luan here 4/23
@@ -1675,10 +1100,10 @@ angular.module('xenon.ViewContractGanttController', []).
                                         var expandCloseClass = '';
                                         var taskID = (i + 1) + "_cost_line_id";
 
-                                        if ($scope.trend.TrendNumber == 1000 && costs[i].CostTrackTypeID == 2) {    //Add plus icon for budget lines only   Manasi 10-11-2020
-                                            console.log('1000 in current');
-                                            expandCloseClass = 'gantt_tree_icon gantt_close';
-                                        }
+                                        //if ($scope.trend.TrendNumber == 1000 && costs[i].CostTrackTypeID == 2) {    //Add plus icon for budget lines only   Manasi 10-11-2020
+                                        //    console.log('1000 in current');
+                                        //    expandCloseClass = 'gantt_tree_icon gantt_close';
+                                        //}
 
                                         cost["estimated_cost_id"] = costs[i].EstimatedCostID;
                                         cost["cost_track_type_id"] = costs[i].CostTrackTypeID;
@@ -1779,9 +1204,9 @@ angular.module('xenon.ViewContractGanttController', []).
                                         cost["unit_cost"] = costs[i].Base;
                                         if (delayedData[3] != 2000 && delayedData[3] != 3000) {
                                             if (costs[i].CostType === "F")  //Manasi 29-07-2020
-                                                cost["unit_budget"] = $scope.getCostWithOverhead(costs[i].Base, 'F');
+                                                cost["unit_budget"] = costs[i].RawUnitPrice;
                                             else if (costs[i].CostType == "U")
-                                                cost["unit_budget"] = $scope.getCostWithOverhead(costs[i].Base, 'U');
+                                                cost["unit_budget"] = costs[i].RawUnitPrice;
                                             else if (costs[i].CostType == "ODC")
                                                 cost["unit_budget"] = $scope.getCostWithOverhead(costs[i].Base, 'ODC');
                                             else if (costs[i].CostType == "L")
@@ -1906,14 +1331,14 @@ angular.module('xenon.ViewContractGanttController', []).
                                         else if (costs[i].CostType === "U") {
                                             var individualUnits = costs[i].TextBoxValue.split(",");
 
-                                            $scope.unit_type[$scope.currentCostIndex] = {
-                                                name: costs[i].UnitType,
-                                                value: $scope.unitTypes[UT].value
-                                            };
-                                            bufferObj.unit_type[$scope.currentCostIndex] = {
-                                                name: costs[i].UnitType,
-                                                value: $scope.unitTypes[UT].value
-                                            }
+                                            //$scope.unit_type[$scope.currentCostIndex] = {
+                                            //    name: costs[i].UnitType,
+                                            //    value: $scope.unitTypes[UT].value
+                                            //};
+                                            //bufferObj.unit_type[$scope.currentCostIndex] = {
+                                            //    name: costs[i].UnitType,
+                                            //    value: $scope.unitTypes[UT].value
+                                            //}
                                             $.each(individualUnits, function (index) {
                                                 totalUnits += parseFloat(individualUnits[index]);
                                             });
@@ -2142,7 +1567,7 @@ angular.module('xenon.ViewContractGanttController', []).
                                     }
                                     console.log($scope.description);
 
-                                    applyExpandables();
+                                    //applyExpandables();
                                 }
 
 
@@ -2223,11 +1648,11 @@ angular.module('xenon.ViewContractGanttController', []).
                                 cost["CostLineItemID"] = "";
 
                                 //luan quest 2/21 - Add the blank row if you're in a pending trend AND you're selecting an activity
-                                if ($scope.trend.TrendStatusID == 3 && !$scope.selectedActivity.PhaseID && $scope.selectedActivity.parent != 0) {   //Manasi 10-11-2020
-                                    $scope.costs.data.push(cost);
-                                    bufferObj.costs.data.push(cost);
-                                }
-
+                                //if ($scope.trend.TrendStatusID == 3 && !$scope.selectedActivity.PhaseID && $scope.selectedActivity.parent != 0) {   //Manasi 10-11-2020
+                                //    $scope.costs.data.push(cost);
+                                //    bufferObj.costs.data.push(cost);
+                                //}
+                                $scope.costs.data.push(cost);
                                 $scope.isCostEdited[$scope.currentCostIndex] = false;
                                 bufferObj.isCostEdited[$scope.currentCostIndex] = false;
                                 $scope.isNewCost[$scope.currentCostIndex] = true;
@@ -2550,7 +1975,10 @@ angular.module('xenon.ViewContractGanttController', []).
                     }
                 }
             });
-
+            if (activities.length > 0) {
+                var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
+            }
+            
             //Variable initilization for schedule Gantt
             $scope.temp = "";                //use to update and track if an activity description is empty
             //$scope.schedulePhase = "all";  //Initializae scale to 'all' on page load
@@ -4992,60 +4420,11 @@ angular.module('xenon.ViewContractGanttController', []).
                 return true;
 
             });
-            ////////------------------------ Pritesh New Logic  End added on 2 Jul 2020------------------------------------------
-
-
-            /////// -------------------Pritesh commented old logic on 2 july 2020 only kept for reference if it get affected anywhere ------------------------
-            //$scope.costGanttInstance.attachEvent("onGanttRender", function () {
-            //    $scope.isScaleChanged = true;
-
-            //    $scope.costGanttInstance.eachTask(function (task) {
-            //        if ($scope.currentCostIndex == (task.id - 1)) {
-            //            $scope.textBoxIds[task.id] = [];
-            //        }
-            //        var div = $("." + task.id + "_cost");
-            //        var div = $("." + task.id + "_cost");
-            //        $(div).html(
-            //            $compile(
-            //                $(div).html()
-            //            )($scope)
-            //        );
-            //        if ($scope.textBoxIds[task.id]) {
-            //            // alert("Task ID : "+task.id+ " ----  Number Of Boxes : " + $scope.numberOfBoxes[task.id]+" ---  Prottype No Val : " + Number.prototype.valueOf);
-            //            var textBoxVals = Array.apply(null, new Array($scope.numberOfBoxes[task.id])).map(Number.prototype.valueOf, 0);
-            //            // alert("Array Apply : " + textBoxVals);
-            //            for (var i = 0; i < $scope.textBoxIds[task.id].length; i++) {
-            //                var textBoxid = parseInt($scope.textBoxIds[task.id][i]);
-
-            //                textBoxVals[textBoxid] = parseFloat($scope.textBoxValues[task.id][i]);
-            //            }
-            //            $scope.textBoxValues[task.id] = textBoxVals;
-            //        }
-            //        else {
-            //            console.log('test1');
-            //            $scope.textBoxIds[task.id] = Array.apply(null, new Array($scope.numberOfBoxes[task.id])).map(Number.prototype.valueOf, 0);
-            //            $scope.textBoxValues[task.id] = Array.apply(null, new Array($scope.numberOfBoxes[task.id])).map(Number.prototype.valueOf, 0);
-            //            console.log('test2');
-            //            //for(var i = 0; i < $scope.textBoxValues[task.id].length - 1; i++){
-            //            //    $scope.textBoxIds[task.id][i] = i;
-            //            //}
-            //        }
-
-            //        $scope.fteCosts[task.id] = Array.apply(null, new Array($scope.numberOfBoxes[task.id])).map(Number.prototype.valueOf, 0);
-            //        $scope.unitCosts[task.id] = Array.apply(null, new Array($scope.numberOfBoxes[task.id])).map(Number.prototype.valueOf, 0);
-            //        // $scope.unitBudget[task.id] = Array.apply(null, new Array($scope.numberOfBoxes[task.id])).map(Number.prototype.valueOf, 0);
-            //        $scope.fteHours[task.id] = Array.apply(null, new Array($scope.numberOfBoxes[task.id])).map(Number.prototype.valueOf, 0);
-            //        if ($scope.isCostEdited[task.id] == true) {
-            //            $scope.costGanttInstance.callEvent('customClick', [task.id]);
-            //        }
-            //    });
-
-            //    //$scope.deleteFromNew = false;
-            //    return true;
-            //});
-
-            //// -------------------- Pritesh old logic End commented on 2 july 2020
-
+            
+            
+            if (activities.length > 0) {
+                var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
+            }
             $scope.currentScale = 'week';
 
             $scope.setWeek = function () {
@@ -5135,7 +4514,7 @@ angular.module('xenon.ViewContractGanttController', []).
 
 
                 $scope.allCostTotal = 0; //original total before any project is selected;
-                var amountInput = delayedData[2].result[0].Amount;
+                var amountInput = delayedData[2].result.length > 0 ? delayedData[2].result[0].Amount : 0;
                 $scope.amount = amountInput - $scope.allCostTotal;
 
                 paddingLabel();
@@ -6321,7 +5700,7 @@ angular.module('xenon.ViewContractGanttController', []).
 
             //-----------------Manasi 26-08-2020------------------------------------------------
             onRouteChangeOff = $scope.$on('$locationChangeStart', function (event) {
-                debugger
+                
                 console.log('we in there');
                 var newUrl = $location.path();
                 var isCostEdited = isCostsEdited();
@@ -6788,9 +6167,9 @@ angular.module('xenon.ViewContractGanttController', []).
 
                         if ($scope.CostTrackTypes[id] && $scope.CostTrackTypes[id][i] == $scope.costTrackType.ACTUAL) { //ACTUAL COST
 
-                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#98FB98;' />"
+                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#83B4B3;' />"
                         } else if ($scope.CostTrackTypes[id] && $scope.CostTrackTypes[id][i] == $scope.costTrackType.ESTIMATE_TO_COMPLETION) {
-                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#FFDAB9;' />"
+                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#FFF0CE;' />"
                         } else {
                             costBoxes += "<input onClick='this.select();'    ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;' />"
                         }
@@ -6804,11 +6183,11 @@ angular.module('xenon.ViewContractGanttController', []).
 
                         if ($scope.CostTrackTypes[id] && $scope.CostTrackTypes[id][i] == $scope.costTrackType.ACTUAL) { // ACTUAL COST
 
-                            costBoxes += "<input  onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#98FB98;' />"
+                            costBoxes += "<input  onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#83B4B3;' />"
                         } else if ($scope.CostTrackTypes[id] &&
                             (($scope.CostTrackTypes[id][i] == $scope.costTrackType.ESTIMATE_TO_COMPLETION))
                         ) {
-                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#FFDAB9;' />"
+                            costBoxes += "<input onClick='this.select();'  disabled = true  ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' ng-model='textBoxValues[" + id + "][" + i + "]' TABINDEX=" + s + " ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;background-color:#FFF0CE;' />"
                         }
                         else
                             costBoxes += "<input onClick='this.select();'  disabled = true ng-style = '{color: textBoxStyles[" + id + "][" + i + "]}' TABINDEX=" + s + " ng-model='textBoxValues[" + id + "][" + i + "]' ng-keyup = 'changedCost(" + id + "," + i + ")' class='" + id.toString() + "_costText' type='text' style='width:" + widthOfTextBox + "px; text-align:center;' />"
@@ -8203,6 +7582,7 @@ angular.module('xenon.ViewContractGanttController', []).
                 var allProjects = delayedData[2].result;
 
                 var selectedProjects = [];
+                var incPrgEleID = 100;
                 for (var i = 0; i < programElements.length; i++) {
                     var programElement = {};
                     for (var j = 0; j < allProjects.length; j++) {
@@ -8214,15 +7594,16 @@ angular.module('xenon.ViewContractGanttController', []).
                         }
                     }
                     //programElement["id"] = (Math.max.apply(Math, selectedProjects.map(function (a) { return a.projectId })) + 1 + i) * 1000;
-                    if (selectedProjects.length != 0) {
-                        programElement["id"] = (Math.max.apply(Math, selectedProjects.map(function (a) { return a.projectId })) + 1) * 1000;
-                        maxProjectId = (Math.max.apply(Math, selectedProjects.map(function (a) { return a.projectId })) + 1);
-                    }
-                    else {
-                        programElement["id"] = (maxProjectId + i) * 1000;
-                    }
+                    //if (selectedProjects.length != 0) {
+                    //    programElement["id"] = (Math.max.apply(Math, selectedProjects.map(function (a) { return a.projectId })) + 1) * 1000;
+                    //    maxProjectId = (Math.max.apply(Math, selectedProjects.map(function (a) { return a.projectId })) + 1);
+                    //}
+                    //else {
+                    //    programElement["id"] = (maxProjectId + i) * 1000;
+                    //}
+                    programElement["id"] = incPrgEleID;
                     programElement["text"] = programElements[i].ProgramElementName;
-                    programElement["type"] = gantt.config.types.project;
+                    //programElement["type"] = gantt.config.types.project;
                     programElement["open"] = true;
                     programElement["duration"] = 0;
                     programElement["totalCost"] = "" + "";
@@ -8241,6 +7622,7 @@ angular.module('xenon.ViewContractGanttController', []).
                     newprogramElements.push(programElement);
                     selectedProject = {};
                     selectedProjects = [];
+                    incPrgEleID += 1;
                 }
                 return newprogramElements;
             }
@@ -8249,6 +7631,7 @@ angular.module('xenon.ViewContractGanttController', []).
                 var allPhases = delayedData[1].result;
                 var maxPhaseId = 0;
                 var selectedPhases = [];
+                var incProjID = 1000;
                 for (var i = 0; i < projects.length; i++) {
                     var project = {};
                     for (var j = 0; j < allPhases.length; j++) {
@@ -8260,15 +7643,16 @@ angular.module('xenon.ViewContractGanttController', []).
                         }
                     }
                     //project["id"] = (Math.max.apply(Math, selectedPhases.map(function (a) { return a.PhaseID })) + 1 + i) * 1000;
-                    if (selectedPhases.length != 0) {
-                        project["id"] = (Math.max.apply(Math, selectedPhases.map(function (a) { return a.PhaseID })) + 1 + i) * 1000;
-                        maxPhaseId = (Math.max.apply(Math, selectedPhases.map(function (a) { return a.PhaseID })) + 1);
-                    }
-                    else {
-                        project["id"] = (maxPhaseId + i) * 1000;
-                    }
+                    //if (selectedPhases.length != 0) {
+                    //    project["id"] = (Math.max.apply(Math, selectedPhases.map(function (a) { return a.PhaseID })) + 1 + i) * 1000;
+                    //    maxPhaseId = (Math.max.apply(Math, selectedPhases.map(function (a) { return a.PhaseID })) + 1);
+                    //}
+                    //else {
+                    //    project["id"] = (maxPhaseId + i) * 1000;
+                    //}
+                    project["id"] = incProjID;
                     project["text"] = projects[i].ProjectName;
-                    project["type"] = gantt.config.types.project;
+                    //project["type"] = gantt.config.types.project;
                     project["open"] = true;
                     project["duration"] = 0;
                     project["totalCost"] = "" + "";
@@ -8291,6 +7675,7 @@ angular.module('xenon.ViewContractGanttController', []).
                     newproject.push(project);
                     selectedPhase = {};
                     selectedPhases = [];
+                    incProjID += 1;
                 }
                 return newproject;
             }
@@ -8303,7 +7688,7 @@ angular.module('xenon.ViewContractGanttController', []).
 
                 var projectActivity = delayedData[0].result;
                 var maxProjectActId = 0;
-
+                var incPhaseID = 10000;
                 for (var j = 0; j < phases.length; j++) {
                     var phase = {};
                     var projectActivities = [];
@@ -8320,15 +7705,16 @@ angular.module('xenon.ViewContractGanttController', []).
                         }
                     }
                     //phase["id"] = Number(phases[j].Order) * 1000; //Number(phases[j].PhaseID) * 1000
-                    if (projectActivities.length != 0) {
-                        phase["id"] = (Math.max.apply(Math, projectActivities.map(function (a) { return a.ActivityID })) + 1 + j) * 1000;
-                        maxProjectActId = (Math.max.apply(Math, projectActivities.map(function (a) { return a.ActivityID })) + 1 + j);
-                    }
-                    else {
-                        phase["id"] = (maxProjectActId * 10 + Number(phases[j].Order)) * 1000;
-                    }
+                    //if (projectActivities.length != 0) {
+                    //    phase["id"] = (Math.max.apply(Math, projectActivities.map(function (a) { return a.ActivityID })) + 1 + j) * 1000;
+                    //    maxProjectActId = (Math.max.apply(Math, projectActivities.map(function (a) { return a.ActivityID })) + 1 + j);
+                    //}
+                    //else {
+                    //    phase["id"] = (maxProjectActId * 10 + Number(phases[j].Order)) * 1000;
+                    //}
+                    phase["id"] = incPhaseID;
                     phase["text"] = phases[j].PhaseDescription;
-                    phase["type"] = gantt.config.types.project;
+                    //phase["type"] = gantt.config.types.project;
                     phase["open"] = true;
                     phase["duration"] = 0;
                     for (var p = 0; p < projects.length; p++) {
@@ -8364,6 +7750,7 @@ angular.module('xenon.ViewContractGanttController', []).
                     $scope.schedule.data.push(phase);
                     phaseArray.push(phase);
                     viewPhaseArray.push(phase);
+                    incPhaseID += 1;
                 }
                 $scope.trendTotalValue = parseFloat(trendTotalValue);
                 //while (phaseArray.length > 0) {
@@ -8608,7 +7995,7 @@ angular.module('xenon.ViewContractGanttController', []).
             //Schedule Gantt configuration
             function ConfigScheduleGantt() {
                 //luan quest 3 - conditional grid_width
-                $scope.first_task_id = 0;   //Manasi 28-07-2020
+                $scope.first_task_id = 1;   //Manasi 28-07-2020
                 var isCurrentTrend = false;
                 var isTrue = false;   //Swapnil 24-11-2020
                 var grid_width = 900;
@@ -8675,7 +8062,7 @@ angular.module('xenon.ViewContractGanttController', []).
                     ];
                 } else {    //not current view
                     $scope.scheduleGanttInstance.config.columns = [
-                        { name: "add", label: "", width: 30, class: "gantt_add", resize: true },
+                        //{ name: "add", label: "", width: 30, class: "gantt_add", resize: true },
                         { name: "text", label: "Category", tree: true, width: 313, resize: true },
                         { name: "originalStartDate", label: "Orig. Start", align: "center", width: 113, resize: true },
                         { name: "originalEndDate", label: "Orig. End", align: "center", width: 113, resize: true },
@@ -9227,7 +8614,10 @@ angular.module('xenon.ViewContractGanttController', []).
                     ];
                 }
             }
-            var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);   //Manasi 28-07-2020
+            if (activities.length > 0) {
+                var s = $scope.scheduleGanttInstance.callEvent("onTaskSelected", [$scope.first_task_id]);
+            }
+            
             function adjustCostId(idToBeRemoved, costs) {
                 angular.forEach(costs, function (item) {
                     if (parseInt(item.id) > parseInt(idToBeRemoved)) {

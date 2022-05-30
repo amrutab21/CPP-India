@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         // GET: /RequestWBS/
         readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public HttpResponseMessage Get(int uId, String OrganizationID = "null", String ProgramID = "null", String ProgramElementID = "null", String ProjectID = "null", String TrendNumber = "null", String PhaseCode = "null", String ActivityID = "null", String BudgetCategory = "null", String BudgetSubCategory = "null",
-               string SearchText="null", string AllData="null")
+               string SearchText="null", string AllData="null", string DeptID = "null")
         {
             /*
             List<ProgramWBS> WBSList = new List<ProgramWBS>();
@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
                 Organization org = orgs.First<Organization>();
                 organizationName = org.OrganizationName;
                 organizationID = org.OrganizationID;
-                 WBSList = WebAPI.Models.ProgramWBSTree.getWBSTreeDetails(uId, OrganizationID, ProgramID, ProgramElementID, ProjectID, TrendNumber, PhaseCode, ActivityID, BudgetCategory, BudgetSubCategory, AllData);
+                 WBSList = WebAPI.Models.ProgramWBSTree.getWBSTreeDetails(uId, OrganizationID, ProgramID, ProgramElementID, ProjectID, TrendNumber, PhaseCode, ActivityID, BudgetCategory, BudgetSubCategory, AllData, DeptID);
 
                 if (AllData == "0")
                 {
@@ -76,11 +76,11 @@ namespace WebAPI.Controllers
                     {
                         tempWBSList.Remove(item);
                     }
-
+                    
                     for (int i = 0; i < tempWBSList.Count; i++)
                     {
                         List<ProgramElementWBSTree> tempPrgEleList = new List<ProgramElementWBSTree>();
-                        var data = tempWBSList[i].children.Where(x => x.name.ToLower().Contains(SearchText.ToLower())).ToList();
+                        var data = tempWBSList[i].children.Where(x => x.name.ToLower().Contains(SearchText.ToLower()) || x.ProgramElementNumber.Contains(SearchText)).ToList();
                         foreach (var item in data)
                         {
                             tempPrgEleList.Add(item);
@@ -108,7 +108,7 @@ namespace WebAPI.Controllers
                                     }
                                     tempWBSList[i].children.Add(tempProgEleList[j]);
                                     
-                                    tempWBSList[i].children[j].children = tempProjectList;
+                                    tempWBSList[i].children[0].children = tempProjectList;
                                     WBSList.Add(tempWBSList[i]);
                                 }
                             }

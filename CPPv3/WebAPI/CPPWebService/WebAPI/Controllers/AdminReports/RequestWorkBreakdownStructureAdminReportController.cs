@@ -14,7 +14,8 @@ namespace WebAPI.Controllers
     {
         readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public HttpResponseMessage GetReport(String OrganizationID, String ProjectClassID, String PhaseCode, String FileType)
+
+        public HttpResponseMessage GetReport(String OrganizationID, String ProjectClassID, String PhaseCode, String Version, String FileType)
         {
             //http://devapps2.birdi-inc.io/ReportServer/Pages/ReportViewer.aspx?%2fIMS%2finterface2rdl&rs:Command=Render
             log4net.Config.XmlConfigurator.Configure();
@@ -22,7 +23,7 @@ namespace WebAPI.Controllers
             try
             {
                 Byte[] bytes = { };
-                bytes = generatePDF(OrganizationID, ProjectClassID, PhaseCode, FileType, "WorkBreakdownStructureAdminReport");
+                bytes = generatePDF(OrganizationID, ProjectClassID, PhaseCode, Version, FileType, "WorkBreakdownStructureAdminReport");
                 String base64txt = Convert.ToBase64String(bytes);
                 result = new HttpResponseMessage(HttpStatusCode.OK);
                 result.Content = new StringContent(base64txt);
@@ -38,7 +39,7 @@ namespace WebAPI.Controllers
             return result;
         }
 
-        private Byte[] generatePDF(String OrganizationID, String ProjectClassID, String PhaseCode, String FileType, String reportName)
+        private Byte[] generatePDF(String OrganizationID, String ProjectClassID, String PhaseCode,String Version, String FileType, String reportName)
         {
 
             SsrsReportService.ReportExecutionService rs = new SsrsReportService.ReportExecutionService();
@@ -92,7 +93,7 @@ namespace WebAPI.Controllers
             string mimeType;
             string extension;
             SsrsReportService.Warning[] warnings = null;
-            SsrsReportService.ParameterValue[] reportHistoryParameters = new SsrsReportService.ParameterValue[3];
+            SsrsReportService.ParameterValue[] reportHistoryParameters = new SsrsReportService.ParameterValue[4];
 
             SsrsReportService.ParameterValue param1 = new SsrsReportService.ParameterValue();
             param1.Name = "OrgID";
@@ -106,11 +107,17 @@ namespace WebAPI.Controllers
 			param3.Name = "PhaseCode";
 			param3.Value = "\"" + PhaseCode + "\"";
 
-			reportHistoryParameters[0] = param1;
+
+            SsrsReportService.ParameterValue param4 = new SsrsReportService.ParameterValue();
+            param4.Name = "VersionId";
+            param4.Value = "\"" + Version + "\"";
+
+            reportHistoryParameters[0] = param1;
 			reportHistoryParameters[1] = param2;
 			reportHistoryParameters[2] = param3;
+            reportHistoryParameters[3] = param4;
 
-			string[] streamIDs = null;
+            string[] streamIDs = null;
 
             SsrsReportService.ExecutionInfo execInfo = new SsrsReportService.ExecutionInfo();
             SsrsReportService.ExecutionHeader execHeader = new SsrsReportService.ExecutionHeader();

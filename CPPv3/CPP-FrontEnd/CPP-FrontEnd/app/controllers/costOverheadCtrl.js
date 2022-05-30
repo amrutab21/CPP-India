@@ -120,9 +120,10 @@
                     checkbox: false,
                     new: true
                 });
-
+                $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
                 $timeout(function () {
                     console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                    
                     $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
                 }, 1);
 
@@ -146,7 +147,7 @@
                     cellClass: 'c-col-Num'  //Manasi 
                 }, {
                     field: 'CostTypeName',
-                    name: 'Cost Type',
+                    name: 'Cost Type*',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
                     editDropdownValueLabel: 'Type', //code
                     editDropdownIdLabel: 'Type',    //phase
@@ -167,7 +168,7 @@
                     //enableCellEditOnFocus: true,
                 }, {
                     field: 'CostRateTypeName',
-                    name: 'Rate Type',
+                    name: 'Rate Type*',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
                     editDropdownValueLabel: 'RateType', //code
                     editDropdownIdLabel: 'RateType',    //phase
@@ -176,7 +177,7 @@
                     width: 200
                 }, {
                     field: 'Markup',
-                    name: 'Mark up',
+                    name: 'Mark up*',
                     //allowCellFocus: true,
                     //enableCellEdit: true,
                     //enableFocusedCellEdit: true,
@@ -184,14 +185,15 @@
                         cellClass: 'c-col-Num'  //Manasi 
                 }, {
                     name: 'StartDate',
-                    displayName: 'Start Date',
+                    displayName: 'Start Date*',
                     type: 'date',
                         //cellFilter: 'date:"yyyy-MM-dd"',
                         cellFilter: 'date:"MM/dd/yyyy"',   //Jignesh 23-09-2020
-                        cellClass: 'c-col-Date' //Manasi
+                        cellClass: 'c-col-Date',//Manasi
+                        aggregation: { MIN: '05-12-2022' }
                 }, {
                     name: 'EndDate',
-                    displayName: 'End Date',
+                    displayName: 'End Date*',
                     type: 'date',
                         //cellFilter: 'date:"yyyy-MM-dd"',
                         cellFilter: 'date:"MM/dd/yyyy"',   //Jignesh 23-09-2020

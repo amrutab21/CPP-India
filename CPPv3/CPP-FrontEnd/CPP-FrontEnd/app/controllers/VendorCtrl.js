@@ -83,9 +83,10 @@
 
                 $scope.VendorCollection[$scope.VendorCollection.length - 1].UniqueIdentityNumber = currentPoint;
             }
-
+            $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
             $timeout(function () {
                 console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                
                 $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
             }, 1);
         }
@@ -107,7 +108,7 @@
 
                 }, {
                     field: 'VendorName',
-                    name: 'Type',
+                    name: 'Type*',
                     enableCellEditOnFocus: true,
                     width: 280
 
@@ -224,7 +225,7 @@
             angular.forEach($scope.VendorCollection, function (value, key, obj) {
 
                 if (value.VendorName == ""
-                    || value.VendorDescription == ""
+                    //|| value.VendorDescription == "" // Aditya 3-2-2022
                     || value.UniqueIdentityNumber == ""
                     ) {
                     dhtmlx.alert({

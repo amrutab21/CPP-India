@@ -15,6 +15,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Diagnostics;
+using WebAPI.CustomHandler;
 
 namespace WebAPI.Controllers
 {
@@ -60,7 +61,8 @@ namespace WebAPI.Controllers
                     }
                     else
                     {
-                        logger.Info("start of mpp export function");
+                        //logger.Info("start of mpp export function");
+                        MessageLogging.LogException("start of mpp export function");
                         string filePath = ConfigurationManager.AppSettings["LocalMppFilePath"].ToString();
                         _ExportProcess = new ExportProcess();
                         //var lstExportData = _ExportProcess.Export(projectId, trendNumber, granularity);
@@ -93,15 +95,18 @@ namespace WebAPI.Controllers
                         //string fileName = "CPP_" + trend + "_" + granularity + "_" + strTime + ".mpp";
                         string fileName = proName + "_" + trend + "_" + granularity + "_" + strTime + ".mpp";
 
-                        logger.Info("Before open application");
+                        MessageLogging.LogException("Before open application");
+                        //logger.Info("Before open application");
 
                         //Application appclass = new Application();
 
-                        logger.Info("Before filenew");
+                        MessageLogging.LogException("Before filenew");
+                        //logger.Info("Before filenew");
 
                         appclass.FileNew();
 
-                        logger.Info("After filenew");
+                        MessageLogging.LogException("After filenew");
+                        //logger.Info("After filenew");
 
                         //foreach (Process proc in Process.GetProcessesByName("WINPROJ"))
                         //{
@@ -117,7 +122,8 @@ namespace WebAPI.Controllers
 
                         checkProcess(attemptNum);
 
-                        logger.Info(workingFolder + fileName + " Started parallel checkProcess");
+                        MessageLogging.LogException(workingFolder + fileName + " Started parallel checkProcess");
+                        //logger.Info(workingFolder + fileName + " Started parallel checkProcess");
 
                         appclass.ViewApply("Resource Sheet"); //mark of the corrupt
 
@@ -948,11 +954,12 @@ namespace WebAPI.Controllers
 
                         string currentFilePath = filePath + fileName;
 
-                        logger.Info(workingFolder + fileName + " before saving");
+                        //logger.Info(workingFolder + fileName + " before saving");
 
                         appclass.FileSaveAs(workingFolder + fileName, PjFileFormat.pjMPP, Type.Missing, false, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, true, true, true, true, Type.Missing, true);
 
-                        logger.Info(workingFolder + fileName + " Saved successfully");
+                        MessageLogging.LogException(workingFolder + fileName + " Saved successfully");
+                        //logger.Info(workingFolder + fileName + " Saved successfully");
 
                         //System.Threading.Tasks.Parallel.Invoke(() => checkProcess());
 
@@ -1021,9 +1028,9 @@ namespace WebAPI.Controllers
                 }
                 catch (System.Exception ex)
                 {
-                    logger.Info("ATTEMPT: " + attemptNum);
-                    logger.Info(ex.ToString());
-
+                    //logger.Info("ATTEMPT: " + attemptNum);
+                    //logger.Info(ex.ToString());
+                    MessageLogging.LogException(ex.ToString());
                     if (ex.ToString().Contains("0x80010105") || ex.ToString().Contains("0x80029C83"))
                     {
                         foreach (Process proc in Process.GetProcessesByName("WINPROJ"))
@@ -1042,9 +1049,11 @@ namespace WebAPI.Controllers
                     {
                         foreach (Process proc in Process.GetProcessesByName("WINPROJ"))
                         {
-                            logger.Info("Before Process Kill - EX 2");
+                            //logger.Info("Before Process Kill - EX 2");
+                            MessageLogging.LogException("Before Process Kill - EX 2");
                             proc.Kill();
-                            logger.Info("After Process Kill - EX 2");
+                            //logger.Info("After Process Kill - EX 2");
+                            MessageLogging.LogException("After Process Kill - EX 2");
                             //Thread.Sleep(3000);
                         }
                     }

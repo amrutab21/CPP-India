@@ -83,9 +83,10 @@
 
             	$scope.ODCTypeCollection[$scope.ODCTypeCollection.length - 1].UniqueIdentityNumber = currentPoint;
             }
-
+            $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
             $timeout(function () {
                 console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                
                 $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
             }, 1);
         }
@@ -124,7 +125,7 @@
 
                 }, {
                     field: 'ODCTypeName',
-                    name: 'Type',
+                    name: 'Type*',
                     enableCellEditOnFocus: true,
                     width: 200,
                     //   enableCellEdit :true,
@@ -252,7 +253,9 @@
             var listToSave = [];
             angular.forEach($scope.ODCTypeCollection, function (value, key, obj) {
                 console.log(value);
-                if (value.ODCTypeName == "" || value.ODCDescription == "" || value.UniqueIdentityNumber == ""
+                if (value.ODCTypeName == ""
+                    //|| value.ODCDescription == "" // Aditya 3-2-2022
+                    || value.UniqueIdentityNumber == ""
                     ) {
                     dhtmlx.alert({
                         text: "Please fill data to all required fields before save (Row " + value.displayId + ")",

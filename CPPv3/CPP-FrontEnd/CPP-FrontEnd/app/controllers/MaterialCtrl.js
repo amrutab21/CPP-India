@@ -160,9 +160,10 @@
                 }
 
                 console.log($scope.materialCollection[$scope.materialCollection.length - 1]);
-
+                $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
                 $timeout(function () {
                     console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                    
                     $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
                 }, 1);
 
@@ -182,7 +183,7 @@
                     cellClass: 'c-col-Num' //Manasi
                 }, {
                     field: 'Name',
-                    name: 'Name',
+                    name: 'Name*',
                     width: 200
                 }, {
                     field: 'Description',
@@ -190,7 +191,7 @@
                     width: 300
                 }, {
                     field: 'MaterialCategoryName',
-                    name: 'Category',
+                    name: 'Category*',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
                     editDropdownValueLabel: 'MaterialCategoryName', //code
                     editDropdownIdLabel: 'MaterialCategoryName',    //phase
@@ -208,7 +209,7 @@
                     width: 180
                 }, {
                     field: 'UnitTypeName',
-                    name: 'Unit Type',
+                    name: 'Unit Type*',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
                     editDropdownValueLabel: 'UnitTypeName', //code
                     editDropdownIdLabel: 'UnitTypeName',    //phase
@@ -217,7 +218,7 @@
                     width: 100
                 }, {
                     field: 'Cost',
-                    name: 'Cost',
+                    name: 'Cost*',
                         width: 140,
                         cellClass: 'c-col-Num', //Manasi
                         cellFilter: 'currency' //Manasi
@@ -378,7 +379,10 @@
                         dhtmlx.alert('Cost must be a valid number greater than 0 (Row ' + value.displayId + ')');
                         isFilled = false;
                         return;
-                    } else if (value.Description == "" || value.MaterialCategoryID == "" || value.Name == "" || value.UnitTypeID == "" || value.Cost == "" || value.UniqueIdentityNumber == "" || value.VendorID == ""
+                    } else if (
+                        //value.Description == "" ||  // Aditya 3-2-2022 
+                        value.MaterialCategoryName == "" ||
+                        value.MaterialCategoryID == "" || value.Name == "" || value.UnitTypeID == "" || value.Cost == "" || value.UniqueIdentityNumber == "" || value.VendorID == ""
                         ) {
                         dhtmlx.alert({
                             text: "Please fill data to all required fields before save (Row " + value.displayId + ")",

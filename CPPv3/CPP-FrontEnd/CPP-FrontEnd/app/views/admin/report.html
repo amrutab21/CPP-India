@@ -136,7 +136,7 @@
         </div>
 
         <!--Programs aka Super Program Elements-->
-        <div ng-show="(reportTypeFilter.filterName=='Project Element List Admin Report') || reportTypeFilter.filterName=='Trend Status Report'" class="form-group required" style="padding-left:0;padding-right:0;"
+        <div ng-show="(reportTypeFilter.filterName=='Project Element List Admin Report') || (reportTypeFilter.filterName=='Procurement Report') ||(reportTypeFilter.filterName=='Billing Exception Report')|| reportTypeFilter.filterName=='Trend Status Report'" class="form-group required" style="padding-left:0;padding-right:0;"
              ng-class="{ 'has-error' : reportManagerForm.programFilter.$error.required}">
 
             <label class="control-label">Contract </label>  <!--Manasi 16-02-2021-->
@@ -153,6 +153,8 @@
         <!--Program Elements aka Super Projects-->
         <div ng-show="(reportTypeFilter.filterName=='Customer Report' && selectedOrganization)
              || (reportTypeFilter.filterName=='Project Element List Admin Report' && selectedProgram)
+             || (reportTypeFilter.filterName=='Procurement Report' && selectedProgram)
+              || (reportTypeFilter.filterName=='Billing Exception Report' && selectedProgram)
              || reportTypeFilter.filterName=='Sales Order Report'
              || reportTypeFilter.filterName=='Purchase Order Report'
 			 || reportTypeFilter.filterName=='Project Export From CPP Into Jonas'
@@ -177,6 +179,8 @@
         <!--Projects aka Project Elements-->
         <div ng-show="(reportTypeFilter.filterName=='Customer Report'
              || (reportTypeFilter.filterName=='Project Element List Admin Report' && selectedProgramElement)
+             || (reportTypeFilter.filterName=='Procurement Report' && selectedProgramElement)
+             || (reportTypeFilter.filterName=='Billing Exception Report' && selectedProgramElement)
              || reportTypeFilter.filterName=='Sales Order Report'
              || reportTypeFilter.filterName=='Purchase Order Report'
 			 || reportTypeFilter.filterName=='Baseline Export From CPP Into Jonas'
@@ -197,6 +201,24 @@
                 </ui-select-choices>
             </ui-select>
         </div>
+
+
+        <div ng-show="(reportTypeFilter.filterName=='Work Breakdown Structure Admin Report')
+             && selectedOrganization" class="form-group required" style="padding-left:0;padding-right:0;"
+             ng-class="{ 'has-error' : reportManagerForm.projectFilter.$error.required}">
+
+            <label class="control-label">Version </label>
+            <ui-select ng-model="$item" name="versionFilter" on-select="selectVersion($item)" required>
+                <ui-select-match allow-clear="true">
+                    <span ng-bind="selectedVersion.description"></span>
+                </ui-select-match>
+                <ui-select-choices repeat="item.description as item in (versionList | filter: $select.search) track by item.Id">
+                    <span ng-bind="item.description"></span>
+                </ui-select-choices>
+            </ui-select>
+
+        </div>
+
 
         <!--Trends-->
         <div ng-show="(reportTypeFilter.filterName=='Sales Order Report'
@@ -271,7 +293,7 @@
         </div>
 
         <!--Positions-->
-        <div ng-show="reportTypeFilter.filterName=='Employee Admin Report'"
+        <div ng-show="reportTypeFilter.filterName=='Employee Admin Report'|| reportTypeFilter.filterName=='Resource Availability Report'"
              class="form-group required" style="padding-left:0;padding-right:0;"
              ng-class="{ 'has-error' : reportManagerForm.positionFilter.$error.required}">
 
@@ -286,43 +308,52 @@
             </ui-select>
         </div>
 
+        <div ng-show="reportTypeFilter.filterName=='Resource Availability Report'"
+             class="form-group required" style="padding-left:0;padding-right:0;"
+             ng-class="{ 'has-error' : reportManagerForm.positionFilter.$error.required}">
+
+            <label for="pasttrend_approval_date" class="control-label">From Date</label>
+            <input type="text" class="form-control" id="fromDate" placeholder="MM/DD/YYYY" />
+
+            <label for="pasttrend_approval_date" class="control-label">To Date</label>
+            <input type="text" class="form-control" id="toDate" placeholder="MM/DD/YYYY" />
+        </div>
+
         <!--Project Class-->
-        <div ng-show="reportTypeFilter.filterName=='Work Breakdown Structure Admin Report' && selectedOrganization"
-             class="form-group required" style="padding-left:0;padding-right:0;"
-             ng-class="{ 'has-error' : reportManagerForm.projectClassFilter.$error.required}">
+        <!--<div ng-show="reportTypeFilter.filterName=='Work Breakdown Structure Admin Report' && selectedOrganization"
+         class="form-group required" style="padding-left:0;padding-right:0;"
+         ng-class="{ 'has-error' : reportManagerForm.projectClassFilter.$error.required}">
 
-            <label class="control-label">Division </label>
-            <ui-select ng-model="selectedProjectClass.ProjectClassID" name="projectClassFilter" on-select="selectProjectClass($item)" required>
-                <ui-select-match allow-clear="true">
-                    <span ng-bind="$select.selected.ProjectClassName"></span>
-                </ui-select-match>
-                <ui-select-choices repeat="item.ProjectClassID as item in (allProjectClassList | filter: $select.search) track by item.ProjectClassID">
-                    <span ng-bind="item.ProjectClassName"></span>
-                </ui-select-choices>
-            </ui-select>
-        </div>
-
-
+        <label class="control-label">Division </label>
+        <ui-select ng-model="selectedProjectClass.ProjectClassID" name="projectClassFilter" on-select="selectProjectClass($item)" required>
+            <ui-select-match allow-clear="true">
+                <span ng-bind="$select.selected.ProjectClassName"></span>
+            </ui-select-match>
+            <ui-select-choices repeat="item.ProjectClassID as item in (allProjectClassList | filter: $select.search) track by item.ProjectClassID">
+                <span ng-bind="item.ProjectClassName"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>-->
         <!--Phase Codes-->
-        <div ng-show="reportTypeFilter.filterName=='Work Breakdown Structure Admin Report' && selectedProjectClass"
-             class="form-group required" style="padding-left:0;padding-right:0;"
-             ng-class="{ 'has-error' : reportManagerForm.phaseFilter.$error.required}">
+        <!--<div ng-show="reportTypeFilter.filterName=='Work Breakdown Structure Admin Report' && selectedProjectClass"
+         class="form-group required" style="padding-left:0;padding-right:0;"
+         ng-class="{ 'has-error' : reportManagerForm.phaseFilter.$error.required}">
 
-            <label class="control-label">Phase Code </label>
-            <ui-select ng-model="selectedPhase.PhaseID" name="phaseFilter" on-select="selectPhase($item)" required>
-                <ui-select-match allow-clear="true">
-                    <span ng-bind="$select.selected.Code"></span>
-                </ui-select-match>
-                <ui-select-choices repeat="item.PhaseID as item in (currentPhaseList | filter: $select.search) track by item.PhaseID">
-                    <span ng-bind="item.Code"></span>
-                </ui-select-choices>
-            </ui-select>
-        </div>
+        <label class="control-label">Phase Code </label>
+        <ui-select ng-model="selectedPhase.PhaseID" name="phaseFilter" on-select="selectPhase($item)" required>
+            <ui-select-match allow-clear="true">
+                <span ng-bind="$select.selected.Code"></span>
+            </ui-select-match>
+            <ui-select-choices repeat="item.PhaseID as item in (currentPhaseList | filter: $select.search) track by item.PhaseID">
+                <span ng-bind="item.Code"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>-->
 
     </div>
 
     <div class="c-modal-footer">
-        <button type="button" class="btn btn-info w100" data-dismiss="modal" ng-click="goBack('close')">Close</button><!--changes done by shweta 16-7-2020-->
+        <!--<button type="button" class="btn btn-info w100" data-dismiss="modal" ng-click="goBack('close')">Close</button>-->  <!--changes done by shweta 16-7-2020-->
         <button type="button" class="btn btn-info w100" ng-click="generateReport()">Run</button><!--changes done by shweta 16-7-2020-->
     </div>
 </div>
@@ -335,6 +366,19 @@
           handle: ".modal-header"
       });
   });
+
+    $("#fromDate").datepicker();
+    $("#toDate").datepicker();
+	
+	    $("#fromDate").datepicker().
+        on('change', function () {
+            var date = $("#fromDate").datepicker('getDate');
+            var endDate = new Date(date);
+            endDate.setDate(endDate.getDate() + 365);
+            $("#toDate").datepicker('option', { minDate: date, maxDate: endDate });
+        });;
+  
+	
 </script><!DOCTYPE html>
 
 <html>

@@ -115,9 +115,10 @@
                     checkbox: false,
                     new: true
                 });
-
+                $scope.gridApi.core.clearAllFilters();//Nivedita-T on 16/11/2021
                 $timeout(function () {
                     console.log($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
+                    
                     $scope.gridApi.core.scrollTo($scope.gridOptions.data[$scope.gridOptions.data.length - 1], $scope.gridOptions.columnDefs[0]);
                 }, 1);
 
@@ -149,7 +150,7 @@
 
                 }, {
                     field: 'ProjectClassName',
-                    name: 'Service',
+                    name: 'Service*',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
                     editDropdownValueLabel: 'ProjectClassName', //code
                     editDropdownIdLabel: 'ProjectClassName',    //phase
@@ -158,7 +159,7 @@
                     width: 300
                 }, {
                     field: 'PhaseCodeName',
-                    name: 'Subservice',
+                    name: 'Subservice*',
                     editableCellTemplate: 'ui-grid/dropdownEditor',
                     editDropdownValueLabel: 'PhaseCodeName', //code
                     editDropdownIdLabel: 'PhaseCodeName',    //phase
@@ -167,7 +168,7 @@
                     width: 400
                 }, {
                     field: 'Order',
-                    name: 'Order',
+                    name: 'Order*',
                     width: 75,
                     cellClass: 'c-col-Num' //Manasi
 
@@ -257,6 +258,7 @@
                     row.entity.checkbox = false;
                 }
             }
+            
 
             $scope.applicableCheck = function (row, col) {
                 if (row.entity.IsApplicable == false) {
@@ -327,7 +329,12 @@
                         return;
                     }
                     //New Item
-                    if ($scope.projectClassPhaseCollection[i].new === true) {
+                    if ($scope.listToDelete != undefined) {
+                        if ($scope.listToDelete.length > 0) {
+
+                        }
+                    }
+                    else if ($scope.projectClassPhaseCollection[i].new === true) {
                         //console.log(value);
                         isReload = true;
                         console.log("#selectOrg");
@@ -343,6 +350,7 @@
                         }
                         console.log(dataObj);
                         listToSave.push(dataObj);
+                        $scope.projectClassPhaseCollection[i].new = false;
                     }
                     else {
                         isChanged = false;
@@ -427,7 +435,8 @@
                             dhtmlx.alert('No changes to be saved.');
                         }
 
-                        //$state.reload();
+                        $state.reload();
+                        
                         ServiceToSubserviceMapping.get({}, function (projectClassPhaseData) {
                             $scope.checkList = [];
                             $scope.projectClassPhaseCollection = projectClassPhaseData.result;
@@ -469,6 +478,7 @@
                 var listToSave = [];
                 var selectedRow = false;
                 $scope.listToDelete = [];
+                
                 var newList = [];
                 angular.forEach($scope.projectClassPhaseCollection, function (item) {
                     if (item.checkbox == true) {

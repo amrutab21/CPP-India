@@ -15,9 +15,24 @@ angular.module('cpp.services').
                 return $resource(serviceBasePath + "Register/Document/:docIDs");
             },
 
+            getWarrantyByProgramId: function (programId) {
+                return $resource(serviceBasePath + "contractWarranty/getContractWarranty/:programId");
+            },
+
+            getNoticeByProgramId: function (programId) {
+                return $resource(serviceBasePath + "prelimnaryNotice/getPrelimnaryNotice/:programId");
+            },
+
+            getInsuranceByProgramId: function (programId) {
+                return $resource(serviceBasePath + "contractInsurance/getContractInsurance/:programId");
+            },
+
             //====================================== Created By Jignesh 28 - 10 - 2020 =======================================
             getModificationByProgramId: function (programId) {
                 return $resource(serviceBasePath + "contractModification/getContractModificationData/:programId");
+            },
+            getModificationByModificationId: function (modificationId) {
+                return $resource(serviceBasePath + "contractModification/getContractModificationData/null/:modificationId");
             }
             //============================================================================================================
 

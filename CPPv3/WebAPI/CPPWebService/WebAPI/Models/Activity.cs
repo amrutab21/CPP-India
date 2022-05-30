@@ -75,6 +75,11 @@ namespace WebAPI.Models
 
         public String ActualBudget { get; set; }    //Swapnil 24-11-2020
 
+        //Nivedita 10022022
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
+
         //[ForeignKey("EmployeeID")]
         //public virtual Employee Employee { get; set; }
         //public CostFTE(String id, String st_date, String end_date, String pos, String val, String rate, String hours, String cost)
@@ -89,11 +94,19 @@ namespace WebAPI.Models
         {
             List<CostFTE> CostLineItemList = new List<CostFTE>();
             var ctx = new CPPDbContext();
-            CostLineItemList = ctx.CostFte.Where(z=>z.CostLineItemID == CostLineItemID).ToList();
+            CostLineItemList = ctx.CostFte.Where(z=>z.CostLineItemID == CostLineItemID && z.IsDeleted==false).ToList();
             return CostLineItemList;
         }
-        
-         public static void updateIsExportedFlag(int Id)
+
+        public static List<CostFTE> getCostLineItemForInsperity(string CostLineItemID)
+        {
+            List<CostFTE> CostLineItemList = new List<CostFTE>();
+            var ctx = new CPPDbContext();
+            CostLineItemList = ctx.CostFte.Where(z => z.CostLineItemID.Contains(CostLineItemID) && z.IsDeleted == false).ToList();
+            return CostLineItemList;
+        }
+
+        public static void updateIsExportedFlag(int Id)
         {
             var ctx = new CPPDbContext();
             ctx.Database.ExecuteSqlCommand("call SpUpdateIsExportedFlag(@Id)",
@@ -114,7 +127,7 @@ namespace WebAPI.Models
 
                     List<CostFTE> MatchedCostList = new List<CostFTE>();
                     var aID = Convert.ToInt16(ActivityID);
-                    Activity act = ctx.Activity.Where(a => a.ActivityID == aID).FirstOrDefault();
+                    Activity act = ctx.Activity.Where(a => a.ActivityID == aID && a.IsDeleted==false).FirstOrDefault();
                     
                     DateTime cutOffDate = DateUtility.getCutOffDate(Granularity);
                     if (TrendNumber == "1000") //Actual, Estimate to completion cost
@@ -198,7 +211,7 @@ namespace WebAPI.Models
                         }
                     }
                     else
-                         MatchedCostList = ctx.CostFte.Where(f => f.ActivityID == aID && f.Granularity == Granularity).OrderBy(x => x.FTEStartDate).ToList();
+                         MatchedCostList = ctx.CostFte.Where(f => f.ActivityID == aID && f.Granularity == Granularity && f.IsDeleted == false).OrderBy(x => x.FTEStartDate).ToList();
                     //Split CostID into ActivityID, RowID, TextBoxID
                     foreach (var MatchedFTECost in MatchedCostList)
                     {
@@ -365,16 +378,16 @@ namespace WebAPI.Models
                 //Update cost_fte in Activity
                 query = "UPDATE activity SET ";
                 query += "FTECost = (SELECT  IFNULL(SUM(FTECost),0) FROM cost_fte where ";
-                query += "ActivityID = " + ActivityID + ")";
-                query += " Where ActivityID = " + ActivityID;
+                query += "ActivityID = @ActivityID AND IsDeleted!=true)";
+                query += " Where ActivityID = @ActivityID AND IsDeleted!=true ";
                 query += " ;\n";
 
 
                 // Update fte_cost  in Trend
                 query += "UPDATE trend SET";
                 query += " PostTrendCost = (SELECT (SUM(IFNULL(act.FTECost,0)) + SUM(IFNULL(act.LumpsumCost,0)) + SUM(IFNULL(act.UnitCost,0)) + SUM(IFNULL(act.PercentageBasisCost,0))) ";
-                query += " FROM activity act Where act.ProjectID = " + ProjectID;
-                query += " AND act.TrendNumber = " + TrendNumber;
+                query += " FROM activity act Where act.ProjectID = @ProjectID AND act.IsDeleted!=true";
+                query += " AND act.TrendNumber = @TrendNumber " ;
                 query += ");\n";
 
 
@@ -382,17 +395,20 @@ namespace WebAPI.Models
                 ////update cost in project
                 query += "UPDATE project SET";
                 query += " CurrentCost = (SELECT * FROM (SELECT trd.PostTrendCost from trend trd, project prj";
-                query += " Where trd.ProjectID = " + ProjectID;
-                query += " And trd.TrendNumber = " + TrendNumber;
-                query += " And trd.ProjectID = prj.ProjectID)tblTmp1),";
+                query += " Where trd.ProjectID = @ProjectID " ;
+                query += " And trd.TrendNumber = @TrendNumber " ;
+                query += " And trd.ProjectID = prj.ProjectID AND trd.IsDeleted!=true)tblTmp1),";
 
                 query += " ForecastCost = (select * from (select IFNULL(sum(trd.postTrendCost),0) from trend trd, project prj";
-                query += " Where trd.ProjectID = " + ProjectID;
+                query += " Where trd.ProjectID = @ProjectID " ;
                 query += " AND trd.TrendStatusID = 3";
-                query += " AND trd.ProjectID = prj.ProjectID)tblTmp2)";
-                query += " Where ProjectID = " + ProjectID;
+                query += " AND trd.ProjectID = prj.ProjectID AND trd.IsDeleted!=true)tblTmp2)";
+                query += " Where ProjectID = @ProjectID " ;
 
                 command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@ActivityID", ActivityID);
+                command.Parameters.AddWithValue("@ProjectID", ProjectID);
+                command.Parameters.AddWithValue("@TrendNumber", TrendNumber);
                 command.ExecuteNonQuery();
 
 
@@ -448,18 +464,18 @@ namespace WebAPI.Models
             if (FTEPosition == "")
             {
               
-                var existingCost = ctx.CostFte.Where(c => c.ActivityID == aId && c.Granularity == Scale).FirstOrDefault();
+                var existingCost = ctx.CostFte.Where(c => c.ActivityID == aId && c.Granularity == Scale && c.IsDeleted==false).FirstOrDefault();
                 FTEPosition = existingCost.FTEPosition;
             }
 
             int pID = Convert.ToInt32(ProjectID);
-            var project = ctx.Project.Where(p => p.ProjectID == pID).FirstOrDefault();
+            var project = ctx.Project.Where(p => p.ProjectID == pID && p.IsDeleted == false).FirstOrDefault();
             var projectClass = ctx.ServiceClass.Where(a => a.ID == project.ProjectClassID).FirstOrDefault();
-            var programElement = ctx.ProgramElement.Include("ProjectClass").Where(pm => pm.ProgramElementID == project.ProgramElementID).FirstOrDefault();
+            var programElement = ctx.ProgramElement.Include("ProjectClass").Where(pm => pm.ProgramElementID == project.ProgramElementID && pm.IsDeleted == false).FirstOrDefault();
             var programElementClass = ctx.ProjectClass.Where(a => a.ProjectClassID == programElement.ProjectClassID).FirstOrDefault();  //Manasi 27-10-2020
-            var program = ctx.Program.Where(p => p.ProgramID == programElement.ProgramID);
+            var program = ctx.Program.Where(p => p.ProgramID == programElement.ProgramID && p.IsDeleted==false);
             var ftePoistion = ctx.FtePosition.Where(f => f.PositionDescription == FTEPosition).FirstOrDefault();
-            var activity = ctx.Activity.Where(a => a.ActivityID == aId).FirstOrDefault();
+            var activity = ctx.Activity.Where(a => a.ActivityID == aId && a.IsDeleted==false).FirstOrDefault();
             var phase = ctx.PhaseCode.Where(a => a.PhaseID == activity.PhaseCode).FirstOrDefault();//phaseCode in Activity object is the fk points to phaseID
             var category = Activity.getActivityCategory(activity);
             ProgramID = (program.FirstOrDefault().ProgramID).ToString();
@@ -510,10 +526,12 @@ namespace WebAPI.Models
 
                     //Check if program exists in system
                     query = "SELECT FTECostID from cost_fte";
-                    query += " WHERE 1=1";
-                    query += " AND FTECostID = '" + FTECostIDList[i] + "'";
-                    query += " And Granularity = '" + Scale + "'";
+                    query += " WHERE 1=1 AND IsDeleted!=true";
+                    query += " AND FTECostID = @FTECostID ";
+                    query += " And Granularity = @Scale ";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@FTECostID", FTECostIDList[i]);
+                    command.Parameters.AddWithValue("@Scale", Scale);
                     using (reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
@@ -530,16 +548,25 @@ namespace WebAPI.Models
 
                                     query = "SELECT FTECostID from cost_fte";
                                     query += " WHERE 1=1";
-                                    query += " AND FTEPosition = '" + FTEPosition + "'";
-                                    query += " And EmployeeID = '" + EmployeeID + "'";
-                                    query += " And ActivityID = '" + ActivityID + "'";
-                                    query += " And (FTEStartDate = '" + FTEStartDateList[i] + "' OR FTEStartDate = '" + FTEStartDateWithTime + "')";
-                                    query += " And (FTEEndDate = '" + FTEEndDateList[i] + "' OR FTEEndDate ='" + FTEEndDateWithTime + "')";
-                                    query += " And FTECostID != '" + FTECostIDList[i] + "'";
-                                    query += " And CostTrackTypeID = '" + CostTrackTypeList[i] + "'";
+                                    query += " AND FTEPosition = @FTEPosition ";
+                                    query += " And EmployeeID = @EmployeeID ";
+                                    query += " And ActivityID = @ActivityID ";
+                                    query += " And (FTEStartDate = @FTEStartDateList OR FTEStartDate = @FTEStartDateWithTime)";
+                                    query += " And (FTEEndDate = @FTEEndDateList OR FTEEndDate =@FTEEndDateWithTime)";
+                                    query += " And FTECostID != @FTECostIDList";
+                                    query += " And CostTrackTypeID = @CostTrackTypeList AND IsDeleted!=true";
                                     duplicateCheckerConn = ConnectionManager.getConnection();
                                     duplicateCheckerConn.Open();
                                     command = new MySqlCommand(query, duplicateCheckerConn);
+                                    command.Parameters.AddWithValue("@FTEPosition", FTEPosition);
+                                    command.Parameters.AddWithValue("@EmployeeID", EmployeeID);
+                                    command.Parameters.AddWithValue("@ActivityID", ActivityID);
+                                    command.Parameters.AddWithValue("@FTEStartDateList", FTEStartDateList[i]);
+                                    command.Parameters.AddWithValue("@FTEStartDateWithTime", FTEStartDateWithTime);
+                                    command.Parameters.AddWithValue("@FTEEndDateList", FTEEndDateList[i]);
+                                    command.Parameters.AddWithValue("@FTEEndDateWithTime", FTEEndDateWithTime);
+                                    command.Parameters.AddWithValue("@FTECostIDList", FTECostIDList[i]);
+                                    command.Parameters.AddWithValue("@CostTrackTypeList", CostTrackTypeList[i]);
                                     using (duplicateCheckReader = command.ExecuteReader())
                                     {
                                         if (duplicateCheckReader.HasRows)
@@ -566,17 +593,26 @@ namespace WebAPI.Models
                                 var FTEEndDateWithTime = DateTime.Parse(FTEEndDateList[i]).ToString(SQL_DATE_FORMAT);
 
                                 query = "SELECT FTECostID from cost_fte";
-                                query += " WHERE 1=1";
-                                query += " AND FTEPosition = '" + FTEPosition + "'";
-                                query += " And EmployeeID = '" + EmployeeID + "'";
-                                query += " And ActivityID = '" + ActivityID + "'";
-                                query += " And FTEStartDate = '" + FTEStartDateList[i] + "'";
-                                query += " And FTEEndDate = '" + FTEEndDateList[i] + "'";
-                                query += " And (FTEStartDate = '" + FTEStartDateList[i] + "' OR FTEStartDate = '" + FTEStartDateWithTime + "')";
-                                query += " And (FTEEndDate = '" + FTEEndDateList[i] + "' OR FTEEndDate ='" + FTEEndDateWithTime + "')";
+                                query += " WHERE 1=1 AND IsDeleted!=true";
+                                query += " AND FTEPosition = @FTEPosition ";
+                                query += " And EmployeeID = @EmployeeID ";
+                                query += " And ActivityID = @ActivityID";
+                                query += " And FTEStartDate = @FTEStartDateList ";
+                                query += " And FTEEndDate = @FTEEndDateList";
+                                query += " And (FTEStartDate = @FTEStartDateList OR FTEStartDate = @FTEStartDateWithTime)";
+                                query += " And (FTEEndDate = @FTEEndDateList OR FTEEndDate =@FTEEndDateWithTime )";
                                 duplicateCheckerConn = ConnectionManager.getConnection();
                                 duplicateCheckerConn.Open();
                                 command = new MySqlCommand(query, duplicateCheckerConn);
+                                command.Parameters.AddWithValue("@FTEPosition", FTEPosition);
+                                command.Parameters.AddWithValue("@EmployeeID", EmployeeID);
+                                command.Parameters.AddWithValue("@ActivityID", ActivityID);
+                                command.Parameters.AddWithValue("@FTEStartDateList", FTEStartDateList[i]);
+                                command.Parameters.AddWithValue("@FTEStartDateWithTime", FTEStartDateWithTime);
+                                command.Parameters.AddWithValue("@FTEEndDateList", FTEEndDateList[i]);
+                                command.Parameters.AddWithValue("@FTEEndDateWithTime", FTEEndDateWithTime);
+                                //command.Parameters.AddWithValue("@FTECostIDList", FTECostIDList[i]);
+                                //command.Parameters.AddWithValue("@CostTrackTypeList", CostTrackTypeList[i]);
                                 using (duplicateCheckReader = command.ExecuteReader())
                                 {
                                     if (duplicateCheckReader.HasRows)
@@ -632,7 +668,7 @@ namespace WebAPI.Models
                         else
                         {
                             String fteId = FTECostIDList[i];
-                            CostFTE fte = ctx.CostFte.Where(a => a.FTECostID == fteId && a.Granularity == Scale).FirstOrDefault();
+                            CostFTE fte = ctx.CostFte.Where(a => a.FTECostID == fteId && a.Granularity == Scale && a.IsDeleted==false).FirstOrDefault();
                             //Determine CostLineItem Number
                              costLineItem = CostLineItemResult.getCostLineItem(projectClass.Code.ToString(), project.ProjectNumber,project.ProjectElementNumber, activity.TrendNumber, phase.ActivityPhaseCode.ToString(),
                                                                         category.CategoryID, category.SubCategoryID, "F", ftePoistionID.ToString(), EmployeeID.ToString(), null, null, null, null, null);
@@ -961,12 +997,13 @@ namespace WebAPI.Models
 
                             //Check if program exists in system
                             string query = "SELECT FTEcostID from cost_fte";
-                            query += " WHERE 1=1";
+                            query += " WHERE 1=1 AND IsDeleted!=true";
                             query += " AND FTECostID = @FTECostID";//'" + FTECostIDList[i] + "'";
-                            query += " And Granularity = '" + Granularity + "'";
+                            query += " And Granularity = @Granularity and IsDeleted=false";
 
                             MySqlCommand command = new MySqlCommand(query, conn);
                             command.Parameters.AddWithValue("@FTECostID", FTECostIDList[i]);
+                            command.Parameters.AddWithValue("@Granularity", Granularity);
                             using (reader = command.ExecuteReader())
                             {
                                 if (reader.HasRows)
@@ -987,34 +1024,51 @@ namespace WebAPI.Models
                                 var tempID = FTECostIDList[i];
                                 if (Convert.ToDateTime(FTEStartDateList[i]) >= Convert.ToDateTime(activityEndDate)) //delete
                                 {
-                                    query = "DELETE FROM cost_fte ";
+                                    //query = "DELETE FROM cost_fte ";
+                                    query = "UPDATE cost_fte SET";
+                                    query += " IsDeleted = @IsDeleted,";
+                                    query += " DeletedBy = '',";
+                                    query += " DeletedDate = @DeletedDate";
                                     query += " WHERE";
                                     query += " FTECostID = @FTECostID";//'" + FTECostIDList[i] + "'";
-                                    query += " And Granularity = '" + Granularity + "'";
+                                    query += " And Granularity = @Granularity";
                                     command = new MySqlCommand(query, conn);
                                     command.Parameters.AddWithValue("@FTECostID", FTECostIDList[i]);
+                                    command.Parameters.AddWithValue("@Granularity", Granularity);
+                                    command.Parameters.AddWithValue("@IsDeleted", 1);
+                                    command.Parameters.AddWithValue("@DeletedDate", DateTime.Now);
                                     command.ExecuteNonQuery();
                                 }
                                 else
                                 {
                                     query = "UPDATE cost_fte SET";
                                     // query += " FTECostID = '" + newFTECostID + "',";
-                                    query += " FTEStartDate = '" + FTEStartDateList[i] + "',";
-                                    query += " FTEEndDate = '" + FTEEndDateList[i] + "',";
-                                    query += " FTEPosition = '" + FTEPosition + "',";
-                                    query += " FTEValue = '" + FTEValueList[i] + "',";
-                                    query += " FTEHourlyRate = '" + FTEHourlyRate + "',";
-                                    query += " FTEHours = '" + FTEHourList[i] + "',";
-                                    query += " FTECost = '" + FTECostList[i] + "',";
-                                    query += " Granularity = '" + Granularity + "',";
-                                    query += " FTEPositionID = " + ftePositionID + ",";
-                                    query += " EmployeeID = " + EmployeeID;
+                                    query += " FTEStartDate = @FTEStartDateList,";
+                                    query += " FTEEndDate = @FTEEndDateList,";
+                                    query += " FTEPosition = @FTEPosition,";
+                                    query += " FTEValue = @FTEValueList,";
+                                    query += " FTEHourlyRate = @FTEHourlyRate,";
+                                    query += " FTEHours = @FTEHourList,";
+                                    query += " FTECost = @FTECostList,";
+                                    query += " Granularity = @Granularity,";
+                                    query += " FTEPositionID = @ftePositionID,";
+                                    query += " EmployeeID = @EmployeeID";
                                     //No need to update costlineItem on update method
                                     query += " WHERE";
                                     query += " FTECostID = @FTECostID";//'" + FTECostIDList[i] + "'";
-                                    query += " And Granularity = '" + Granularity + "'";
+                                    query += " And Granularity = @Granularity";
                                     command = new MySqlCommand(query, conn);
+                                    command.Parameters.AddWithValue("@FTEStartDateList", FTEStartDateList[i]);
+                                    command.Parameters.AddWithValue("@FTEEndDateList", FTEEndDateList[i]);
+                                    command.Parameters.AddWithValue("@FTEPosition", FTEPosition);
+                                    command.Parameters.AddWithValue("@FTEValueList", FTEValueList[i]);
+                                    command.Parameters.AddWithValue("@FTEHourlyRate", FTEHourlyRate);
+                                    command.Parameters.AddWithValue("@FTEHourList", FTEHourList[i]);
+                                    command.Parameters.AddWithValue("@FTECostList", FTECostList[i]);
+                                    command.Parameters.AddWithValue("@ftePositionID", ftePositionID);
+                                    command.Parameters.AddWithValue("@EmployeeID", EmployeeID);
                                     command.Parameters.AddWithValue("@FTECostID", FTECostIDList[i]);
+                                    command.Parameters.AddWithValue("@Granularity", Granularity);
                                     command.ExecuteNonQuery();
                                 }
 
@@ -1041,12 +1095,13 @@ namespace WebAPI.Models
                         {
                             //Check if program exists in system
                             string query = "SELECT FTEcostID from cost_fte";
-                            query += " WHERE 1=1";
+                            query += " WHERE 1=1 AND IsDeleted!=true";
                             query += " AND FTECostID = @FTECostID";//'" + FTECostIDList[i] + "'";
-                            query += " And Granularity = '" + Granularity + "'";
+                            query += " And Granularity = @Granularity And IsDeleted=false";
 
                             MySqlCommand command = new MySqlCommand(query, conn);
                             command.Parameters.AddWithValue("@FTECostID", FTECostIDList[i]);
+                            command.Parameters.AddWithValue("@Granularity", Granularity);
                             using (reader = command.ExecuteReader())
                             {
                                 if (reader.HasRows)
@@ -1088,33 +1143,51 @@ namespace WebAPI.Models
                                 if (NumberOfTextbox >= 0)
                                 {
                                     query = "UPDATE cost_fte SET";
-                                    query += " FTECostID = '" + newFTECostID + "',";
-                                    query += " FTEStartDate = '" + FTEStartDateList[i] + "',";
-                                    query += " FTEEndDate = '" + FTEEndDateList[i] + "',";
-                                    query += " FTEPosition = '" + FTEPosition + "',";
-                                    query += " FTEValue = '" + FTEValueList[i] + "',";
-                                    query += " FTEHourlyRate = '" + FTEHourlyRate + "',";
-                                    query += " FTEHours = '" + FTEHourList[i] + "',";
-                                    query += " FTECost = '" + FTECostList[i] + "',";
-                                    query += " Granularity = '" + Granularity + "',";
-                                    query += " FTEPositionID = " + ftePositionID + ",";
-                                    query += " EmployeeID = " + EmployeeID;
+                                    query += " FTECostID = @newFTECostID,";
+                                    query += " FTEStartDate = @FTEStartDateList,";
+                                    query += " FTEEndDate = @FTEEndDateList,";
+                                    query += " FTEPosition = @FTEPosition,";
+                                    query += " FTEValue = @FTEValueList,";
+                                    query += " FTEHourlyRate = @FTEHourlyRate,";
+                                    query += " FTEHours = @FTEHourList,";
+                                    query += " FTECost = @FTECostList,";
+                                    query += " Granularity = @Granularity,";
+                                    query += " FTEPositionID = @ftePositionID,";
+                                    query += " EmployeeID = @EmployeeID ";
                                     query += " WHERE";
                                     query += " FTECostID = @FTECostID";//'" + FTECostIDList[i] + "'";
-                                    query += " And Granularity = '" + Granularity + "'";
+                                    query += " And Granularity = @Granularity";
                                     command = new MySqlCommand(query, conn);
+                                    command.Parameters.AddWithValue("@newFTECostID", newFTECostID);
+                                    command.Parameters.AddWithValue("@FTEStartDateList", FTEStartDateList[i]);
+                                    command.Parameters.AddWithValue("@FTEEndDateList", FTEEndDateList[i]);
+                                    command.Parameters.AddWithValue("@FTEPosition", FTEPosition);
+                                    command.Parameters.AddWithValue("@FTEValueList", FTEValueList[i]);
+                                    command.Parameters.AddWithValue("@FTEHourlyRate", FTEHourlyRate);
+                                    command.Parameters.AddWithValue("@FTEHourList", FTEHourList[i]);
+                                    command.Parameters.AddWithValue("@FTECostList", FTECostList[i]);
+                                    command.Parameters.AddWithValue("@ftePositionID", ftePositionID);
+                                    command.Parameters.AddWithValue("@EmployeeID", EmployeeID);
                                     command.Parameters.AddWithValue("@FTECostID", FTECostIDList[i]);
+                                    command.Parameters.AddWithValue("@Granularity", Granularity);
                                     command.ExecuteNonQuery();
                                 }
                                 //}
                                 else if (NumberOfTextbox < 0)
                                 {
-                                    query = "DELETE FROM cost_fte ";
+                                    //query = "DELETE FROM cost_fte ";
+                                    query = "UPDATE cost_fte SET";
+                                    query += " IsDeleted = @IsDeleted,";
+                                    query += " DeletedBy = '',";
+                                    query += " DeletedDate = @DeletedDate";
                                     query += " WHERE";
                                     query += " FTECostID = @FTECostID";//'" + FTECostIDList[i] + "'";
-                                    query += " And Granularity = '" + Granularity + "'";
+                                    query += " And Granularity = @Granularity";
                                     command = new MySqlCommand(query, conn);
                                     command.Parameters.AddWithValue("@FTECostID", FTECostIDList[i]);
+                                    command.Parameters.AddWithValue("@Granularity", Granularity);
+                                    command.Parameters.AddWithValue("@IsDeleted", 1);
+                                    command.Parameters.AddWithValue("@DeletedDate", DateTime.Now);
                                     command.ExecuteNonQuery();
                                 }
                             }
@@ -1187,10 +1260,12 @@ namespace WebAPI.Models
                     conn.Open();
                     //Check if program exists in system
                     String query = "SELECT FTEcostID from cost_fte";
-                    query += " WHERE 1=1";
-                    query += " AND FTECostID = '" + FTECostIDList[i] + "'";
-                    query += " And Granularity = '" + Granularity + "'";
+                    query += " WHERE 1=1 AND IsDeleted!=true";
+                    query += " AND FTECostID = @FTECostIDList";
+                    query += " And Granularity = @Granularity And IsDeleted=false";
                     MySqlCommand command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@FTECostIDList", FTECostIDList[i]);
+                    command.Parameters.AddWithValue("@Granularity", Granularity);
                     using (reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
@@ -1347,6 +1422,10 @@ namespace WebAPI.Models
         public String CostLineItemID { get; set; }
         public String OriginalCost { get; set; }
         public String ActualBudget { get; set; } // swapnil 24-11-2020
+        //Nivedita 10022022
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
 
         [ForeignKey("SubcontractorID")]
         public virtual Subcontractor Subcontractor { get; set; }
@@ -1590,13 +1669,13 @@ namespace WebAPI.Models
             String lineNumber = "";
             var ctx = new CPPDbContext();
             int pID = Convert.ToInt32(ProjectID);
-            var project = ctx.Project.Where(p => p.ProjectID == pID).FirstOrDefault();
+            var project = ctx.Project.Where(p => p.ProjectID == pID && p.IsDeleted==false).FirstOrDefault();
             var projectClass = ctx.ServiceClass.Where(a => a.ID == project.ProjectClassID).FirstOrDefault();
-            var programElement = ctx.ProgramElement.Include("ProjectClass").Where(pm => pm.ProgramElementID == project.ProgramElementID).FirstOrDefault();
+            var programElement = ctx.ProgramElement.Include("ProjectClass").Where(pm => pm.ProgramElementID == project.ProgramElementID && pm.IsDeleted==false).FirstOrDefault();
             var programElementClass = ctx.ProjectClass.Where(a => a.ProjectClassID == programElement.ProjectClassID).FirstOrDefault();  //Manasi 27-10-2020
-            var program = ctx.Program.Where(p => p.ProgramID == programElement.ProgramID);
+            var program = ctx.Program.Where(p => p.ProgramID == programElement.ProgramID && p.IsDeleted==false);
             int aID = int.Parse(ActivityID);
-            var activity = ctx.Activity.Where(a => a.ActivityID == aID).FirstOrDefault();
+            var activity = ctx.Activity.Where(a => a.ActivityID == aID && a.IsDeleted==false).FirstOrDefault();
             var phase = ctx.PhaseCode.Where(a => a.PhaseID == activity.PhaseCode).FirstOrDefault();
             var category = Activity.getActivityCategory(activity);
             var actualCostId = 0;
@@ -1667,10 +1746,12 @@ namespace WebAPI.Models
 
                     //Check if program exists in system
                     query = "SELECT LumpsumCostID from cost_lumpsum";
-                    query += " WHERE 1=1";
-                    query += " AND LumpsumCostID = '" + LumpsumCostIDList[i] + "'";
-                    query += " And Granularity = '" + Scale + "'";
+                    query += " WHERE 1=1 ";
+                    query += " AND LumpsumCostID = @LumpsumCostIDList";
+                    query += " And Granularity = @Scale and IsDeleted=false";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@LumpsumCostIDList", LumpsumCostIDList[i]);
+                    command.Parameters.AddWithValue("@Scale", Scale);
                     using (reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
@@ -1687,16 +1768,25 @@ namespace WebAPI.Models
 
                                     query = "SELECT LumpsumCostID from cost_lumpsum";
                                     query += " WHERE 1=1";
-                                    query += " AND SubcontractorID = '" + SubcontractorID + "'";
-                                    query += " And SubcontractorTypeID = '" + SubcontractorTypeID + "'";
-                                    query += " And ActivityID = '" + ActivityID + "'";
-                                    query += " And (LumpsumCostStartDate = '" + LumpsumStartDateList[i] + "' OR LumpsumCostStartDate = '" + LumpsumStartDateWithTime + "')";
-                                    query += " And (LumpsumCostEndDate = '" + LumpsumEndDateList[i] + "' OR LumpsumCostEndDate ='" + LumpsumEndDateWithTime + "')";
-                                    query += " And LumpsumCostID != '" + LumpsumCostIDList[i] + "'";
-                                    query += " And CostTrackTypeID = '" + CostTrackTypeList[i] + "'";
+                                    query += " AND SubcontractorID = @SubcontractorID";
+                                    query += " And SubcontractorTypeID = @SubcontractorTypeID";
+                                    query += " And ActivityID = @ActivityID";
+                                    query += " And (LumpsumCostStartDate = @LumpsumStartDateList OR LumpsumCostStartDate = @LumpsumStartDateWithTime)";
+                                    query += " And (LumpsumCostEndDate = @LumpsumEndDateList OR LumpsumCostEndDate =@LumpsumEndDateWithTime)";
+                                    query += " And LumpsumCostID != @LumpsumCostIDList";
+                                    query += " And CostTrackTypeID = @CostTrackTypeList and IsDeleted=false";
                                     duplicateCheckerConn = ConnectionManager.getConnection();
                                     duplicateCheckerConn.Open();
                                     command = new MySqlCommand(query, duplicateCheckerConn);
+                                    command.Parameters.AddWithValue("@SubcontractorID", SubcontractorID);
+                                    command.Parameters.AddWithValue("@SubcontractorTypeID", SubcontractorTypeID);
+                                    command.Parameters.AddWithValue("@ActivityID", ActivityID);
+                                    command.Parameters.AddWithValue("@LumpsumStartDateList", LumpsumStartDateList[i]);
+                                    command.Parameters.AddWithValue("@LumpsumStartDateWithTime", LumpsumStartDateWithTime);
+                                    command.Parameters.AddWithValue("@LumpsumEndDateList", LumpsumEndDateList[i]);
+                                    command.Parameters.AddWithValue("@LumpsumEndDateWithTime", LumpsumEndDateWithTime);
+                                    command.Parameters.AddWithValue("@LumpsumCostIDList", LumpsumCostIDList[i]);
+                                    command.Parameters.AddWithValue("@CostTrackTypeList", CostTrackTypeList[i]);
                                     using (duplicateCheckReader = command.ExecuteReader())
                                     {
                                         if (duplicateCheckReader.HasRows)
@@ -1724,14 +1814,22 @@ namespace WebAPI.Models
 
                                 query = "SELECT LumpsumCostID from cost_lumpsum";
                                 query += " WHERE 1=1";
-                                query += " AND SubcontractorID = '" + SubcontractorID + "'";
-                                query += " And SubcontractorTypeID = '" + SubcontractorTypeID + "'";
-                                query += " And ActivityID = '" + ActivityID + "'";
-                                query += " And (LumpsumCostStartDate = '" + LumpsumStartDateList[i] + "' OR LumpsumCostStartDate = '" + LumpsumStartDateWithTime + "')";
-                                query += " And (LumpsumCostEndDate = '" + LumpsumEndDateList[i] + "' OR LumpsumCostEndDate ='" + LumpsumEndDateWithTime + "')";
+                                query += " AND SubcontractorID = @SubcontractorID";
+                                query += " And SubcontractorTypeID = @SubcontractorTypeID";
+                                query += " And ActivityID = @ActivityID";
+                                query += " And (LumpsumCostStartDate = @LumpsumStartDateList OR LumpsumCostStartDate = @LumpsumStartDateWithTime)";
+                                query += " And (LumpsumCostEndDate = @LumpsumEndDateList OR LumpsumCostEndDate =@LumpsumEndDateWithTime) and IsDeleted=false";
                                 duplicateCheckerConn = ConnectionManager.getConnection();
                                 duplicateCheckerConn.Open();
                                 command = new MySqlCommand(query, duplicateCheckerConn);
+                                command.Parameters.AddWithValue("@SubcontractorID", SubcontractorID);
+                                command.Parameters.AddWithValue("@SubcontractorTypeID", SubcontractorTypeID);
+                                command.Parameters.AddWithValue("@ActivityID", ActivityID);
+                                command.Parameters.AddWithValue("@LumpsumStartDateList", LumpsumStartDateList[i]);
+                                command.Parameters.AddWithValue("@LumpsumStartDateWithTime", LumpsumStartDateWithTime);
+                                command.Parameters.AddWithValue("@LumpsumEndDateList", LumpsumEndDateList[i]);
+                                command.Parameters.AddWithValue("@LumpsumEndDateWithTime", LumpsumEndDateWithTime);
+                                
                                 using (duplicateCheckReader = command.ExecuteReader())
                                 {
                                     if (duplicateCheckReader.HasRows)
@@ -2063,13 +2161,13 @@ namespace WebAPI.Models
                     //adjust last value
                     var adjustedValue = total - totalToAdjust;
                     //lumpCost.LumpsumCost = adjustedValue.ToString("F");
-                    lumpCost.LumpsumCost = Convert.ToDouble(adjustedValue) > 0 ? adjustedValue.ToString("F") : "0.00";   //Manasi 31-08-2020
+                    lumpCost.LumpsumCost = Convert.ToDouble(adjustedValue) > 0 ? adjustedValue.ToString("F8") : "0.00";   //Manasi 31-08-2020
                     lumpCost.LumpsumCostStartDate = lumpCost.LumpsumCostStartDate;
                     lumpCost.LumpsumCostEndDate = lumpCost.LumpsumCostEndDate;
                     lumpCost.CostLineItemID = lumpCost.CostLineItemID;
 
                     var newCtx = new CPPDbContext();
-                    var currentCost = newCtx.CostLumpsum.Where(a => a.LumpsumCostID == lumpCost.LumpsumCostID && a.Granularity == scale).FirstOrDefault();
+                    var currentCost = newCtx.CostLumpsum.Where(a => a.LumpsumCostID == lumpCost.LumpsumCostID && a.Granularity == scale && a.IsDeleted==false).FirstOrDefault();
                     currentCost.LumpsumCost = lumpCost.LumpsumCost;
                     
                     newCtx.Entry(currentCost).State = System.Data.Entity.EntityState.Modified;
@@ -2120,7 +2218,7 @@ namespace WebAPI.Models
                             using (var getCtx = new CPPDbContext())
                             {
                                 var costCellID = LumpsumCostIDList[i];
-                                currentCost = getCtx.CostLumpsum.Where(a => a.LumpsumCostID == costCellID && a.Granularity == Scale).FirstOrDefault();
+                                currentCost = getCtx.CostLumpsum.Where(a => a.LumpsumCostID == costCellID && a.Granularity == Scale && a.IsDeleted==false).FirstOrDefault();
                                 if (currentCost != null)
                                     OKForUpdate = true;
                                 else
@@ -2172,7 +2270,7 @@ namespace WebAPI.Models
                             using (var getCtx = new CPPDbContext())
                             {
                                 var costCellID = LumpsumCostIDList[i];
-                                currentCost = getCtx.CostLumpsum.Where(a => a.LumpsumCostID == costCellID).FirstOrDefault();
+                                currentCost = getCtx.CostLumpsum.Where(a => a.LumpsumCostID == costCellID && a.IsDeleted==false).FirstOrDefault();
                                 if (currentCost != null)
                                     OKForUpdate = true;
                                 else
@@ -2316,9 +2414,11 @@ namespace WebAPI.Models
                     //Check if program exists in system
                     String query = "SELECT LumpsumCostID from cost_lumpsum";
                     query += " WHERE 1=1";
-                    query += " AND LumpsumCostID = '" + LumpsumCostIDList[i] + "'";
-                    query += " AND Granularity = '" + Scale + "'";
+                    query += " AND LumpsumCostID = @LumpsumCostIDList";
+                    query += " AND Granularity = @Scale and IsDeleted=false";
                     MySqlCommand command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@LumpsumCostIDList", LumpsumCostIDList[i]);
+                    command.Parameters.AddWithValue("@Scale", Scale);
                     using (reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
@@ -2448,6 +2548,10 @@ namespace WebAPI.Models
         public virtual Activity Activity { get; set; }
         [ForeignKey("ODCTypeID")]
         public virtual ODCType ODCType { get; set;}
+        //Nivedita 10022022
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
         //public String CreatedBy { get; set; }
         //public String LastUpdatedBy { get; set; }
         //public DateTime CreatedDate { get; set; }
@@ -2731,15 +2835,15 @@ namespace WebAPI.Models
             var lineId = ODCCostIDList[0].Split('_')[1];
             var ctx = new CPPDbContext();
             int pID = Convert.ToInt32(ProjectID);
-            var project = ctx.Project.Where(p => p.ProjectID == pID).FirstOrDefault();
+            var project = ctx.Project.Where(p => p.ProjectID == pID && p.IsDeleted==false).FirstOrDefault();
             var projectClass = ctx.ServiceClass.Where(a => a.ID== project.ProjectClassID).FirstOrDefault();
             int aID = Convert.ToInt16(ActivityID);
-            var activity = ctx.Activity.Where(a => a.ActivityID == aID).FirstOrDefault();
+            var activity = ctx.Activity.Where(a => a.ActivityID == aID && a.IsDeleted==false).FirstOrDefault();
             var category = Activity.getActivityCategory(activity);
             var phase = ctx.PhaseCode.Where(a => a.PhaseID == activity.PhaseCode).FirstOrDefault();  //phaseCode in Activity object is the fk points to phaseID
-            var programElement = ctx.ProgramElement.Include("ProjectClass").Where(pm => pm.ProgramElementID == project.ProgramElementID).FirstOrDefault();
+            var programElement = ctx.ProgramElement.Include("ProjectClass").Where(pm => pm.ProgramElementID == project.ProgramElementID && pm.IsDeleted==false).FirstOrDefault();
             var programElementClass = ctx.ProjectClass.Where(a => a.ProjectClassID == programElement.ProjectClassID).FirstOrDefault();  //Manasi 27-10-2020
-            var program = ctx.Program.Where(p => p.ProgramID == programElement.ProgramID);
+            var program = ctx.Program.Where(p => p.ProgramID == programElement.ProgramID && p.IsDeleted==false);
             var unitItem = ctx.ODCType.Where(u => u.ODCTypeName == ODCType).FirstOrDefault();
             if (unitItem != null)
                 odcTypeID = unitItem.ODCTypeID;
@@ -2784,7 +2888,7 @@ namespace WebAPI.Models
 
                     //Check if program exists in system
                     query = "SELECT ODCCostID from cost_odc";
-                    query += " WHERE 1=1";
+                    query += " WHERE 1=1 and IsDeleted=false";
                     query += " AND ODCCostID = '" + ODCCostIDList[i] + "'";
                     query += " And Granularity = '" + Scale + "'";
                     command = new MySqlCommand(query, conn);
@@ -2804,7 +2908,7 @@ namespace WebAPI.Models
                                     var ODCEndDateWithTime = DateTime.Parse(ODCEndDateList[i]).ToString(SQL_DATE_FORMAT);
 
                                     query = "SELECT ODCCostID from cost_odc";
-                                    query += " WHERE 1=1";
+                                    query += " WHERE 1=1 and IsDeleted=false";
                                     query += " And ODCTypeID = '" + odcTypeTemp.ODCTypeID + "'";
                                     query += " And ActivityID = '" + ActivityID + "'";
                                     query += " And (ODCStartDate = '" + ODCStartDateList[i] + "' OR ODCStartDate = '" + ODCStartDateWithTime + "')";
@@ -2842,7 +2946,7 @@ namespace WebAPI.Models
                                 var ODCEndDateWithTime = DateTime.Parse(ODCEndDateList[i]).ToString(SQL_DATE_FORMAT);
 
                                 query = "SELECT ODCCostID from cost_odc";
-                                query += " WHERE 1=1";
+                                query += " WHERE 1=1 and IsDeleted=false";
                                 query += " And ODCTypeID = '" + odcTypeTemp.ODCTypeID + "'";
                                 query += " And ActivityID = '" + ActivityID + "'";
                                 query += " And (ODCStartDate = '" + ODCStartDateList[i] + "' OR ODCStartDate = '" + ODCStartDateWithTime + "')";
@@ -2905,7 +3009,7 @@ namespace WebAPI.Models
                         {
 
                             String odcID = ODCCostIDList[i];
-                            CostODC odc = ctx.CostODC.Where(a => a.ODCCostID == odcID && a.Granularity == Scale).FirstOrDefault();
+                            CostODC odc = ctx.CostODC.Where(a => a.ODCCostID == odcID && a.Granularity == Scale && a.IsDeleted==false).FirstOrDefault();
                             //CostLineItemResult costLineItem = CostLineItemResult.getCostLineItem(projectClass.Code.ToString(), project.ProjectNumber,project.ProjectElementNumber, activity.TrendNumber, phase.ActivityPhaseCode.ToString(),
                             //                                          category.CategoryID, category.SubCategoryID, "ODC", null, null, odcTypeID.ToString(), null, null, null, null);
                             string lineItem = null;
@@ -3139,8 +3243,9 @@ namespace WebAPI.Models
                 //costList = ctx.CostUnit.Where(l => l.ActivityID == aId && l.Granularity == "week").ToList();
                 costList = getCost.getODCCostByCostID(Convert.ToInt16(lineId), "week", aId);
                 totalQuantity = costList.Sum(a => Convert.ToDouble(a.ODCCost));
-                if (costList.Count != 0)
-                    adjustLastValue(ActivityID, "week", costList, ctx, totalQuantity);
+                //Nivedita 03-05-2022
+               // if (costList.Count != 0)
+                    //adjustLastValue(ActivityID, "week", costList, ctx, totalQuantity);
             }
 
             update_result += "";
@@ -3158,11 +3263,13 @@ namespace WebAPI.Models
                     {
                         //adjust last value
                         var adjustedValue = totalQuantity - totalToAdjust;
-                        adjustedValue = Convert.ToDouble(adjustedValue.ToString("F"));
-                        cost.ODCCost = adjustedValue.ToString("F");
-                        cost.ODCQuantity = adjustedValue.ToString("F");
+                        adjustedValue = Convert.ToDouble(adjustedValue.ToString("F8"));
+                        
+                        cost.ODCCost = adjustedValue.ToString("F8");
+                        
+                        cost.ODCQuantity = adjustedValue.ToString("F8");
                         var newCtx = new CPPDbContext();
-                        var currentCost = newCtx.CostODC.Where(a => a.ODCCostID == cost.ODCCostID && a.Granularity == scale).FirstOrDefault();
+                        var currentCost = newCtx.CostODC.Where(a => a.ODCCostID == cost.ODCCostID && a.Granularity == scale && a.IsDeleted==false).FirstOrDefault();
                         currentCost.ODCCost = cost.ODCCost;
                         currentCost.ODCQuantity = cost.ODCQuantity;
                         newCtx.Entry(currentCost).State = System.Data.Entity.EntityState.Modified;
@@ -3240,7 +3347,7 @@ namespace WebAPI.Models
                         var costCellID = ODCCostIDList[i];
                         using (var getCtx = new CPPDbContext())
                         {
-                            currentCost = getCtx.CostODC.Where(a => a.ODCCostID == costCellID && a.Granularity == Scale).FirstOrDefault();
+                            currentCost = getCtx.CostODC.Where(a => a.ODCCostID == costCellID && a.Granularity == Scale && a.IsDeleted==false).FirstOrDefault();
 
                             if (currentCost != null)
                                 OKForUpdate = true;
@@ -3351,7 +3458,7 @@ namespace WebAPI.Models
                         var costCellID = ODCCostIDList[i];
                         using (var getCtx = new CPPDbContext())
                         {
-                            currentCost = getCtx.CostODC.Where(a => a.ODCCostID == costCellID && a.Granularity == Scale).FirstOrDefault();
+                            currentCost = getCtx.CostODC.Where(a => a.ODCCostID == costCellID && a.Granularity == Scale && a.IsDeleted==false).FirstOrDefault();
 
                             if (currentCost != null)
                                 OKForUpdate = true;
@@ -3472,8 +3579,9 @@ namespace WebAPI.Models
                 //costList = ctx.CostODC.Where(l => l.ActivityID == aId && l.Granularity == "week").ToList();
                 costList = getCost.getODCCostByCostID(Convert.ToInt16(lineId), "week", aId);
                 totalQuantity = costList.Sum(a => Convert.ToDouble(a.ODCCost));
-                if (costList.Count != 0)
-                    adjustLastValue(ActivityID, "week", costList, ctx, totalQuantity);
+                //Nivedita 03-05-2022
+                //if (costList.Count != 0)
+                //    adjustLastValue(ActivityID, "week", costList, ctx, totalQuantity);
             }
 
 
@@ -3511,7 +3619,7 @@ namespace WebAPI.Models
                     var costCellID = ODCCostIDList[i];
                     using (var getCtx = new CPPDbContext())
                     {
-                        currentCost = getCtx.CostODC.Where(a => a.ODCCostID == costCellID && a.Granularity == Scale).FirstOrDefault();
+                        currentCost = getCtx.CostODC.Where(a => a.ODCCostID == costCellID && a.Granularity == Scale && a.IsDeleted==false).FirstOrDefault();
                         if (currentCost != null)
                             OKForUpdate = true;
                         else
@@ -3582,8 +3690,9 @@ namespace WebAPI.Models
                 //costList = ctx.CostODC.Where(l => l.ActivityID == aId && l.Granularity == "week").ToList();
                 costList = getCost.getODCCostByCostID(Convert.ToInt16(lineId), "week", aId);
                 totalQuantity = costList.Sum(a => Convert.ToDouble(a.ODCCost));
-                if (costList.Count != 0)
-                    adjustLastValue(ActivityID, "week", costList, ctx, totalQuantity);
+                //Nivedita 03-05-2022
+                //if (costList.Count != 0)
+                //    adjustLastValue(ActivityID, "week", costList, ctx, totalQuantity);
             }
 
 
@@ -3646,6 +3755,11 @@ namespace WebAPI.Models
         public virtual UnitType UnitTypes { get; set; }
 
         public static String SQL_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+        //Nivedita 10022022
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
         //[ForeignKey("MaterialID")]
         //public virtual Material Material { get; set; }
         //public CostUnit(String id, String st_date, String end_date, String desc, String qty, String price, String cost, String type)
@@ -3667,7 +3781,7 @@ namespace WebAPI.Models
                     List<CostUnit> MatchedUnitCostList = new List<CostUnit>();
                     var aID = Convert.ToInt16(ActivityID);
                     DateTime cutOffDate = DateUtility.getCutOffDate(Granularity);
-                    Activity act = ctx.Activity.Where(a => a.ActivityID == aID).FirstOrDefault();
+                    Activity act = ctx.Activity.Where(a => a.ActivityID == aID && a.IsDeleted==false).FirstOrDefault();
                     if (TrendNumber == "1000") //Actual, Estimate to completion cost
                         MatchedUnitCostList = ctx.Database.SqlQuery<CostUnit>("call getActualEtcCost(@ProjectID, @CutOffDate, @CostType, @Granularity,@MainCategory, @SubCategory,@PhaseCode)",
                                                           new MySql.Data.MySqlClient.MySqlParameter("@ProjectID", act.ProjectID),
@@ -3749,7 +3863,7 @@ namespace WebAPI.Models
                     }
 
                     else
-                        MatchedUnitCostList = ctx.CostUnit.Where(u => u.ActivityID == aID && u.Granularity == Granularity).ToList();
+                        MatchedUnitCostList = ctx.CostUnit.Where(u => u.ActivityID == aID && u.Granularity == Granularity && u.IsDeleted==false) .ToList();
                     foreach (var MatchedUnitCost in MatchedUnitCostList)
                     {
                         //Split CostID into ActivityID, RowID, TextBoxID
@@ -3893,13 +4007,13 @@ namespace WebAPI.Models
             var lineId = UnitCostIDList[0].Split('_')[1];
             var ctx = new CPPDbContext();
             int pID = Convert.ToInt32(ProjectID);
-            var project = ctx.Project.Where(p => p.ProjectID == pID).FirstOrDefault();
-            var projectClass = ctx.ServiceClass.Where(a => a.ID== project.ProjectClassID).FirstOrDefault();
-            var programElement = ctx.ProgramElement.Include("ProjectClass").Where(pm => pm.ProgramElementID == project.ProgramElementID).FirstOrDefault();
-            var programElementClass = ctx.ProjectClass.Where(a => a.ProjectClassID == programElement.ProjectClassID).FirstOrDefault();  //Manasi 27-10-2020
-            var program = ctx.Program.Where(p => p.ProgramID == programElement.ProgramID);
+            var project = ctx.Project.Where(p => p.ProjectID == pID && p.IsDeleted == false).FirstOrDefault();
+            var projectClass = ctx.ServiceClass.Where(a => a.ID== project.ProjectClassID ).FirstOrDefault();
+            var programElement = ctx.ProgramElement.Include("ProjectClass").Where(pm => pm.ProgramElementID == project.ProgramElementID && pm.IsDeleted == false).FirstOrDefault();
+            var programElementClass = ctx.ProjectClass.Where(a => a.ProjectClassID == programElement.ProjectClassID ).FirstOrDefault();  //Manasi 27-10-2020
+            var program = ctx.Program.Where(p => p.ProgramID == programElement.ProgramID && p.IsDeleted==false);
             int aID = Convert.ToInt16(ActivityID);
-            var activity = ctx.Activity.Where(a => a.ActivityID == aID).FirstOrDefault();
+            var activity = ctx.Activity.Where(a => a.ActivityID == aID && a.IsDeleted==false).FirstOrDefault();
             var phase = ctx.PhaseCode.Where(a => a.PhaseID == activity.PhaseCode).FirstOrDefault();
             ActivityCategory category = Activity.getActivityCategory(activity);
             var unitItem = ctx.UnitType.Where(u => u.UnitName == UnitType).FirstOrDefault();
@@ -3946,10 +4060,12 @@ namespace WebAPI.Models
 
                     //Check if program exists in system
                     query = "SELECT UnitCostID from cost_unitcost";
-                    query += " WHERE 1=1";
-                    query += " AND UnitCostID = '" + UnitCostIDList[i] + "'";
-                    query += " And Granularity = '" + Scale + "'";
+                    query += " WHERE 1=1 and IsDeleted=false";
+                    query += " AND UnitCostID = @UnitCostID";
+                    query += " And Granularity = @Scale";
                     command = new MySqlCommand(query, conn);
+                    command.Parameters.AddWithValue("@UnitCostID", UnitCostIDList[i]);
+                    command.Parameters.AddWithValue("@Scale", Scale);
                     using (reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
@@ -3964,17 +4080,26 @@ namespace WebAPI.Models
                                     var UnitEndDateWithTime = DateTime.Parse(UnitEndDateList[i]).ToString(SQL_DATE_FORMAT);
 
                                     query = "SELECT UnitCostID from cost_unitcost";
-                                    query += " WHERE 1=1";
-                                    query += " AND MaterialCategoryID = '" + MaterialCategoryID + "'";
-                                    query += " And MaterialID = '" + MaterialID + "'";
-                                    query += " And ActivityID = '" + ActivityID + "'";
-                                    query += " And (UnitCostStartDate = '" + UnitStartDateList[i] + "' OR UnitCostStartDate = '" + UnitStartDateWithTime + "')";
-                                    query += " And (UnitCostEndDate = '" + UnitEndDateList[i] + "' OR UnitCostEndDate ='" + UnitEndDateWithTime + "')";
-                                    query += " And UnitCostID != '" + UnitCostIDList[i] + "'";
-                                    query += " And CostTrackTypeID = '" + CostTrackTypeList[i] + "'";
+                                    query += " WHERE 1=1 and IsDeleted=false";
+                                    query += " AND MaterialCategoryID = @MaterialCategoryID";
+                                    query += " And MaterialID = @MaterialID";
+                                    query += " And ActivityID = @ActivityID";
+                                    query += " And (UnitCostStartDate = @UnitStartDateList OR UnitCostStartDate = @UnitStartDateWithTime)";
+                                    query += " And (UnitCostEndDate = @UnitEndDateList OR UnitCostEndDate =@UnitEndDateWithTime)";
+                                    query += " And UnitCostID != @UnitCostIDList";
+                                    query += " And CostTrackTypeID = @CostTrackTypeList";
                                     duplicateCheckerConn = ConnectionManager.getConnection();
                                     duplicateCheckerConn.Open();
                                     command = new MySqlCommand(query, duplicateCheckerConn);
+                                    command.Parameters.AddWithValue("@MaterialCategoryID", MaterialCategoryID);
+                                    command.Parameters.AddWithValue("@MaterialID", MaterialID);
+                                    command.Parameters.AddWithValue("@ActivityID", ActivityID);
+                                    command.Parameters.AddWithValue("@UnitStartDateList", UnitStartDateList[i]);
+                                    command.Parameters.AddWithValue("@UnitStartDateWithTime", UnitStartDateWithTime);
+                                    command.Parameters.AddWithValue("@UnitEndDateList", UnitEndDateList[i]);
+                                    command.Parameters.AddWithValue("@UnitEndDateWithTime", UnitEndDateWithTime);
+                                    command.Parameters.AddWithValue("@UnitCostIDList", UnitCostIDList[i]);
+                                    command.Parameters.AddWithValue("@CostTrackTypeList", CostTrackTypeList[i]);
                                     using (duplicateCheckReader = command.ExecuteReader())
                                     {
                                         if (duplicateCheckReader.HasRows)
@@ -4001,15 +4126,22 @@ namespace WebAPI.Models
                                 var UnitEndDateWithTime = DateTime.Parse(UnitEndDateList[i]).ToString(SQL_DATE_FORMAT);
 
                                 query = "SELECT UnitCostID from cost_unitcost";
-                                query += " WHERE 1=1";
-                                query += " AND MaterialCategoryID = '" + MaterialCategoryID + "'";
-                                query += " And MaterialID = '" + MaterialID + "'";
-                                query += " And ActivityID = '" + ActivityID + "'";
-                                query += " And (UnitCostStartDate = '" + UnitStartDateList[i] + "' OR UnitCostStartDate = '" + UnitStartDateWithTime + "')";
-                                query += " And (UnitCostEndDate = '" + UnitEndDateList[i] + "' OR UnitCostEndDate ='" + UnitEndDateWithTime + "')";
+                                query += " WHERE 1=1 and IsDeleted=false";
+                                query += " AND MaterialCategoryID = @MaterialCategoryID";
+                                query += " And MaterialID = @MaterialID";
+                                query += " And ActivityID = @ActivityID";
+                                query += " And (UnitCostStartDate = @UnitStartDateList OR UnitCostStartDate = @UnitStartDateWithTime)";
+                                query += " And (UnitCostEndDate = @UnitEndDateList OR UnitCostEndDate =@UnitEndDateWithTime)";
                                 duplicateCheckerConn = ConnectionManager.getConnection();
                                 duplicateCheckerConn.Open();
                                 command = new MySqlCommand(query, duplicateCheckerConn);
+                                command.Parameters.AddWithValue("@MaterialCategoryID", MaterialCategoryID);
+                                command.Parameters.AddWithValue("@MaterialID", MaterialID);
+                                command.Parameters.AddWithValue("@ActivityID", ActivityID);
+                                command.Parameters.AddWithValue("@UnitStartDateList", UnitStartDateList[i]);
+                                command.Parameters.AddWithValue("@UnitStartDateWithTime", UnitStartDateWithTime);
+                                command.Parameters.AddWithValue("@UnitEndDateList", UnitEndDateList[i]);
+                                command.Parameters.AddWithValue("@UnitEndDateWithTime", UnitEndDateWithTime);
                                 using (duplicateCheckReader = command.ExecuteReader())
                                 {
                                     if (duplicateCheckReader.HasRows)
@@ -4067,7 +4199,7 @@ namespace WebAPI.Models
                         else
                         {
                             String unitCostID = UnitCostIDList[i];
-                            CostUnit unit = ctx.CostUnit.Where(a => a.UnitCostID == unitCostID && a.Granularity == Scale).FirstOrDefault();
+                            CostUnit unit = ctx.CostUnit.Where(a => a.UnitCostID == unitCostID && a.Granularity == Scale && a.IsDeleted==false).FirstOrDefault();
                              //costLineItem = CostLineItemResult.getCostLineItem(projectClass.Code.ToString(), project.ProjectNumber,project.ProjectElementNumber, activity.TrendNumber, phase.ActivityPhaseCode.ToString(),
                              //                                         category.CategoryID, category.SubCategoryID, "U", null, null, null, MaterialCategoryID.ToString(), MaterialID.ToString(), null, null);
 
@@ -4327,12 +4459,12 @@ namespace WebAPI.Models
                     {
                         //adjust last value
                         var adjustedValue = totalQuantity - totalToAdjust;
-                        adjustedValue = Convert.ToDouble(adjustedValue.ToString("F"));
+                        adjustedValue = Convert.ToDouble(adjustedValue.ToString("F8"));
                         cost.UnitCost = (adjustedValue * Convert.ToDouble(cost.UnitPrice)).ToString("F");
-                        cost.UnitQuantity = adjustedValue.ToString("F");
+                        cost.UnitQuantity = adjustedValue.ToString("F8");
                         
                         var newCtx = new CPPDbContext();
-                        var currentCost = newCtx.CostUnit.Where(a => a.UnitCostID == cost.UnitCostID && a.Granularity == scale).FirstOrDefault();
+                        var currentCost = newCtx.CostUnit.Where(a => a.UnitCostID == cost.UnitCostID && a.Granularity == scale && a.IsDeleted==false).FirstOrDefault();
                         currentCost.UnitCost = cost.UnitCost;
                         currentCost.UnitQuantity = cost.UnitQuantity;
                         currentCost.CostLineItemID = cost.CostLineItemID;
@@ -4402,7 +4534,7 @@ namespace WebAPI.Models
                         {
                             unit = ctx.UnitType.Where(u => u.UnitName == UnitType).FirstOrDefault();
                             var cellCostId = UnitCostIDList[i];
-                            currentCost = ctx.CostUnit.Where(a => a.UnitCostID == cellCostId && a.Granularity == Scale).FirstOrDefault();
+                            currentCost = ctx.CostUnit.Where(a => a.UnitCostID == cellCostId && a.Granularity == Scale && a.IsDeleted==false).FirstOrDefault();
                             if (currentCost != null)
                                 OKForUpdate = true;
                             else
@@ -4458,9 +4590,9 @@ namespace WebAPI.Models
                         var cellCostId = UnitCostIDList[i];
                         using (var ctx = new CPPDbContext())
                         {
-                            unit = ctx.UnitType.Where(u => u.UnitName == UnitType).FirstOrDefault();
+                            unit = ctx.UnitType.Where(u => u.UnitName == UnitType ).FirstOrDefault();
                             
-                            currentCost = ctx.CostUnit.Where(a => a.UnitCostID == cellCostId && a.Granularity == Scale).FirstOrDefault();
+                            currentCost = ctx.CostUnit.Where(a => a.UnitCostID == cellCostId && a.Granularity == Scale && a.IsDeleted==false).FirstOrDefault();
                             if (currentCost != null)
                                 OKForUpdate = true;
                             else
@@ -4725,10 +4857,10 @@ namespace WebAPI.Models
                 query = "select PercentageBasisCostID, ActivityID, PercentageBasisCostStartDate, PercentageBasisCostEndDate, PercentageBasisDescription, PercentageBasisBaseAmount, PercentageBasisPercentageValue, PercentageBasisCost, Granularity from cost_percentagebasis";
                 query += " WHERE 1 = 1";
                 if (ActivityID != "null")
-                    query += " AND ActivityID = " + ActivityID;
+                    query += " AND ActivityID = @ActivityID";
 
                 MySqlCommand command = new MySqlCommand(query, conn);
-
+                command.Parameters.AddWithValue("@ActivityID", ActivityID);
 
                 using (reader = command.ExecuteReader())
                 {
@@ -5010,6 +5142,10 @@ namespace WebAPI.Models
         public Double PercentageBasisCost { get; set; }
         public int OrganizationID { get; set; }
         public int BudgetID { get; set; }
+        //Nivedita 10022022
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
 
         //Navigation properties
         [ForeignKey("BudgetID")]
@@ -5281,7 +5417,7 @@ namespace WebAPI.Models
                         //------------Manasi 29-07-2020-----------------------------
                         if (ActivityID != "null")
                         {
-                            MatchedActivityList = MatchedActivityList.Where(a => a.ActivityID == aID1).ToList();
+                            MatchedActivityList = MatchedActivityList.Where(a => a.ActivityID == aID1 && a.IsDeleted==false).ToList();
                         }
                         else if (PhaseCode != "null")
                         {
@@ -5297,7 +5433,7 @@ namespace WebAPI.Models
                             var aID = Convert.ToInt16(ProjectID);
                             var trendId = Convert.ToInt16(TrendNumber);
 
-                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == aID && a.TrendNumber == TrendNumber).ToList();
+                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == aID && a.TrendNumber == TrendNumber && a.IsDeleted==false).ToList();
 
                             if (TrendNumber == "1000")
                                 MatchedActivityList = MatchedActivityList.Where(a => a.TrendNumber == "1000").ToList();
@@ -5464,7 +5600,7 @@ namespace WebAPI.Models
                         if (ActivityID != "null")
                         {
                             var aID = Convert.ToInt16(ActivityID);
-                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == id && a.TrendNumber == TrendNumber && a.ActivityID == aID).ToList();
+                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == id && a.TrendNumber == TrendNumber && a.ActivityID == aID && a.IsDeleted==false).ToList();
                             if (TrendNumber == "1000")
                             {
                                 MatchedActivityList = MatchedActivityList.Where(a => a.TrendNumber == "1000" && a.ActivityID == aID).ToList();
@@ -5474,7 +5610,7 @@ namespace WebAPI.Models
                         else if (PhaseCode != "null")
                         {
                             var phaseCode = Convert.ToInt16(PhaseCode);
-                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == id && a.TrendNumber == TrendNumber && a.PhaseCode == phaseCode).ToList();
+                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == id && a.TrendNumber == TrendNumber && a.PhaseCode == phaseCode && a.IsDeleted==false).ToList();
                             if (TrendNumber == "1000")
                             {
                                 MatchedActivityList = MatchedActivityList.Where(a => a.TrendNumber == "1000" && a.PhaseCode == phaseCode).ToList();
@@ -5483,7 +5619,157 @@ namespace WebAPI.Models
                         }
                         else
                         {
-                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == id && a.TrendNumber == TrendNumber).ToList();
+                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == id && a.TrendNumber == TrendNumber && a.IsDeleted==false).ToList();
+                            if (TrendNumber == "1000")
+                            {
+                                MatchedActivityList = MatchedActivityList.Where(a => a.TrendNumber == "1000").ToList();
+                                MatchedActivityList = processCost(MatchedActivityList, TrendNumber, ProjectID, PhaseCode, BudgetCategory, BudgetSubCategory);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+            }
+            finally
+            {
+
+                if (conn != null) conn.Close();
+                if (reader != null) reader.Close();
+            }
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Exit Point", Logger.logLevel.Debug);
+            return MatchedActivityList;
+
+        }
+
+        public static List<Activity> getGanttViewActivityDetails(String ProgramID, String ProgramElementID, String ProjectID, String TrendNumber, String PhaseCode, String ActivityID, String BudgetCategory, String BudgetSubCategory)
+        {
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "Entry Point", Logger.logLevel.Info);
+            Logger.LogDebug(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, "", Logger.logLevel.Debug);
+            List<Activity> MatchedActivityList = new List<Activity>();
+            MySqlConnection conn = null;
+            MySqlDataReader reader = null;
+            try
+            {
+
+                using (var ctx = new CPPDbContext())
+                {
+                    var id = 0;
+                    if (ProjectID != "null")
+                    {
+                        id = Convert.ToInt16(ProjectID);
+                    }
+
+                    if (TrendNumber == "2000") //Forecast not stored in the database
+                    {
+                        //------------Manasi 29-07-2020-----------------------------
+                        int aID1 = 0;
+                        int pID1 = 0;
+                        if (ActivityID != null && ActivityID != "null")
+                            aID1 = Convert.ToInt16(ActivityID);
+                        if (PhaseCode != null && PhaseCode != "null")
+                            pID1 = Convert.ToInt16(PhaseCode);
+
+                        MatchedActivityList = ctx.Database.SqlQuery<Activity>("call get_forecast_activities_ForRollUp(@ProjectID)",
+                                                 new MySql.Data.MySqlClient.MySqlParameter("@ProjectID", ProjectID)).ToList();
+
+                        if (ActivityID != "null")
+                        {
+                            MatchedActivityList = MatchedActivityList.Where(a => a.ActivityID == aID1).ToList();
+                        }
+                        else if (PhaseCode != "null")
+                        {
+                            MatchedActivityList = MatchedActivityList.Where(a => a.PhaseCode == pID1).ToList();
+                        }
+
+                        MatchedActivityList = processCostForRollUp(MatchedActivityList, TrendNumber, ProjectID, PhaseCode, BudgetCategory, BudgetSubCategory);
+
+                    }
+
+                    else if (TrendNumber == "3000")
+                    {
+                        int aID1 = 0;
+                        int pID1 = 0;
+                        if (ActivityID != null && ActivityID != "null")
+                            aID1 = Convert.ToInt16(ActivityID);
+                        if (PhaseCode != null && PhaseCode != "null")
+                            pID1 = Convert.ToInt16(PhaseCode);
+
+                        MatchedActivityList = ctx.Database.SqlQuery<Activity>("call get_current_activities_ForRollUp(@ProjectID)",
+                                                 new MySql.Data.MySqlClient.MySqlParameter("@ProjectID", ProjectID)).ToList();
+
+                        if (ActivityID != "null")
+                        {
+                            MatchedActivityList = MatchedActivityList.Where(a => a.ActivityID == aID1).ToList();
+                        }
+                        else if (PhaseCode != "null")
+                        {
+                            MatchedActivityList = MatchedActivityList.Where(a => a.PhaseCode == pID1).ToList();
+                        }
+                        MatchedActivityList = processCostForRollUp(MatchedActivityList, TrendNumber, ProjectID, PhaseCode, BudgetCategory, BudgetSubCategory);
+
+                    }
+                    else
+                    {
+                        if (ActivityID == "null" && PhaseCode == "null")
+                        {
+                            //var aID = Convert.ToInt16(ProjectID);
+                            var trendId = Convert.ToInt16(TrendNumber);
+                            if (ProgramID != "null" && ProgramElementID == "null" && ProjectID == "null")
+                            {
+                                var prgID = Convert.ToInt16(ProgramID);
+                                var progElementID = ctx.ProgramElement.Where(a => a.ProgramID == prgID && a.IsDeleted==false).Select(b => b.ProgramElementID).ToList();
+                                var projectID = ctx.Project.Where(a => progElementID.Contains(a.ProgramElementID) && a.IsDeleted == false).Select(b => b.ProjectID).ToList();
+                                MatchedActivityList = ctx.Activity.Where(a => projectID.Contains(a.ProjectID) && a.IsDeleted==false && a.TrendNumber == TrendNumber).ToList();
+                            }
+                            else if (ProgramID != "null" && ProgramElementID != "null" && ProjectID == "null")
+                            {
+                                var prgElementID = Convert.ToInt16(ProgramElementID);
+                                var projectID = ctx.Project.Where(a => a.ProgramElementID == prgElementID && a.IsDeleted==false).Select(b => b.ProjectID).ToList();
+                                MatchedActivityList = ctx.Activity.Where(a => projectID.Contains(a.ProjectID) && a.TrendNumber == TrendNumber && a.IsDeleted==false).ToList();
+                            }
+                            else if (ProgramID != "null" && ProgramElementID != "null" && ProjectID != "null")
+                            {
+                                var prjID = Convert.ToInt16(ProjectID);
+                                MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == prjID && a.TrendNumber == TrendNumber && a.IsDeleted==false).ToList();
+                            }
+
+                            //MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == aID && a.TrendNumber == TrendNumber).ToList();
+
+                            if (TrendNumber == "1000")
+                                MatchedActivityList = MatchedActivityList.Where(a => a.TrendNumber == "1000").ToList();
+
+                            MatchedActivityList = processCost(MatchedActivityList, TrendNumber, ProjectID, PhaseCode, BudgetCategory, BudgetSubCategory);
+
+                        }
+                        else
+                        if (ActivityID != "null")
+                        {
+                            var aID = Convert.ToInt16(ActivityID);
+                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == id && a.TrendNumber == TrendNumber && a.ActivityID == aID && a.IsDeleted==false).ToList();
+                            if (TrendNumber == "1000")
+                            {
+                                MatchedActivityList = MatchedActivityList.Where(a => a.TrendNumber == "1000" && a.ActivityID == aID).ToList();
+                                MatchedActivityList = processCost(MatchedActivityList, TrendNumber, ProjectID, PhaseCode, BudgetCategory, BudgetSubCategory);
+                            }
+                        }
+                        else if (PhaseCode != "null")
+                        {
+                            var phaseCode = Convert.ToInt16(PhaseCode);
+                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == id && a.TrendNumber == TrendNumber && a.PhaseCode == phaseCode && a.IsDeleted==false).ToList();
+                            if (TrendNumber == "1000")
+                            {
+                                MatchedActivityList = MatchedActivityList.Where(a => a.TrendNumber == "1000" && a.PhaseCode == phaseCode).ToList();
+                                MatchedActivityList = processCost(MatchedActivityList, TrendNumber, ProjectID, PhaseCode, BudgetCategory, BudgetSubCategory);
+                            }
+                        }
+                        else
+                        {
+                            MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == id && a.TrendNumber == TrendNumber && a.IsDeleted==false).ToList();
                             if (TrendNumber == "1000")
                             {
                                 MatchedActivityList = MatchedActivityList.Where(a => a.TrendNumber == "1000").ToList();
@@ -5930,16 +6216,16 @@ namespace WebAPI.Models
                 var proID = Convert.ToInt16(ProjectID);
                 using (var ctx = new CPPDbContext())
                 {
-                    MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == proID && a.TrendNumber == TrendNumber).ToList();
+                    MatchedActivityList = ctx.Activity.Where(a => a.ProjectID == proID && a.TrendNumber == TrendNumber && a.IsDeleted==false).ToList();
                     List<CostFTE> FTECosts = new List<CostFTE>();
                     List<CostLumpsum> LumpsumCosts = new List<CostLumpsum>();
                     List<CostUnit> UnitCosts = new List<CostUnit>();
                     List<CostPercentage> PercentageCosts = new List<CostPercentage>();
                     foreach (var activity in MatchedActivityList)
                     {
-                        FTECosts = ctx.CostFte.Where(f => f.ActivityID == activity.ActivityID).ToList();
-                        LumpsumCosts = ctx.CostLumpsum.Where(l => l.ActivityID == activity.ActivityID).ToList();
-                        UnitCosts = ctx.CostUnit.Where(u => u.ActivityID == activity.ActivityID).ToList();
+                        FTECosts = ctx.CostFte.Where(f => f.ActivityID == activity.ActivityID && f.IsDeleted==false).ToList();
+                        LumpsumCosts = ctx.CostLumpsum.Where(l => l.ActivityID == activity.ActivityID && l.IsDeleted==false).ToList();
+                        UnitCosts = ctx.CostUnit.Where(u => u.ActivityID == activity.ActivityID && u.IsDeleted==false).ToList();
                         PercentageCosts = ctx.CostPercentage.Where(p => p.ActivityID == activity.ActivityID).ToList();
                     }
                 }
@@ -5964,7 +6250,7 @@ namespace WebAPI.Models
             using(var ctx = new CPPDbContext())
             {
                 String activityPhase = ActivityCategory.getPhaseNameByCode(activity.PhaseCode.ToString());
-                Project project = ctx.Project.Where(a => a.ProjectID == activity.ProjectID).FirstOrDefault();
+                Project project = ctx.Project.Where(a => a.ProjectID == activity.ProjectID && a.IsDeleted==false).FirstOrDefault();
                 int versionId = Convert.ToInt32(project.VersionId);
                 int orgId = int.Parse(project.OrganizationID);
                 category = ctx.ActivityCategory.Where(c => c.CategoryDescription == activity.BudgetCategory
@@ -5990,13 +6276,14 @@ namespace WebAPI.Models
                 {
                     ////Check if Trend already exists in system
                     var retrievedActivity = new Activity();
-                    retrievedActivity = ctx.Activity.Where(a => a.ActivityID == activity.ActivityID).FirstOrDefault();
+                    retrievedActivity = ctx.Activity.Where(a => a.ActivityID == activity.ActivityID && a.IsDeleted==false).FirstOrDefault();
 
                     //luan here - Check if the activity already exists in older trends
                     Activity alreadyExistActivity = ctx.Activity.Where(a => a.ProjectID == activity.ProjectID
                                         && a.BudgetCategory == activity.BudgetCategory
                                         && a.BudgetSubCategory == activity.BudgetSubCategory
-                                        && a.PhaseCode == activity.PhaseCode).FirstOrDefault();
+                                        && a.PhaseCode == activity.PhaseCode 
+                                        && a.IsDeleted == false).FirstOrDefault();
 
 
                     if (retrievedActivity != null)
@@ -6053,7 +6340,7 @@ namespace WebAPI.Models
             {
                 using (var ctx = new CPPDbContext())
                 {
-                    Activity retrievedActivity = ctx.Activity.Where(a => a.ActivityID == activity.ActivityID).FirstOrDefault();
+                    Activity retrievedActivity = ctx.Activity.Where(a => a.ActivityID == activity.ActivityID && a.IsDeleted==false).FirstOrDefault();
                     if (retrievedActivity != null)
                     {
                         //update
@@ -6143,12 +6430,13 @@ namespace WebAPI.Models
 
                 //Check if activity exists in system
                 String query = "Update trend set PostTrendCost = (Select (Sum(IFNULL(act.FTECost,0)) + Sum(IFNULL(act.LumpsumCost,0)) + Sum(IFNULL(act.UnitCost,0)))";
-                query += " From activity act Where act.ProjectID = " + "'" + projectID + "'" + " AND act.TrendNumber = " + "'" + trendNumber + "')";
+                query += " From activity act Where act.ProjectID = @projectID AND act.TrendNumber = @trendNumber)";
 
                 query += " WHERE 1=1";
-                query += " AND ProjectID =  '" + projectID + "'" + " AND TrendNumber = '" + trendNumber + "'";
+                query += " AND ProjectID =  @projectID AND TrendNumber = @trendNumber";
                 MySqlCommand command = new MySqlCommand(query, conn);
-
+                command.Parameters.AddWithValue("@projectID", projectID);
+                command.Parameters.AddWithValue("@trendNumber", trendNumber);
                 command.ExecuteNonQuery();
 
                 update_result = "Success";
@@ -6183,8 +6471,8 @@ namespace WebAPI.Models
 
                 using (var ctx = new CPPDbContext())
                 {
-                    Activity retrievedActivity = ctx.Activity.Where(a => a.ActivityID == activity.ActivityID).FirstOrDefault();
-                    Project project = ctx.Project.Where(a => a.ProjectID == retrievedActivity.ProjectID).FirstOrDefault();
+                    Activity retrievedActivity = ctx.Activity.Where(a => a.ActivityID == activity.ActivityID && a.IsDeleted==false).FirstOrDefault();
+                    Project project = ctx.Project.Where(a => a.ProjectID == retrievedActivity.ProjectID && a.IsDeleted==false).FirstOrDefault();
                     var projectClass = ctx.ServiceClass.Where(a => a.ID== project.ProjectClassID).FirstOrDefault();
                     ProgramElement programElement = ctx.ProgramElement.Include("ProjectClass").Where(a => a.ProgramElementID == project.ProgramElementID).FirstOrDefault();
                     ActivityCategory category = getActivityCategory(retrievedActivity);
@@ -6199,43 +6487,59 @@ namespace WebAPI.Models
                         List<CostPercentage> percentageCosts = new List<CostPercentage>();
 
                         //Delete FTE
-                        fteCosts = ctx.CostFte.Where(f => f.ActivityID == activity.ActivityID).ToList();
+                        fteCosts = ctx.CostFte.Where(f => f.ActivityID == activity.ActivityID && f.IsDeleted==false).ToList();
                         foreach (var fte in fteCosts)
                         {
                             CostLineItemTracker.removeCostLine("F", projectClass.Code.ToString(), project.ProjectNumber,project.ProjectElementNumber, phaseCode.ActivityPhaseCode.ToString(), category.CategoryID, category.SubCategoryID,
                                                              fte.FTEPositionID.ToString(), fte.EmployeeID.ToString(), null, null, null, null, null, fte.CostLineItemID);
-                            ctx.CostFte.Remove(fte);
+                            //Nivedita 10022022
+                            fte.IsDeleted = true;
+                            fte.DeletedDate = DateTime.Now;
+                            fte.DeletedBy = "";
+                            //ctx.CostFte.Remove(fte);
                             ctx.SaveChanges();
                         }
 
                         //Delete Lumpsum
-                        lumpsumCosts = ctx.CostLumpsum.Where(l => l.ActivityID == activity.ActivityID).ToList();
+                        lumpsumCosts = ctx.CostLumpsum.Where(l => l.ActivityID == activity.ActivityID && l.IsDeleted==false).ToList();
                         foreach (var lump in lumpsumCosts)
                         {
                             CostLineItemTracker.removeCostLine("L", projectClass.Code.ToString(), project.ProjectNumber,project.ProjectElementNumber, phaseCode.ActivityPhaseCode.ToString(), category.CategoryID, category.SubCategoryID,
                                                            null,null,lump.SubcontractorTypeID.ToString(),lump.SubcontractorID.ToString(),null,null,null, lump.CostLineItemID);
-                            ctx.CostLumpsum.Remove(lump);
+                            //Nivedita 10022022
+                            lump.IsDeleted = true;
+                            lump.DeletedDate = DateTime.Now;
+                            lump.DeletedBy = "";
+                            //ctx.CostLumpsum.Remove(lump);
                             ctx.SaveChanges();
                         }
 
                         //Delete Unit
-                        unitCosts = ctx.CostUnit.Where(u => u.ActivityID == activity.ActivityID).ToList();
+                        unitCosts = ctx.CostUnit.Where(u => u.ActivityID == activity.ActivityID && u.IsDeleted==false).ToList();
                         foreach (var unit in unitCosts)
                         {
                             CostLineItemTracker.removeCostLine("U", projectClass.Code.ToString(), project.ProjectNumber,project.ProjectElementNumber, phaseCode.ActivityPhaseCode.ToString(), category.CategoryID, category.SubCategoryID,
                                                            null,null,null,null,null,unit.MaterialCategoryID.ToString(),unit.MaterialID.ToString(),unit.CostLineItemID);
-                            ctx.CostUnit.Remove(unit);
+                            //Nivedita 10022022
+                            unit.IsDeleted = true;
+                            unit.DeletedDate = DateTime.Now;
+                            unit.DeletedBy = "";
+                            //ctx.CostUnit.Remove(unit);
                             ctx.SaveChanges();
                         }
 
 
                         //Delete ODC
-                        odcCosts = ctx.CostODC.Where(a => a.ActivityID == activity.ActivityID).ToList();
+                        odcCosts = ctx.CostODC.Where(a => a.ActivityID == activity.ActivityID && a.IsDeleted==false).ToList();
                         foreach(var cost in odcCosts)
                         {
                             CostLineItemTracker.removeCostLine("ODC", projectClass.Code.ToString(), project.ProjectNumber,project.ProjectElementNumber, phaseCode.ActivityPhaseCode.ToString(), category.CategoryID, category.SubCategoryID,
                                                            null, null, null,null, cost.ODCTypeID.ToString(), null, null, cost.CostLineItemID);
-                            ctx.CostODC.Remove(cost);
+                            //Nivedita 10022022
+                            cost.IsDeleted = true;
+                            cost.DeletedDate = DateTime.Now;
+                            cost.DeletedBy = "";
+                            //ctx.CostODC.Remove(cost);
                             ctx.SaveChanges();
                         }
 
@@ -6248,7 +6552,11 @@ namespace WebAPI.Models
                         //}
 
                         //Delete Activity
-                        ctx.Activity.Remove(retrievedActivity);
+                        //Nivedita 10022022
+                        retrievedActivity.IsDeleted = true;
+                        retrievedActivity.DeletedDate = DateTime.Now;
+                        retrievedActivity.DeletedBy = "";
+                        //ctx.Activity.Remove(retrievedActivity);
                         ctx.SaveChanges();
                         String s = updateTrend(Convert.ToInt16(activity.ProjectID), activity.TrendNumber);
                         delete_result = "Success";
@@ -6289,7 +6597,7 @@ namespace WebAPI.Models
                     //activityTrend = ctx.Trend.Where(t => t.ProjectID == activity.ProjectID && t.TrendNumber == activity.TrendNumber).FirstOrDefault();
 
                     Activity retrievedActivity = new Activity();
-                    retrievedActivity = ctx.Activity.Where(a => a.ActivityID == activity.ActivityID).FirstOrDefault();
+                    retrievedActivity = ctx.Activity.Where(a => a.ActivityID == activity.ActivityID && a.IsDeleted==false).FirstOrDefault();
                     if (retrievedActivity != null)
                     {
                         //Update
@@ -6348,7 +6656,7 @@ namespace WebAPI.Models
                 using (var ctx = new CPPDbContext())
                 {
                     var id = Convert.ToInt16(ActivityID);
-                    MatchedActivity = ctx.Activity.Where(a => a.ActivityID == id).FirstOrDefault();
+                    MatchedActivity = ctx.Activity.Where(a => a.ActivityID == id && a.IsDeleted==false && a.IsDeleted==false).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -6397,10 +6705,11 @@ namespace WebAPI.Models
 				using (var ctx = new CPPDbContext())
 				{
 					String phaseCode = ctx.PhaseCode.Where(u => u.PhaseID == phaseID).FirstOrDefault().Code;
+                    // Jignesh-17-11-2021 - For next Category Id
+                    nextCategoryID = ctx.ActivityCategory.Where(u => u.OrganizationID == organizationID).ToList().Max(u => u.CategoryID);
+                    //nextCategoryID = ctx.ActivityCategory.Where(u => u.Phase == phaseCode && u.OrganizationID == organizationID).ToList().Max(u => u.CategoryID);
 
-					nextCategoryID = ctx.ActivityCategory.Where(u => u.Phase == phaseCode && u.OrganizationID == organizationID).ToList().Max(u => u.CategoryID);
-
-					Boolean validNextCategoryID = false;
+                    Boolean validNextCategoryID = false;
 
 					while (!validNextCategoryID)
 					{
@@ -6447,10 +6756,11 @@ namespace WebAPI.Models
 				using (var ctx = new CPPDbContext())
 				{
 					String phaseCode = ctx.PhaseCode.Where(u => u.PhaseID == phaseID).FirstOrDefault().Code;
+                    // Jignesh-17-11-2021 - For next Category Id
+                    nextSubCategoryID = ctx.ActivityCategory.Where(u => u.CategoryID == categoryID && u.OrganizationID == organizationID).ToList().Max(u => u.SubCategoryID);
+                    //nextSubCategoryID = ctx.ActivityCategory.Where(u => u.Phase == phaseCode && u.CategoryID == categoryID && u.OrganizationID == organizationID).ToList().Max(u => u.SubCategoryID);
 
-					nextSubCategoryID = ctx.ActivityCategory.Where(u => u.Phase == phaseCode && u.CategoryID == categoryID && u.OrganizationID == organizationID).ToList().Max(u => u.SubCategoryID);
-
-					Boolean validNextSubCategoryID = false;
+                    Boolean validNextSubCategoryID = false;
 
 					while (!validNextSubCategoryID)
 					{
@@ -6880,7 +7190,7 @@ namespace WebAPI.Models
                     var query = "Select * from cost_lumpsum where ";
                     query += "(select substring_index(substring_index(LumpsumCostID,'_',2),'_',-1) as lineItem) = @lineItem";
                     query += " and granularity = @granularity";
-                    query += " and ActivityID = @activityID";
+                    query += " and ActivityID = @activityID and IsDeleted=false";
 
                     lumpsumCostList = ctx.CostLumpsum
                                         .SqlQuery(query,
@@ -6921,7 +7231,7 @@ namespace WebAPI.Models
                     var query = "Select * from cost_unitcost where ";
                     query += "(select substring_index(substring_index(UnitCostID,'_',2),'_',-1) as lineItem) = @lineItem";
                     query += " and granularity = @granularity";
-                    query += " and ActivityID = @activityID";
+                    query += " and ActivityID = @activityID and IsDeleted=false";
 
                     unitCostList = ctx.CostUnit
                                         .SqlQuery(query,
@@ -6956,7 +7266,7 @@ namespace WebAPI.Models
                     var query = "Select * from cost_odc where ";
                     query += "(select substring_index(substring_index(ODCCostID,'_',2),'_',-1) as lineItem) = @lineItem";
                     query += " and granularity = @granularity";
-                    query += " and ActivityID = @activityID";
+                    query += " and ActivityID = @activityID and IsDeleted=false";
 
                     odcCostList = ctx.CostODC
                                         .SqlQuery(query,
@@ -6998,7 +7308,7 @@ namespace WebAPI.Models
                     var query = "Select * from cost_fte where ";
                     query += "(select substring_index(substring_index(FTECostID,'_',2),'_',-1) as lineItem) = @lineItem";
                     query += " and granularity = @granularity";
-                    query += " and ActivityID = @activityID";
+                    query += " and ActivityID = @activityID and IsDeleted=false";
 
                     fteCostList = ctx.CostFte
                                         .SqlQuery(query,

@@ -85,6 +85,12 @@ namespace WebAPI.Models
 
         public DateTime? NextApproverEmailDate { get; set; }
 
+        //Nivedita 10022022
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
+        public string DeletedBy { get; set; }
+        public string Status { get; set; }   //----Vaishnavi 30-03-2022----//
+
         //From RequestProgramElementController
         public static List<Trend> getTrend(String ProgramID, String ProgramElementID, String ProjectID, String TrendNumber, String KeyStroke)
         {
@@ -102,36 +108,36 @@ namespace WebAPI.Models
                     if (TrendNumber != "null")
                     {
                         string trendNum = TrendNumber;
-                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus").Where(p => p.TrendNumber == trendNum);//Do not display Current Trend
+                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus").Where(p => p.TrendNumber == trendNum && p.IsDeleted == false);//Do not display Current Trend
                         MatchedTrendList = trends.ToList<Trend>();
                     }
                     else if (ProjectID != "null")
                     {
                         int projId = int.Parse(ProjectID);
-                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus").Where(p => p.Project.ProjectID == projId && p.TrendNumber != "1000");//Do not display Current Trend
+                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus").Where(p => p.Project.ProjectID == projId && p.TrendNumber != "1000" && p.IsDeleted == false);//Do not display Current Trend
                         MatchedTrendList = trends.ToList<Trend>();
                     }
                     else if (ProgramElementID != "null")
                     {
                         int pgmEltId = int.Parse(ProgramElementID);
-                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus").Where(p => p.Project.ProgramElement.ProgramElementID == pgmEltId && p.TrendNumber != "1000");//Do not display Current Trend
+                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus").Where(p => p.Project.ProgramElement.ProgramElementID == pgmEltId && p.TrendNumber != "1000" && p.IsDeleted == false);//Do not display Current Trend
                         MatchedTrendList = trends.ToList<Trend>();
                     }
                     else if (ProgramID != "null")
                     {
                         int pgmId = int.Parse(ProgramID);
-                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus").Where(p => p.Project.Program.ProgramID == pgmId && p.TrendNumber != "1000");//Do not display Current Trend
+                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus").Where(p => p.Project.Program.ProgramID == pgmId && p.TrendNumber != "1000" && p.IsDeleted == false);//Do not display Current Trend
                         MatchedTrendList = trends.ToList<Trend>();
 
                     }
                     else if (KeyStroke != "null")
                     {
-                        IQueryable<Trend> trends = ctx.Trend.Where(p => p.TrendDescription.Contains(KeyStroke));
+                        IQueryable<Trend> trends = ctx.Trend.Where(p => p.TrendDescription.Contains(KeyStroke) && p.IsDeleted == false);
                         MatchedTrendList = trends.ToList<Trend>();
                     }
                     else
                     {
-                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus");
+                        IQueryable<Trend> trends = ctx.Trend.Include("Project").Include("TrendStatus").Where(p => p.IsDeleted == false);
                         MatchedTrendList = trends.ToList<Trend>();
                     }
 
@@ -175,10 +181,11 @@ namespace WebAPI.Models
                 String query = "SELECT Max(PostTrendEndDate) FROM trend";
                 query += " WHERE 1=1";
 
-                query += " And ProjectID = " + projectId;
+                query += " And ProjectID = @projectId";
 
 
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@projectId", projectId);
 
                 using (reader = command.ExecuteReader())
                 {
@@ -382,6 +389,7 @@ namespace WebAPI.Models
                     var isBillableLabor = (overHeadType.CostOverHeadType == "Billable Rate") ? true : false;
                     ctx.Database.Log = msg => Trace.WriteLine(msg);
                     // trend.CostOverheadTypeID = 1;//IVAN 03-12
+                    trend.Status = "Active";   //----Vaishnavi 30-03-2022----//
                     ctx.Trend.Add(trend);
                     ctx.SaveChanges();
                     currentTrend = ctx.Trend.AsNoTracking().Where(a => a.TrendID == trend.TrendID).FirstOrDefault();
@@ -761,8 +769,14 @@ namespace WebAPI.Models
 
                         //}
 
+                        
                         nextApproverEmployeeID = elementApproverDetails.Where(p => p.ApproverMatrixId == lowestApprovalMatrixId).Select(p => p.EmpId).FirstOrDefault();
 
+                        if (nextApproverEmployeeID == 0)
+                        {
+                            string nextApproverName = approvalMatrixList.Where(a => a.Id == lowestApprovalMatrixId).Select(a => a.Role).FirstOrDefault();
+                            return nextApproverName + " set to TBD. \n Please update the details in the Element Setup page and submit the trend again.";
+                        }
 
                         //if (lowestApproverRole == "Project Manager")
                         //    nextApproverEmployeeID = pr.ProjectManagerID;
@@ -795,6 +809,7 @@ namespace WebAPI.Models
 
                         //Get associated employee
                         User requestingUser = ctx.User.First(p => p.UserID == trend.UserID);  //Get associated requesting user
+                        
                         User targetedUser = ctx.User.First(p => p.EmployeeID == nextApproverEmployeeID);  //Get associated targeted user
                         Employee targetedEmployee = ctx.Employee.First(p => p.ID == nextApproverEmployeeID);
 
@@ -1205,14 +1220,15 @@ namespace WebAPI.Models
                 using (var ctx = new CPPDbContext())
                 {
                     List<Activity> activityList = new List<Activity>();
-                    Project project = ctx.Project.Where(p => p.ProjectID == trend.ProjectID).FirstOrDefault();
+                    Project project = ctx.Project.Where(p => p.ProjectID == trend.ProjectID && p.IsDeleted == false).FirstOrDefault();
 
-                    activityList = ctx.Activity.Where(a => a.TrendNumber == trend.TrendNumber && a.ProjectID == trend.ProjectID).ToList();
+                    activityList = ctx.Activity.Where(a => a.TrendNumber == trend.TrendNumber && a.ProjectID == trend.ProjectID && a.IsDeleted==false).ToList();
                     List<TrendCostOverhead> trendCostOverheads = ctx.TrendCostOverhead.Where(a => a.TrendID == trend.TrendID).ToList();
                     if (activityList.Count > 0)
                     {
                         foreach (var act in activityList)
                         {
+                            act.DeletedBy = trend.DeletedBy;
                             Activity.deleteActivity(act);
                         }
                     }
@@ -1223,7 +1239,7 @@ namespace WebAPI.Models
                     List<ProgramFund> programFundList = ProgramFund.getProgramFund(programID);
                     using (var DbCtx = new CPPDbContext())
                     {
-                        Trend tr = DbCtx.Trend.First(p => p.ProjectID == trend.ProjectID && p.TrendNumber == trend.TrendNumber);
+                        Trend tr = DbCtx.Trend.First(p => p.ProjectID == trend.ProjectID && p.TrendNumber == trend.TrendNumber && p.IsDeleted==false);
                         foreach (var programFund in programFundList)
                         {
                             foreach (var trendFund in trendFundList)
@@ -1258,10 +1274,20 @@ namespace WebAPI.Models
                         //Remove Trend_cost_overhead
                         foreach (var tco in trendCostOverheads)
                         {
-                            ctx.TrendCostOverhead.Remove(tco);
+                            //Nivedita 10022022
+                            //ctx.CostLineItemTracker.Remove(costLineItem);
+                            tco.IsDeleted = true;
+                            tco.DeletedDate = DateTime.Now;
+                            tco.DeletedBy = trend.DeletedBy;
+                            //ctx.TrendCostOverhead.Remove(tco);
                             ctx.SaveChanges();
                         }
-                        DbCtx.Trend.Remove(tr);
+                        //Nivedita 10022022
+                        //DbCtx.Trend.Remove(tr);
+                        tr.IsDeleted = true;
+                        tr.DeletedDate = DateTime.Now;
+                        tr.DeletedBy = trend.DeletedBy;
+                        tr.Status= "Archived";   //----Vaishnavi 30-03-2022----//
                         DbCtx.SaveChanges();
                         updateCostOnApproval(project.ProjectID);
                         result = "Success";
@@ -1491,7 +1517,7 @@ namespace WebAPI.Models
             int pID = int.Parse(projectID);
             using (var ctx = new CPPDbContext())
             {
-                trends = ctx.Trend.Where(a => a.ProjectID == pID).OrderBy(a => new { a.TrendStatusID, a.TrendNumber }).ToList();
+                trends = ctx.Trend.Where(a => a.ProjectID == pID && a.IsDeleted == false).OrderBy(a => new { a.TrendStatusID, a.TrendNumber }).ToList();
                 //trends = ctx.Trend.OrderBy(a => new { a.TrendStatusID, a.TrendNumber }).ToList();    //Jignesh 05-01-2021
             }
 
@@ -1549,5 +1575,101 @@ namespace WebAPI.Models
             return trends;
         }
         //---------------------------------------------------------------------------------------------------
+        //----Vaishnavi 30-03-2022----//
+        public static String closeTrend(Trend trend)
+        {
+            MySqlConnection conn = null;
+            MySqlDataReader reader = null;
+            String result = "";
+            try
+            {
+
+                using (var ctx = new CPPDbContext())
+                {
+                    //List<Activity> activityList = new List<Activity>();
+                    //Project project = ctx.Project.Where(p => p.ProjectID == trend.ProjectID && p.IsDeleted == false).FirstOrDefault();
+
+                    //activityList = ctx.Activity.Where(a => a.TrendNumber == trend.TrendNumber && a.ProjectID == trend.ProjectID && a.IsDeleted == false).ToList();
+                    //List<TrendCostOverhead> trendCostOverheads = ctx.TrendCostOverhead.Where(a => a.TrendID == trend.TrendID).ToList();
+                    //if (activityList.Count > 0)
+                    //{
+                    //    foreach (var act in activityList)
+                    //    {
+                    //        act.DeletedBy = trend.DeletedBy;
+                    //        Activity.deleteActivity(act);
+                    //    }
+                    //}
+                    //ctx.Database.Log = msg => Trace.WriteLine(msg);
+                    //List<TrendFund> trendFundList = TrendFund.getTrendFund(Convert.ToInt16(trend.TrendID), trend.ProjectID);
+                    //List<Project> projectList = Project.getProject("null", "null", trend.ProjectID.ToString(), "null");
+                    //var programID = projectList[0].ProgramID;
+                    //List<ProgramFund> programFundList = ProgramFund.getProgramFund(programID);
+                    using (var DbCtx = new CPPDbContext())
+                    {
+                        Trend tr = DbCtx.Trend.First(p => p.ProjectID == trend.ProjectID && p.TrendNumber == trend.TrendNumber && p.IsDeleted == false);
+                        //foreach (var programFund in programFundList)
+                        //{
+                        //    foreach (var trendFund in trendFundList)
+                        //    {
+                        //        if (programFund.FundName == trendFund.FundName)
+                        //        {
+                        //            if (tr.TrendStatusID == 1)
+                        //            {
+                        //                programFund.FundUsed -= trendFund.FundAssign;
+                        //                programFund.FundRemaining += trendFund.FundAssign;
+
+                        //            }
+                        //            else if (tr.TrendStatusID == 3)
+                        //            {
+                        //                programFund.FundRequest -= trendFund.FundAssign;
+                        //                programFund.FundRemaining += trendFund.FundAssign;
+                        //            }
+                        //        }
+                        //    }
+                        //}
+
+                        //foreach (var programFund in programFundList)
+                        //{
+                        //    ProgramFund.updateProgramFund(programFund);
+                        //}
+                        //foreach (var trendFund in trendFundList)
+                        //{
+                        //    TrendFund.deleteTrendFund(trendFund);
+                        //}
+                        ////var trendCtx = new CPPDbContext();
+                        ////CostOverhead 
+                        ////Remove Trend_cost_overhead
+                        //foreach (var tco in trendCostOverheads)
+                        //{
+                        //    //Nivedita 10022022
+                        //    //ctx.CostLineItemTracker.Remove(costLineItem);
+                        //    tco.IsDeleted = true;
+                        //    tco.DeletedDate = DateTime.Now;
+                        //    tco.DeletedBy = trend.DeletedBy;
+                        //    //ctx.TrendCostOverhead.Remove(tco);
+                        //    ctx.SaveChanges();
+                        //}
+                        //Nivedita 10022022
+                        //DbCtx.Trend.Remove(tr);
+                        //tr.IsDeleted = true;
+                        //tr.DeletedDate = DateTime.Now;
+                        //tr.DeletedBy = trend.DeletedBy;
+                        tr.Status = "Closed";
+                        DbCtx.SaveChanges();
+                      //  updateCostOnApproval(project.ProjectID);
+                        result = "Success";
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                var stackTrace = new StackTrace(ex, true);
+                var line = stackTrace.GetFrame(0).GetFileLineNumber();
+                Logger.LogExceptions(MethodBase.GetCurrentMethod().DeclaringType.ToString(), MethodBase.GetCurrentMethod().Name, ex.Message, line.ToString(), Logger.logLevel.Exception);
+            }
+            return result;
+        }
     }
 }

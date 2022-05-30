@@ -34,7 +34,9 @@ namespace WebAPI.Models
         public int? TrendStatusCodeID;
 		[DataMember]
 		public int? IsInternal;
-		[DataMember]
+        [DataMember]
+        public String Status;    //----Vaishnavi 30-03-2022----//
+        [DataMember]
         public int? CostOverheadTypeID;
         [DataMember]
         public String TrendJustification;
@@ -98,11 +100,11 @@ namespace WebAPI.Models
 
                 String query = "SELECT ProgramElementID FROM project";
 
-                query += " WHERE ProjectID = " + projectId;
+                query += " WHERE ProjectID = @projectId";
 
 
                 MySqlCommand command = new MySqlCommand(query, conn);
-
+                command.Parameters.AddWithValue("@projectId", projectId);
                 using (reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -147,7 +149,8 @@ namespace WebAPI.Models
             PreTrendStartDate = (wbst.PreTrendStartDate != null ? wbst.PreTrendStartDate.Value.ToString("yyyy-MM-dd") : "");
             PreTrendEndDate = (wbst.PreTrendStartDate != null ? wbst.PreTrendEndDate.Value.ToString("yyyy-MM-dd") : "");
             TrendStatusCodeID = wbst.TrendStatusCodeID; IsInternal = wbst.IsInternal;
-			CostOverheadTypeID = wbst.CostOverheadTypeID;
+            Status = wbst.Status;   //----Vaishnavi 30-03-2022----//
+            CostOverheadTypeID = wbst.CostOverheadTypeID;
             //======================== Jignesh-02-04-2021 ================================================
             ProgramElementId = getMaxProgramElementId(wbst.ProjectID);
             IsChangeRequest = wbst.IsChangeRequest; ChangeOrderID = wbst.ChangeOrderID;
@@ -188,6 +191,8 @@ namespace WebAPI.Models
         public int? TrendStatusCodeID;
         [DataMember]
         public int? IsInternal;
+        [DataMember]
+        public String Status;   //----Vaishnavi 30-03-2022----//
         [DataMember]
         public int? CostOverheadTypeID;
         [DataMember]
@@ -251,10 +256,11 @@ namespace WebAPI.Models
 
                 String query = "SELECT ProgramElementID FROM project";
 
-                query += " WHERE ProjectID = " + projectId;
+                query += " WHERE ProjectID = @projectId";
 
 
                 MySqlCommand command = new MySqlCommand(query, conn);
+                command.Parameters.AddWithValue("@projectId", projectId);
 
                 using (reader = command.ExecuteReader())
                 {
@@ -300,7 +306,9 @@ namespace WebAPI.Models
             PreTrendStartDate = (wbst.PreTrendStartDate != null ? wbst.PreTrendStartDate.Value.ToString("yyyy-MM-dd") : "");
             PreTrendEndDate = (wbst.PreTrendStartDate != null ? wbst.PreTrendEndDate.Value.ToString("yyyy-MM-dd") : "");
             TrendStatusCodeID = wbst.TrendStatusCodeID; IsInternal = wbst.IsInternal;
-			CostOverheadTypeID = wbst.CostOverheadTypeID;
+            Status = wbst.Status;   //----Vaishnavi 30-03-2022----//
+
+            CostOverheadTypeID = wbst.CostOverheadTypeID;
             ProgramElementId = getMaxProgramElementId(wbst.ProjectID); // Swapnil 02-11-2020
             IsChangeRequest = wbst.IsChangeRequest;ChangeOrderID = wbst.ChangeOrderID;// Swapnil 30-10-2020
             IsApprovedByClient = wbst.IsApprovedByClient; // Jignesh 31-12-2020

@@ -74,7 +74,11 @@ namespace WebAPI.Models
                         ctx.SaveChanges();
 
                         int poDetailsID = newPo.ID;
+                        //---------------Aditya 23032022-------------------//
+                        List<POODCEmployeeDetails> existingEmployeeDetails = ctx.POODCEmployeeDetails.Where(e => e.PODetailsID == poDetailsID).ToList();
 
+                        ctx.POODCEmployeeDetails.RemoveRange(existingEmployeeDetails);
+                        //-------------------------------------------------//
                         if (poDetail.CostType == "ODC")
                         {
                             foreach (int item in poDetail.EmployeeID)

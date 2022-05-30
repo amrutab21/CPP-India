@@ -65,6 +65,8 @@ namespace WebAPI.Models
         public String TrendImpactSchedule;   //Manasi 13-07-2020
         [DataMember]
         public String TrendImpactCostSchedule;   //Manasi 13-07-2020
+        [DataMember]
+        public String Status;    //----Vaishnavi 30-03-2022----//
 
         //[DataMember] 
         //public List<PhaseWBS> children = new List<PhaseWBS>();
@@ -83,6 +85,7 @@ namespace WebAPI.Models
             CostOverheadTypeID = wbst.CostOverheadTypeID;
             TrendImpactSchedule = wbst.TrendImpactSchedule;  //Manasi 13-07-2020
             TrendImpactCostSchedule = wbst.TrendImpactCostSchedule;  //Manasi 13-07-2020
+            TrendImpactCostSchedule = wbst.Status;   //----Vaishnavi 30-03-2022----//
         }
     }
     [DataContract]
@@ -136,6 +139,8 @@ namespace WebAPI.Models
         public String TrendImpactSchedule;   //Manasi 13-07-2020
         [DataMember]
         public String TrendImpactCostSchedule;   //Manasi 13-07-2020
+        [DataMember]
+        public String Status;   //----Vaishnavi 30-03-2022----//
 
         public CurrentTrendWBSTree(Trend wbst, List<FutureTrendWBSTree> phs)
         {
@@ -152,6 +157,7 @@ namespace WebAPI.Models
             children = phs;
             TrendImpactSchedule = wbst.TrendImpactSchedule;  //Manasi 13-07-2020
             TrendImpactCostSchedule = wbst.TrendImpactCostSchedule;  //Manasi 13-07-2020
+            Status= wbst.Status;   //----Vaishnavi 30-03-2022----//
         }
     }
     [DataContract]
@@ -205,6 +211,8 @@ namespace WebAPI.Models
         public String TrendImpactSchedule;   //Manasi 13-07-2020
         [DataMember]
         public String TrendImpactCostSchedule;  //Manasi 13-07-2020
+        [DataMember]
+        public String Status;   //----Vaishnavi 30-03-2022----//
 
         public PastTrendWBSTree(Trend wbst, List<CurrentTrendWBSTree> phs)
         {
@@ -221,6 +229,7 @@ namespace WebAPI.Models
             children = phs;
             TrendImpactSchedule = wbst.TrendImpactSchedule;  //Manasi 13-07-2020
             TrendImpactCostSchedule = wbst.TrendImpactCostSchedule;  //Manasi 13-07-2020
+            Status = wbst.Status;   //----Vaishnavi 30-03-2022----//
         }
     }
 
@@ -283,7 +292,9 @@ namespace WebAPI.Models
         [DataMember]
         public int ProjectTypeID;
         [DataMember]
-        public int ProjectClassID;
+        public int ProjectClassID; //ServiceID
+        [DataMember]
+        public string ServiceName;
         [DataMember]
         public String ProjectNumber;
         [DataMember]
@@ -379,6 +390,8 @@ namespace WebAPI.Models
         [DataMember]
         public List<Int32> employeeAllowedList;
 
+        [DataMember]
+        public String Status;   //----Vaishnavi 30-03-2022----//
         public ProjectWBSTree(Project wbspj, List<PastTrendWBSTree> trn)
         {
             ProgramID = wbspj.Program.ProgramID.ToString(); ProgramElementID = wbspj.ProgramElement.ProgramElementID.ToString();
@@ -400,6 +413,7 @@ namespace WebAPI.Models
             projectScopes = wbspj.projectScopes.ToList();
             children = trn;
             ProjectClassID = wbspj.ProjectClassID;
+            ServiceName = ServiceClass.getServiceById(wbspj.ProjectClassID).Description.ToString();
             ProjectTypeID = wbspj.ProjectTypeID;
             ProjectNumber = wbspj.ProjectNumber;
             name = wbspj.ProjectName;
@@ -452,6 +466,7 @@ namespace WebAPI.Models
             LineOfBusinessID = wbspj.LineOfBusinessID;
 
             TotalUnapprovedTrends = wbspj.TotalUnapprovedTrends;
+            Status = wbspj.Status;   //----Vaishnavi 30-03-2022----//
         }
     }
     [DataContract]
@@ -467,6 +482,8 @@ namespace WebAPI.Models
         [DataMember]
         public String ProgramElementName;
         [DataMember]
+        public string ProgramElementNumber;
+        [DataMember]
         public String ProgramID;
         [DataMember]
         public String ProgramElementManager;
@@ -476,6 +493,7 @@ namespace WebAPI.Models
         public int ProgramElementManagerID;
         [DataMember]
         public int ProgramElementSponsorID;
+      
         [DataMember]
         public String CurrentStartDate;
         [DataMember]
@@ -500,6 +518,8 @@ namespace WebAPI.Models
         public int ProjectTypeID;
         [DataMember]
         public int ProjectClassID;
+        [DataMember]
+        public string ProjectClassName;
         [DataMember]
         public String ProjectNumber;
         [DataMember]
@@ -539,6 +559,7 @@ namespace WebAPI.Models
         public String ProjectPODate;
         [DataMember]
         public String ProjectPEndDate;
+
         //================================
 
         [DataMember]
@@ -556,15 +577,54 @@ namespace WebAPI.Models
         [DataMember]
         public String ProjectValueTotal;
 
-
+        [DataMember]
+        public string BillingPOC;
+        [DataMember]
+        public string BillingPOCPhone1;
+        [DataMember]
+        public string BillingPOCPhone2;
+        [DataMember]
+        public string BillingPOCAddress;
+       
+        [DataMember]
+        public string BillingPOCAddressLine1;
+        [DataMember]
+        public string BillingPOCAddressLine2;
+        [DataMember]
+        public string BillingPOCCity;
+        [DataMember]
+        public string BillingPOCState;
+        [DataMember]
+        public string BillingPOCPONo;
+       
+        [DataMember]
+        public string BillingPOCEmail;
+        [DataMember]
+        public string BillingPOCSpecialInstruction;
+        [DataMember]
+        public byte TMBilling;
+        [DataMember]
+        public byte SOVBilling;
+        [DataMember]
+        public byte MonthlyBilling;
+        [DataMember]
+        public byte CertifiedPayroll;
+        [DataMember]
+        public byte Lumpsum;
+        //=================================================
+        //Nivedita 04-01-2021
+        [DataMember]
+        public String ClientPONumber;
         [DataMember]
         public List<ProjectWBSTree> children = new List<ProjectWBSTree>();
-
+        [DataMember]
+        public String Status;    //----Vaishnavi 30-03-2022----//
         public ProgramElementWBSTree(ProgramElement wbspe, List<ProjectWBSTree> prj, int uId)
         {
             ProgramElementID = wbspe.ProgramElementID.ToString(); name = wbspe.ProgramElementName; ProgramID = wbspe.Program.ProgramID.ToString();
             ProgramElementManager = wbspe.ProgramElementManager; ProgramElementSponsor = wbspe.ProgramElementSponsor;
             ProgramElementManagerID = wbspe.ProgramElementManagerID; ProgramElementSponsorID = wbspe.ProgramElementSponsorID;
+           
             ClientID = wbspe.ClientID; LocationID = wbspe.LocationID; ProjectManagerID = wbspe.ProjectManagerID; DirectorID = wbspe.DirectorID; SchedulerID = wbspe.SchedulerID;
             VicePresidentID = wbspe.VicePresidentID; FinancialAnalystID = wbspe.FinancialAnalystID; CapitalProjectAssistantID = wbspe.CapitalProjectAssistantID;
             CostDescription = wbspe.CostDescription; ScheduleDescription = wbspe.ScheduleDescription; ScopeQualityDescription = wbspe.ScopeQualityDescription;
@@ -574,6 +634,8 @@ namespace WebAPI.Models
             name = wbspe.ProgramElementName;//Drew
             ProgramElementName = wbspe.ProgramElementName;
             ClientProjectManager = wbspe.ClientProjectManager;
+			ProjectClassName = ProjectClass.getProjectClassById(wbspe.ProjectClassID).ProjectClassName.ToString();
+            ProgramElementNumber = wbspe.ProgramElementNumber;
 
             // Jignesh-25-02-2021
             ProjectPStartDate = (wbspe.ProjectPStartDate != null ? wbspe.ProjectPStartDate.Value.ToString("yyyy-MM-dd") : "");
@@ -586,6 +648,26 @@ namespace WebAPI.Models
             ForecastStartDate = (wbspe.ForecastStartDate != null ? wbspe.ForecastStartDate.Value.ToString("yyyy-MM-dd") : "");
             ForecastEndDate = (wbspe.ForecastEndDate != null ? wbspe.ForecastEndDate.Value.ToString("yyyy-MM-dd") : "");
             CurrentCost = wbspe.CurrentCost; ForecastCost = wbspe.ForecastCost;
+            BillingPOC = wbspe.BillingPOC;
+            BillingPOCPhone1 = wbspe.BillingPOCPhone1;
+            BillingPOCPhone2 = wbspe.BillingPOCPhone2;
+            
+            BillingPOCAddressLine1 = wbspe.BillingPOCAddressLine1;
+            BillingPOCAddressLine2 = wbspe.BillingPOCAddressLine2;
+            BillingPOCCity = wbspe.BillingPOCCity;
+            BillingPOCState = wbspe.BillingPOCState;
+            BillingPOCPONo = wbspe.BillingPOCPONo;
+            
+            BillingPOCEmail = wbspe.BillingPOCEmail;
+            BillingPOCSpecialInstruction = wbspe.BillingPOCSpecialInstruction;
+            TMBilling = wbspe.TMBilling;
+            SOVBilling = wbspe.SOVBilling;
+            MonthlyBilling = wbspe.MonthlyBilling;
+            CertifiedPayroll = wbspe.CertifiedPayroll;
+            Lumpsum = wbspe.Lumpsum;
+
+            ClientPONumber = wbspe.ClientPONumber;
+            Status = wbspe.Status;   //----Vaishnavi 30-03-2022----//
 
             // Jignesh-21-10-2021
             List<ProjectAccessControl> projectAccessControlsList = ProjectAccessControl.GetContractModificationList(uId);
@@ -718,6 +800,9 @@ namespace WebAPI.Models
         public String CurrentCost;
         [DataMember]
         public String ForecastCost;
+        //Aditya 21022022
+        [DataMember]
+        public String originalEndDate;
         [DataMember]
         public String level = "Program";
         [DataMember]
@@ -731,8 +816,96 @@ namespace WebAPI.Models
         [DataMember]
         public String JobNumber;  //Manasi  04-08-2020
 
+        [DataMember]       
+        public List<int> CertifiedPayrollIDS;     //Vaishnavi 12-04-2022
+
+        [DataMember]
+        public String IsCertifiedPayrollChecked;
+
+        [DataMember]
+        public List<String> ProgramPrevailingWagesList;
+
+        [DataMember]
+        public String IsPrevailingWageChecked;
+
+        [DataMember]
+        public List<int> WrapIDS;
+        [DataMember]
+        public String IsWrapChecked;    //Vaishnavi 12-04-2022
+
+        [DataMember]
+        public String IsPPBond;
+        [DataMember]
+        public String PrimeSubPrime;
+        [DataMember]
+        public String PrimeParent;
+        [DataMember]
+        public String IsCostPartOfContract;
+        [DataMember]
+        public String PPBondNotes;
+        [DataMember]
+        public String ProgramNote;
+
+        [DataMember]
+        public String preliminaryNoticeDate;
+
+        [DataMember]
+        public String preliminaryNoticeReason;
+
+        [DataMember]
+        public  List<ProgramNotes> programnotesList;
+
+        [DataMember]
+        public List<PrelimnaryNotice> prelimnaryNoticeList;
+
+        [DataMember]
+        public String LaborWarranty;     //Vaishnavi 12-04-2022
+        [DataMember]
+        public String MaterialsWarranty;
+        [DataMember]
+        public String OtherWarranty;
+        [DataMember]
+        public String LaborStartDate;
+        [DataMember]
+        public String LaborEndDate;
+        [DataMember]
+        public String MaterialsStartDate;
+        [DataMember]
+        public String MaterialsEndDate;
+        [DataMember]
+        public String OtherStartDate;
+        [DataMember]
+        public String OtherEndDate;
+        [DataMember]
+        public String LaborDescription;
+        [DataMember]
+        public String MaterialsDescription;
+        [DataMember]
+        public String OtherDescription;
+
+        [DataMember]
+        public ProgramWarranty LaborWarrantyList;
+        [DataMember]
+        public ProgramWarranty MaterialsWarrantyList;
+        [DataMember]
+        public ProgramWarranty OtherWarrantyList;    //Vaishnavi 12-04-2022
+
         [DataMember]
         public List<ProgramElementWBSTree> children = new List<ProgramElementWBSTree>();
+
+        [DataMember]
+        public String Status;   //----Vaishnavi 30-03-2022----//
+
+        //Aditya PMDD 05052022
+        //[DataMember]
+        //public List<ContractProjectManager> ContractProjectManager;
+        //Aditya PMDD 05052022
+        [DataMember]
+        public List<ContractProjectManager> PManagerIDS;
+
+
+        [DataMember]
+        public String ReportingTo;    //Vaishnavi 12-04-2022
         public ProgramWBSTree(Project proj, Program wbsprg, List<ProgramElementWBSTree> prge)
         {
             ProgramID = wbsprg.ProgramID.ToString();
@@ -777,7 +950,67 @@ namespace WebAPI.Models
             Lumpsum = wbsprg.Lumpsum;
             ContractValue = wbsprg.ContractValue;   //Manasi 14-07-2020
             JobNumber = wbsprg.JobNumber;   //Manasi  04-08-2020
+            CPPDbContext ctx = new CPPDbContext();      //Vaishnavi 12-04-2022
+            CertifiedPayrollIDS = ctx.ProgramCertifiedPayroll.Where(c => c.ProgramID == wbsprg.ProgramID).Select(x => x.CertifiedPayrollID).ToList();
+            IsCertifiedPayrollChecked = wbsprg.IsCertifiedPayrollChecked;
+            ProgramPrevailingWagesList = ctx.ProgramPrevailingWage.Where(c => c.ProgramID == wbsprg.ProgramID).Select(x => x.Description).ToList();
+            IsPrevailingWageChecked = wbsprg.IsPrevailingWageChecked;
+            WrapIDS = ctx.ProgramWrap.Where(c => c.ProgramID == wbsprg.ProgramID).Select(x => x.WrapID).ToList();
+            IsWrapChecked = wbsprg.IsWrapChecked;
+            ReportingTo = wbsprg.ReportingTo;      //Vaishnavi 12-04-2022
+            IsPPBond = wbsprg.IsPPBond;
+            IsCostPartOfContract = wbsprg.IsCostPartOfContract;
+            PPBondNotes = wbsprg.PPBondNotes;
+            //List<ProgramNotes> ProgramNotesList = new List<ProgramNotes>();
+            programnotesList = ProgramNotes.getProgramNotes(Convert.ToInt32(ProgramID));
+            ProgramNote = programnotesList.Max(m => m.notes_desc);
+            //ProgramNote = LatestNote.ToString(;
 
+            //prelimnaryNoticeList = PrelimnaryNotice.GetPrelimnaryNoticeList(Convert.ToInt32(ProgramID));
+            
+            //if (prelimnaryNoticeList.Count > 0)
+            //{
+            //    preliminaryNoticeDate = prelimnaryNoticeList.Max(m => m.Date).ToString("yyyy-MM-dd");
+            //    preliminaryNoticeReason = prelimnaryNoticeList.Max(m => m.Reason);
+            //}
+            //else
+            //{
+            //    preliminaryNoticeDate = "";
+            //    preliminaryNoticeReason = "";
+            //}
+             
+
+
+            PrimeSubPrime = wbsprg.PrimeSubPrime;
+            PrimeParent = wbsprg.PrimeParent;
+            PManagerIDS = ctx.ContractProjectManagers.Where(w => w.ProgramId == wbsprg.ProgramID).ToList();  //Aditya PMDD 05052022
+            //ContractProjectManager = ctx.ContractProjectManagers.Where(w => w.ProgramId == wbsprg.ProgramID).ToList();
+
+            //LaborWarranty = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Labor Warranty").Select(p => p.WarrantyDescription).FirstOrDefault();    //Vaishnavi 12-04-2022
+            //MaterialsWarranty = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Materials Warranty").Select(p => p.WarrantyDescription).FirstOrDefault();
+            //OtherWarranty = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Other Warranty").Select(p => p.WarrantyDescription).FirstOrDefault();
+
+            //wbsprg.LaborStartDate = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Labor Warranty").Select(p => p.StartDate).FirstOrDefault();
+            //wbsprg.MaterialsStartDate = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Materials Warranty").Select(p => p.StartDate).FirstOrDefault();
+            //wbsprg.OtherStartDate = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Other Warranty").Select(p => p.StartDate).FirstOrDefault();
+            //wbsprg.LaborEndDate = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Labor Warranty").Select(p => p.EndDate).FirstOrDefault();
+            //wbsprg.MaterialsEndDate = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Materials Warranty").Select(p => p.EndDate).FirstOrDefault();
+            //wbsprg.OtherEndDate = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Other Warranty").Select(p => p.EndDate).FirstOrDefault();
+
+            //LaborStartDate = (wbsprg.LaborStartDate != null ? wbsprg.LaborStartDate.Value.ToString("yyyy-MM-dd") : "");
+            //MaterialsStartDate = (wbsprg.MaterialsStartDate != null ? wbsprg.MaterialsStartDate.Value.ToString("yyyy-MM-dd") : "");
+            //OtherStartDate = (wbsprg.OtherStartDate != null ? wbsprg.OtherStartDate.Value.ToString("yyyy-MM-dd") : "");
+            //LaborEndDate = (wbsprg.LaborEndDate != null ? wbsprg.LaborEndDate.Value.ToString("yyyy-MM-dd") : "");
+            //MaterialsEndDate = (wbsprg.MaterialsEndDate != null ? wbsprg.MaterialsEndDate.Value.ToString("yyyy-MM-dd") : "");
+            //OtherEndDate = (wbsprg.OtherEndDate != null ? wbsprg.OtherEndDate.Value.ToString("yyyy-MM-dd") : "");
+
+            //LaborDescription = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Labor Warranty").Select(p => p.Description).FirstOrDefault();
+            //MaterialsDescription = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Materials Warranty").Select(p => p.Description).FirstOrDefault();
+            //OtherDescription = ctx.ProgramWarranty.Where(w => w.ProgramID == wbsprg.ProgramID && w.WarrantyType == "Other Warranty").Select(p => p.Description).FirstOrDefault();     //Vaishnavi 12-04-2022
+
+
+
+            originalEndDate = (wbsprg.originalEndDate != null ? wbsprg.originalEndDate.Value.ToString("yyyy-MM-dd") : ""); // Aditya 21022022
             ProgramManagerID = wbsprg.ProgramManagerID; ProgramSponsorID = wbsprg.ProgramSponsorID; ProjectClassID = wbsprg.ProjectClassID;
             CurrentStartDate = (wbsprg.CurrentStartDate != null ? wbsprg.CurrentStartDate.Value.ToString("yyyy-MM-dd") : "");
             CurrentEndDate = (wbsprg.CurrentEndDate != null ? wbsprg.CurrentEndDate.Value.ToString("yyyy-MM-dd") : "");
@@ -787,15 +1020,17 @@ namespace WebAPI.Models
             ForecastCost = String.Format("{0:#,###0}", wbsprg.ForecastCost);
             //programFunds = wbsprg.programFunds.ToList(); programCategories = wbsprg.programCategories.ToList();
             children = prge;
+            Status= wbsprg.Status;   //----Vaishnavi 30-03-2022----//
+
         }
 
         public static List<ProgramWBSTree> getWBSTreeDetails(int uId, String OrganizationID, String ProgramID, String ProgramElementID, String ProjectID,
-            String TrendNumber, String PhaseCode, String ActivityID, String BudgetCategory, String BudgetSubCategory,string AllData = "null")
+            String TrendNumber, String PhaseCode, String ActivityID, String BudgetCategory, String BudgetSubCategory,string AllData = "null", String DeptID = "null")
         {
             List<ProgramWBSTree> matchedWBSTree = new List<ProgramWBSTree>();
             List<ProjectWBSTree> ProjectList = new List<ProjectWBSTree>();
             List<ProgramElementWBSTree> ProgramElementList = new List<ProgramElementWBSTree>();
-
+            
             //Single Project
             if (ProjectID != "null")
             {
@@ -844,9 +1079,19 @@ namespace WebAPI.Models
                     List<ProgramElement> returnedProgramElements = new List<ProgramElement>();//ProgramElement.getProgramElement(tempProgram.ProgramID.ToString(), "null", "null");
                     foreach(ProgramElement pe in allProgramElements)
                     {
-                        if(pe.ProgramID == tempProgram.ProgramID)
+                        if (DeptID != "null" && DeptID != "undefined")
                         {
-                            returnedProgramElements.Add(pe);
+                            if (pe.ProgramID == tempProgram.ProgramID && pe.ProjectClassID == Convert.ToInt32(DeptID))
+                            {
+                                returnedProgramElements.Add(pe);
+                            }
+                        }
+                        else
+                        {
+                            if (pe.ProgramID == tempProgram.ProgramID)
+                            {
+                                returnedProgramElements.Add(pe);
+                            }
                         }
                     }
                     // List<Project> returnProjects = Project.getProject(ProjectList[0].ProgramID, ProjectList[0].ProgramElementID, ProjectList[0].ProjectID, "null");

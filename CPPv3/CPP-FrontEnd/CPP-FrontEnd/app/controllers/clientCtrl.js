@@ -64,6 +64,13 @@
                 ClientID: '',
                 ClientName: '',
                 ClientDescription: '',
+                ClientPhone: '',                         //Tanmay - 15/12/2021
+                ClientEmail: '',
+                ClientAddressLine1: '',
+                ClientAddressLine2: '',
+                ClientCity: '',
+                ClientState: '',
+                ClientPONo: '',
                 UniqueIdentityNumber: '',
                 checkbox: false,
                 new: true
@@ -84,7 +91,7 @@
                 currentPoint = "BC" + ((parseInt(currentPoint.substr(2)) + 1)).toString().padStart(5, '0');
                 $scope.ClientCollection[$scope.ClientCollection.length - 1].UniqueIdentityNumber = currentPoint;
             }
-
+            $scope.gridApi.core.clearAllFilters();//Nivedita-T on 17/11/2021
             console.log($scope.ClientCollection[$scope.ClientCollection.length - 1]);
 
             $timeout(function () {
@@ -114,9 +121,9 @@
             }
         }
 
-       
 
-       
+
+
         $scope.gridOptions = {
             enableColumnMenus: false,
             enableCellEditOnFocus: true,
@@ -151,7 +158,7 @@
 
                 },{
                     field: 'ClientName',
-                    name: 'Name',
+                    name: 'Name*',
                     enableCellEditOnFocus: true,
                     widith: 300,
                     filter: {
@@ -173,6 +180,111 @@
                     //cellFilter :'mapStatus'
 
 
+                }, {                                         //Tanmay - 15/12/2021
+                    field: 'ClientPhone',
+                    name: 'Phone Number',
+                    enableCellEditOnFocus: true,
+                    widith: 300,
+                    filter: {
+                        condition: function (searchTerm, cellValue, test) {
+                            //console.log(searchTerm, ' ',  cellValue, ' ', test);
+                            $scope.filterInput = searchTerm;
+                            return cellValue.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0;
+                        }
+                    }
+                    //   enableCellEdit :true,
+                    //  editableCellTemplate: $scope.cellInputEditableTemplate,
+                    // cellFilter : 'mapStatus'
+                },{
+                    field: 'ClientEmail',
+                    name: 'Email Address',
+                    enableCellEditOnFocus: true,
+                    widith: 300,
+                    filter: {
+                        condition: function (searchTerm, cellValue, test) {
+                            //console.log(searchTerm, ' ',  cellValue, ' ', test);
+                            $scope.filterInput = searchTerm;
+                            return cellValue.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0;
+                        }
+                    }
+                    //   enableCellEdit :true,
+                    //  editableCellTemplate: $scope.cellInputEditableTemplate,
+                    // cellFilter : 'mapStatus'
+                },{
+                    field: 'ClientAddressLine1',
+                    name: 'Address Line 1',
+                    enableCellEditOnFocus: true,
+                    widith: 300,
+                    filter: {
+                        condition: function (searchTerm, cellValue, test) {
+                            //console.log(searchTerm, ' ',  cellValue, ' ', test);
+                            $scope.filterInput = searchTerm;
+                            return cellValue.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0;
+                        }
+                    }
+                    //   enableCellEdit :true,
+                    //  editableCellTemplate: $scope.cellInputEditableTemplate,
+                    // cellFilter : 'mapStatus'
+                },{
+                    field: 'ClientAddressLine2',
+                    name: 'Address Line 2',
+                    enableCellEditOnFocus: true,
+                    widith: 300,
+                    filter: {
+                        condition: function (searchTerm, cellValue, test) {
+                            //console.log(searchTerm, ' ',  cellValue, ' ', test);
+                            $scope.filterInput = searchTerm;
+                            return cellValue.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0;
+                        }
+                    }
+                    //   enableCellEdit :true,
+                    //  editableCellTemplate: $scope.cellInputEditableTemplate,
+                    // cellFilter : 'mapStatus'
+                },{
+                    field: 'ClientCity',
+                    name: 'City',
+                    enableCellEditOnFocus: true,
+                    widith: 300,
+                    filter: {
+                        condition: function (searchTerm, cellValue, test) {
+                            //console.log(searchTerm, ' ',  cellValue, ' ', test);
+                            $scope.filterInput = searchTerm;
+                            return cellValue.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0;
+                        }
+                    }
+                    //   enableCellEdit :true,
+                    //  editableCellTemplate: $scope.cellInputEditableTemplate,
+                    // cellFilter : 'mapStatus'
+                },{
+                    field: 'ClientState',
+                    name: 'State',
+                    enableCellEditOnFocus: true,
+                    widith: 300,
+                    filter: {
+                        condition: function (searchTerm, cellValue, test) {
+                            //console.log(searchTerm, ' ',  cellValue, ' ', test);
+                            $scope.filterInput = searchTerm;
+                            return cellValue.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0;
+                        }
+                    }
+                    //   enableCellEdit :true,
+                    //  editableCellTemplate: $scope.cellInputEditableTemplate,
+                    // cellFilter : 'mapStatus'
+                },{
+                    field: 'ClientPONo',
+                    name: 'Zip Code',
+                    enableCellEditOnFocus: true,
+                    widith: 300,
+                    filter: {
+                        condition: function (searchTerm, cellValue, test) {
+                            //console.log(searchTerm, ' ',  cellValue, ' ', test);
+                            $scope.filterInput = searchTerm;
+                            return cellValue.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0;
+                        }
+                    }
+                    //   enableCellEdit :true,
+                    //  editableCellTemplate: $scope.cellInputEditableTemplate,
+                    // cellFilter : 'mapStatus'
                 }, {
                     field: 'UniqueIdentityNumber',
                     name: 'Unique Identifier',
@@ -292,6 +404,35 @@
             var listToSave = [];
             angular.forEach($scope.ClientCollection, function (value, key, obj) {
 
+                //if (!(/(BC[0-9]{5})/.test(value.UniqueIdentityNumber) && value.UniqueIdentityNumber.length == 7)) {
+                //    dhtmlx.alert({
+                //        text: "Unique identifier must be in the format of BCxxxxx (Row " + value.displayId + ")",
+                //        width: "400px"
+                //    });
+                //    okToExit = false;
+                //    isFilled = false;
+                //    return;
+                //}
+                if (value.ClientPhone != null) {
+                    if (value.ClientPhone.length > 0) {
+                        if (value.ClientPhone.length != 10) {
+                            dhtmlx.alert('Enter valid 10 digit Client Phone.');
+                            isFilled = false;
+                            return true;
+                        }
+                    }
+                }
+                if (value.ClientEmail != null) {
+                    if (value.ClientEmail.length > 0) {
+                        var testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+                        if (!testEmail.test(value.ClientEmail)) {
+                            dhtmlx.alert('Please enter valid Email Address.');
+                            isFilled = false;
+                            return;
+                        }
+                    }
+                }
+
                 if (value.ClientName == "" || value.UniqueIdentityNumber == "") {
                     dhtmlx.alert({
                         text: "Please fill data to all required fields before save (Row " + value.displayId + ")",
@@ -302,16 +443,7 @@
                     return;
                 }
 
-                //if (!(/(BC[0-9]{5})/.test(value.UniqueIdentityNumber) && value.UniqueIdentityNumber.length == 7)) {
-                //    dhtmlx.alert({
-                //        text: "Unique identifier must be in the format of BCxxxxx (Row " + value.displayId + ")",
-                //        width: "400px"
-                //    });
-                //    okToExit = false;
-                //    isFilled = false;
-                //    return;
-                //}
-
+                
                 if (isFilled == false) {
                     return;
                 }
@@ -323,6 +455,13 @@
                         Operation: '1',
                         ClientName: value.ClientName,
                         ClientDescription: value.ClientDescription,
+                        ClientPhone: value.ClientPhone,             //Tanmay - 15/12/2021
+                        ClientEmail: value.ClientEmail,
+                        ClientAddressLine1: value.ClientAddressLine1,
+                        ClientAddressLine2: value.ClientAddressLine2,
+                        ClientCity: value.ClientCity,
+                        ClientState: value.ClientState,
+                        ClientPONo: value.ClientPONo,
                         UniqueIdentityNumber: value.UniqueIdentityNumber
                     }
                     listToSave.push(dataObj);
@@ -336,6 +475,13 @@
                         if (value.ClientID === orgItem.ClientID &&
                             value.ClientName === orgItem.ClientName &&
                             value.ClientDescription === orgItem.ClientDescription &&
+                            value.ClientPhone === orgItem.ClientPhone &&                //Tanmay - 15/12/2021
+                            value.ClientEmail === orgItem.ClientEmail &&
+                            value.ClientAddressLine1 === orgItem.ClientAddressLine1 &&
+                            value.ClientAddressLine2 === orgItem.ClientAddressLine2 &&
+                            value.ClientCity === orgItem.ClientCity &&
+                            value.ClientState === orgItem.ClientState &&
+                            value.ClientPONo === orgItem.ClientPONo &&
                             value.UniqueIdentityNumber === orgItem.UniqueIdentityNumber) {
                             isChanged = false;
                             okToExit = true;
@@ -347,6 +493,13 @@
                             ClientID: value.ClientID,
                             ClientName: value.ClientName,
                             ClientDescription: value.ClientDescription,
+                            ClientPhone: value.ClientPhone,                 //Tanmay - 15/12/2021
+                            ClientEmail: value.ClientEmail,
+                            ClientAddressLine1: value.ClientAddressLine1,
+                            ClientAddressLine2: value.ClientAddressLine2,
+                            ClientCity: value.ClientCity,
+                            ClientState: value.ClientState,
+                            ClientPONo: value.ClientPONo,
                             UniqueIdentityNumber: value.UniqueIdentityNumber
                         }
                     } else {
@@ -355,6 +508,13 @@
                             ClientID: value.ClientID,
                             ClientName: value.ClientName,
                             ClientDescription: value.ClientDescription,
+                            ClientPhone: value.ClientPhone,                 //Tanmay - 15/12/2021
+                            ClientEmail: value.ClientEmail,
+                            ClientAddressLine1: value.ClientAddressLine1,
+                            ClientAddressLine2: value.ClientAddressLine2,
+                            ClientCity: value.ClientCity,
+                            ClientState: value.ClientState,
+                            ClientPONo: value.ClientPONo,
                             UniqueIdentityNumber: value.UniqueIdentityNumber
                         }
                     }
@@ -434,6 +594,13 @@
                             ClientID: item.ClientID,
                             ClientName: item.ClientName,
                             ClientDescription: item.ClientDescription,
+                            ClientPhone: item.ClientPhone,                  //Tanmay - 15/12/2021
+                            ClientEmail: item.ClientEmail,
+                            ClientAddressLine1: item.ClientAddressLine1,
+                            ClientAddressLine2: item.ClientAddressLine2,
+                            ClientCity: item.ClientCity,
+                            ClientState: item.ClientState,
+                            ClientPONo: item.ClientPONo,
                             UniqueIdentityNumber: item.UniqueIdentityNumber,
                             displayId: item.displayId
                         }
@@ -508,6 +675,13 @@
                             // compare relevant data
                             if (originalObject.ClientName !== currentObject.ClientName ||
                                 originalObject.ClientDescription !== currentObject.ClientDescription ||
+                                originalObject.ClientPhone !== currentObject.ClientPhone ||                 //Tanmay - 15/12/2021
+                                originalObject.ClientEmail !== currentObject.ClientEmail ||
+                                originalObject.ClientAddressLine1 !== currentObject.ClientAddressLine1 ||
+                                originalObject.ClientAddressLine2 !== currentObject.ClientAddressLine2 ||
+                                originalObject.ClientCity !== currentObject.ClientCity ||
+                                originalObject.ClientState !== currentObject.ClientState ||
+                                originalObject.ClientPONo !== currentObject.ClientPONo ||
                                 originalObject.UniqueIdentityNumber !== currentObject.UniqueIdentityNumber) {
                                 // alert if a change has not been saved
                                 unSavedChanges = true;
@@ -562,3 +736,4 @@
         });
 
     }]);
+
