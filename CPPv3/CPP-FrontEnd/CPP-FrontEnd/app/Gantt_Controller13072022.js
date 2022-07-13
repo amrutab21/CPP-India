@@ -3688,7 +3688,6 @@ angular.module('xenon.Gantt_Controller', []).
                     confirm_deleting: "The selected item will be deleted permanently, are you sure?",
                     main: "Main activity",
 
-                    //section_details:"WBS Category",
                     section_mainphase: "WBS Category",
                     section_subphase: "WBS Sub Category",
                     section_start_date: "Start Date",
@@ -12760,145 +12759,21 @@ angular.module('xenon.Gantt_Controller', []).
                         });
                 }
 
-               
-
-                //--------------------------------Custom lightbox control--------------------------------
-                $scope.scheduleGanttInstance.form_blocks["CustomDDMainCategory"] = {
-                    render: function (config) { // config- section configuration object
-                        var height = (config.height || 50) + "px";
-                        
-                        return "<div class='dhx_cal_ltext' style='height: 60px;padding-left: 6px;'><select id='ddMainCategory' class='class='mySelect' style='width: 532px'>" +
-                            " <option value='' selected hidden>--select WBS Category--</option>" +
-                            "</select></div> ";
-                           
-                    },
-                    set_value: function (node, value, ev, config) {
-                        // node - HTML object related to HTML defined above
-                        // value - value defined by map_to property
-                        // ev - event object
-                        // config - section configuration object
-
-                        for (var i = 0; i < $scope.MainCategory.length; i++) {
-                            $('#ddMainCategory').append($('<option>').val($scope.MainCategory[i].key).text($scope.MainCategory[i].label));
-                        }
-                        
-                        
-                        $('#ddMainCategory').chosen();
-                        $('#ddMainCategory').unbind().chosen().change(function (e) {
-                            
-                            var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
-                            var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-                            var startDate = $scope.scheduleGanttInstance.getLightboxSection('start_date');
-                            var endDate = $scope.scheduleGanttInstance.getLightboxSection('end_date');
-                            var selected = $(this).val();
-                            
-
-                            var index; //Category Id of parent
-                            $scope.subCategory = [];
-                            for (var i = 0; i < MainCategory.length; i++) {
-                                if (main.getValue() === MainCategory[i].CategoryDescription) {
-                                    index = MainCategory[i].CategoryID;
-                                    vId = MainCategory[i].VersionId;
-                                }
-                            }
-                            var phaseid = $scope.scheduleGanttInstance.getTask($scope.lightBoxTask.parent).PhaseID;
-                            
-                            $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + phaseid + "/" + index + "/" + vId).then(function (response) {
-                                var subCategory = response.data.result;
-                                for (var i = 0; i < subCategory.length; i++) {
-                                    var obj = {};
-                                    obj.key = subCategory[i].SubCategoryDescription;
-                                    obj.label = subCategory[i].SubCategoryDescription; //Jignesh-T-Unknown
-                                    $scope.subCategory.push(obj);
-
-                                }
-                                var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-
-                                //escape html tags
-                                for (var x = 0; x < $scope.subCategory.length; x++) {
-                                    $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                                    $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                                }
-                                
-                                
-                                for (var i = 0; i < $scope.subCategory.length; i++) {
-                                    $('#ddSubCategory').append($('<option>').val($scope.subCategory[i].key).text($scope.subCategory[i].label));
-                                }
-                                $('#ddSubCategory').chosen();
-                                $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
-                                $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
-                                //main.setValue(selected);
-                                //$('#ddMainCategory').val(selected).trigger("chosen:updated");
-                                
-                            });
-                            
-                            
-                            
-                            
-
-                        });
-                        
-                        
-                    },
-                    get_value: function (node, ev, config) {
-                        // node - HTML object related to HTML defined above
-                        // event object
-                        // config - section configuration object
-                        
-                        return node.querySelector("select").value;
-                    },
-                    focus: function (node) {
-                        // node - HTML object related to HTML defined above
-                        node.querySelector("select").focus();
-                    }
-                    
-                };
 
 
-                $scope.scheduleGanttInstance.form_blocks["CustomDDSubCategory"] = {
-                    render: function (config) { // config- section configuration object
-                        var height = (config.height || 50) + "px";
-                        return "<div class='dhx_cal_ltext' style='height: 60px;padding-left: 6px;'><select id='ddSubCategory' style='width: 532px'>" +
-                            " <option value='' selected hidden>--select WBS sub Category--</option>" +
-                            "</select></div> ";
 
-                    },
-                    set_value: function (node, value, ev, config) {
-                        // node - HTML object related to HTML defined above
-                        // value - value defined by map_to property
-                        // ev - event object
-                        // config - section configuration object
-
-                        for (var i = 0; i < $scope.subCategory.length; i++) {
-                            $('#ddSubCategory').append($('<option>').val($scope.subCategory[i].key).text($scope.subCategory[i].label));
-                        }
-
-                        $('#ddSubCategory').chosen();
-
-                    },
-                    get_value: function (node, ev, config) {
-                        debugger;
-                        // node - HTML object related to HTML defined above
-                        // event object
-                        // config - section configuration object
-                        return node.querySelector("select").value;
-                    },
-                    
-                    focus: function (node) {
-                        // node - HTML object related to HTML defined above
-                        node.querySelector("select").focus();
-                    }
-                };
-                //--------------------------------END Custom lightbox control--------------------------------
                 //----END PURCHASE ORDER
 
                 if (isCurrentTrend) {
-                    debugger;
                     $scope.scheduleGanttInstance.config.lightbox.sections = [
                         {
-                            name: "mainphase", height: 38, map_to: "mainCategory", type: "CustomDDMainCategory", focus: true,
-                                onchange: function () {
-
+                            name: "mainphase",
+                            height: 38,
+                            map_to: "mainCategory",
+                            type: "select",
+                            options: $scope.scheduleGanttInstance.serverList("main", $scope.MainCategory),
+                            focus: true,
+                            onchange: function () {
                                 var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
                                 var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
                                 var startDate = $scope.scheduleGanttInstance.getLightboxSection('start_date');
@@ -12945,74 +12820,16 @@ angular.module('xenon.Gantt_Controller', []).
                                 });
                             }
                         },
-                        //{
-                        //    name: "mainphase",
-                        //    height: 38,
-                        //    map_to: "mainCategory",
-                        //    type: "select",
-                        //    options: $scope.scheduleGanttInstance.serverList("main", $scope.MainCategory),
-                        //    focus: true,
-                        //    onchange: function () {
-                                
-                        //        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
-                        //        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-                        //        var startDate = $scope.scheduleGanttInstance.getLightboxSection('start_date');
-                        //        var endDate = $scope.scheduleGanttInstance.getLightboxSection('end_date');
-
-                        //        $scope.temp = main.getValue();
-                        //        $scope.tempSub = sub.getValue();
-                        //        $scope.lightBoxStartDate = startDate.getValue();
-                        //        $scope.lightBoxEndDate = endDate.getValue();
-
-                        //        var index; //Category Id of parent
-                        //        $scope.subCategory = [];
-                        //        for (var i = 0; i < MainCategory.length; i++) {
-                        //            if (main.getValue() === MainCategory[i].CategoryDescription) {
-                        //                index = MainCategory[i].CategoryID;
-                        //                vId = MainCategory[i].VersionId;
-                        //            }
-                        //        }
-
-                        //        //   GanttCategory.getSubCategory().get({ProgramID:delayedData[2].result[0].ProgramID, Phase:$scope.lightBoxTask.parent , CategoryID: index },function(response){
-                        //        //  ProgramCategory.getSubActivityCategoryProgram().get({Phase:$scope.lightBoxTask.parent, CateogryID: index},function(response){
-
-                        //        var phaseid = $scope.scheduleGanttInstance.getTask($scope.lightBoxTask.parent).PhaseID;
-                        //        $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + phaseid + "/" + index + "/" + vId).then(function (response) {
-                        //            var subCategory = response.data.result;
-                        //            for (var i = 0; i < subCategory.length; i++) {
-                        //                var obj = {};
-                        //                obj.key = subCategory[i].SubCategoryDescription;
-                        //                obj.label = subCategory[i].SubCategoryDescription; //Jignesh-T-Unknown
-                        //                $scope.subCategory.push(obj);
-
-                        //            }
-                        //            var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-
-                        //            //escape html tags
-                        //            for (var x = 0; x < $scope.subCategory.length; x++) {
-                        //                $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //                $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //            }
-
-                        //            $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
-                        //            $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
-
-                        //        });
-                        //    }
-                        //},
                         {
-                            name: "subphase", height: 38, map_to: "subCategory", type: "CustomDDSubCategory", focus: true,
+                            name: "subphase",
+                            height: 38,
+                            map_to: "subCategory",
+                            type: "select",
+                            options: $scope.scheduleGanttInstance.serverList("sub", $scope.subCategory),
+                            focus: true,
+                            onchange: function () {
+                            }
                         },
-                        //{
-                        //    name: "subphase",
-                        //    height: 38,
-                        //    map_to: "subCategory",
-                        //    type: "select",
-                        //    options: $scope.scheduleGanttInstance.serverList("sub", $scope.subCategory),
-                        //    focus: true,
-                        //    onchange: function () {
-                        //    }
-                        //},
                         { name: "start_date", single_date: true, height: 38, map_to: "start_date", type: "duration", year_range: 100 },
                         { name: "end_date", single_date: true, height: 38, map_to: "end_date", type: "duration", year_range: 100 },
                         {
@@ -13027,10 +12844,14 @@ angular.module('xenon.Gantt_Controller', []).
                         },
                     ];
                 } else {
-                    debugger;
                     $scope.scheduleGanttInstance.config.lightbox.sections = [
                         {
-                            name: "mainphase", height: 38, map_to: "mainCategory", type: "CustomDDMainCategory", focus: true,
+                            name: "mainphase",
+                            height: 38,
+                            map_to: "mainCategory",
+                            type: "select",
+                            options: $scope.scheduleGanttInstance.serverList("main", $scope.MainCategory),
+                            focus: true,
                             onchange: function () { //luan 3/28
                                 //console.log($scope.selectedPhase);
                                 var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
@@ -13247,383 +13068,156 @@ angular.module('xenon.Gantt_Controller', []).
                                 });
                             }
                         },
-                        
-                        //{
-                        //    name: "mainphase",
-                        //    height: 38,
-                        //    map_to: "mainCategory",
-                        //    type: "select",
-                        //    options: $scope.scheduleGanttInstance.serverList("main", $scope.MainCategory),
-                        //    focus: true,
-                        //    onchange: function () { //luan 3/28
-                        //        //console.log($scope.selectedPhase);
-                        //        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
-                        //        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-                        //        var startDate = $scope.scheduleGanttInstance.getLightboxSection('start_date');
-                        //        var endDate = $scope.scheduleGanttInstance.getLightboxSection('end_date');
-
-                        //        $scope.temp = main.getValue();
-                        //        $scope.tempSub = sub.getValue();
-                        //        $scope.lightBoxStartDate = startDate.getValue();
-                        //        $scope.lightBoxEndDate = endDate.getValue();
-
-                        //        //luan 3/29
-                        //        if (main.getValue() != 'Add New') {
-                        //            PREVIOUSMAIN = main.getValue();
-                        //            //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-                        //        }
-                        //        PREVIOUSSUB = sub.getValue();
-
-                        //        //console.log(main.getValue());
-                        //        if (main.getValue() == 'Add New') {
-                        //            //luan 3/29
-                        //            //main.setValue('');   //reset
-                        //            //sub.setValue('');   //reset
-
-                        //            var scope = $rootScope.$new();
-
-                        //            scope.params = {
-                        //                phase: $scope.selectedPhase,
-                        //                phaseList: $scope.phases,
-                        //                organizationID: $scope.OrganizationID,
-                        //                mainCategory: MainCategory, // Jignesh 06-10-2020
-                        //            }
-
-                        //            //console.log(scope.params);
-
-                        //            $rootScope.modalInstance = $uibModal.open({
-                        //                backdrop: 'static',
-                        //                keyboard: false,
-                        //                scope: scope,
-                        //                templateUrl: "app/views/modal/add_main_sub_category_modal.html",
-                        //                size: "md",
-                        //                controller: "AddMainSubCategoryModalCtrl"
-                        //            });
-                        //            $rootScope.modalInstance.result.then(function (response) {
-
-
-                        //                //console.log(response);
-                        //                $('.gantt_cal_cover').show();
-                        //                $('.gantt_cal_light').css('z-index', '10001');  //restore
-
-                        //                //luan 3/29
-                        //                if (response.status == 'Cancel') {
-                        //                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-
-                        //                    main.setValue(PREVIOUSMAIN);   //revert history
-                        //                    //sub.setValue(PREVIOUSSUB);   //revert history
-
-                        //                    PREVIOUSMAIN = main.getValue();
-                        //                    PREVIOUSSUB = sub.getValue();
-                        //                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-                        //                }
-
-                        //                if (response.status == 'Success') {
-                        //                    ProgramCategory.getMainActivityCategoryProgram().get({ "Phase": $scope.selectedPhase.PhaseID, "OrganizationID": $scope.OrganizationID, "ProjectId": delayedData[2].result[0].ProjectID }, function (CategoryListData) {
-                        //                        //console.log(CategoryListData.result);
-                        //                        MainCategory = CategoryListData.result;
-                        //                        var categoryList = CategoryListData.result;
-                        //                        var selectedCategory = {};
-                        //                        $scope.MainCategory = [];
-                        //                        $scope.subCategory = [];
-                        //                        //luan 3/28
-
-                        //                        var temp = {};
-                        //                        // Jignesh-26-03-2021
-                        //                        var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        //                        //if (authRole === "Admin") {
-                        //                        if (authRole.indexOf('Admin') != -1) {
-                        //                            temp.key = 'Add New';
-                        //                            temp.label = 'Add New';
-                        //                            $scope.MainCategory.push(temp);
-                        //                            $scope.subCategory.push(temp);
-                        //                        }
-
-
-                        //                        /* Jignesh 06-10-2020 */
-                        //                        angular.forEach(response.subCategoryData, function (value, key) {
-                        //                            var obj = {};
-                        //                            obj.key = value.CategoryDescription;
-                        //                            obj.label = value.CategoryID + ' - ' + value.CategoryDescription; //Jignesh-T-While adding new Category
-                        //                            $scope.subCategory.push(obj);
-                        //                            //console.log(value);
-                        //                        });
-                        //                        /* End */
-
-                        //                        var newlyAddedSubcategory = {};
-                        //                        newlyAddedSubcategory.key = response.objectSaved.SubCategoryDescription;
-                        //                        newlyAddedSubcategory.label = response.objectSaved.SubCategoryID + ' - ' + response.objectSaved.SubCategoryDescription;
-                        //                        $scope.subCategory.push(newlyAddedSubcategory);
-
-                        //                        //console.log($scope.subCategory);
-
-                        //                        angular.forEach(categoryList, function (value, key) {
-                        //                            var obj = {};
-                        //                            obj.key = value.CategoryDescription;
-                        //                            obj.label = value.CategoryID + ' - ' + value.CategoryDescription; //Jignesh-T-Adding new category
-                        //                            $scope.MainCategory.push(obj);
-                        //                            //console.log(value);
-                        //                            var newLabel = response.objectSaved.CategoryID + ' - ' + response.objectSaved.CategoryDescription;
-                        //                            if (obj.label == newLabel) {
-                        //                                selectedCategory = obj;
-
-                        //                                $scope.newCategory = selectedCategory;   //Manasi 11-02-2021
-                        //                            }
-                        //                        });
-
-                        //                        //console.log($scope.MainCategory, $scope.subCategory);
-
-                        //                        //escape html tags
-                        //                        for (var x = 0; x < $scope.MainCategory.length; x++) {
-                        //                            $scope.MainCategory[x].key = $scope.MainCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //                            $scope.MainCategory[x].label = $scope.MainCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //                        }
-
-                        //                        for (var x = 0; x < $scope.subCategory.length; x++) {
-                        //                            $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //                            $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //                        }
-
-                        //                        $scope.scheduleGanttInstance.updateCollection("main", $scope.MainCategory);
-                        //                        $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
-                        //                        $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
-                        //                        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
-                        //                        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-
-                        //                        if (response.message != undefined) {
-                        //                            dhtmlx.alert(response.message);
-                        //                            $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
-                        //                        }
-
-                        //                        main.setValue(selectedCategory.key);
-                        //                        sub.setValue(newlyAddedSubcategory.key);
-                        //                        //console.log($scope.MainCategory);
-                        //                    });
-                        //                } else {
-                        //                    if (response.message != undefined) {
-                        //                        dhtmlx.alert(response.message);
-                        //                        $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
-                        //                    }
-                        //                }
-                        //            }, function error(response) {
-                        //                //console.log(response);
-                        //            });
-                        //            return;
-                        //        }
-
-                        //        var index; //Category Id of parent
-                        //        $scope.subCategory = [];
-                        //        for (var i = 0; i < MainCategory.length; i++) {
-                        //            if (main.getValue() === MainCategory[i].CategoryDescription) {
-                        //                index = MainCategory[i].CategoryID;
-                        //                vId = MainCategory[i].VersionId;
-                        //            }
-                        //        }
-
-
-                        //        //console.log($scope.OrganizationID);
-                        //        var phaseid = $scope.scheduleGanttInstance.getTask($scope.lightBoxTask.parent).PhaseID;
-                        //        $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + phaseid + "/" + index + "/" + vId).then(function (response) {
-                        //            var subCategory = response.data.result;
-                        //            var defaultOne = {};
-
-                        //            //console.log('4319 test', response);
-
-                        //            //luan 3/28
-                        //            var temp = {};
-                        //            // Jignesh-26-03-2021
-                        //            var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        //            //if (authRole === "Admin") {
-                        //            if (authRole.indexOf('Admin') != -1) {
-                        //                temp.key = 'Add New';
-                        //                temp.label = 'Add New';
-                        //                $scope.subCategory.push(temp);
-                        //            }
-
-
-                        //            for (var i = 0; i < subCategory.length; i++) {
-                        //                var obj = {};
-                        //                obj.key = subCategory[i].SubCategoryDescription;
-                        //                obj.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription; //Jignesh-T-16/11/2021
-                        //                $scope.subCategory.push(obj);
-
-                        //                if (i == 0) {
-                        //                    defaultOne.key = subCategory[i].SubCategoryDescription;
-                        //                    defaultOne.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription;
-                        //                }
-                        //            }
-
-                        //            //console.log(defaultOne);
-
-                        //            //escape html tags
-                        //            for (var x = 0; x < $scope.subCategory.length; x++) {
-                        //                $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //                $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //            }
-
-                        //            $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
-                        //            $scope.scheduleGanttInstance.showLightbox($scope.selectedId);
-
-                        //            var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-                        //            sub.setValue(defaultOne.key);
-
-
-                        //        });
-                        //    }
-                        //},
                         {
-                            name: "subphase", height: 38, map_to: "subCategory", type: "CustomDDSubCategory", focus: true,
+                            name: "subphase",
+                            height: 38,
+                            map_to: "subCategory",
+                            type: "select",
+                            options: $scope.scheduleGanttInstance.serverList("sub", $scope.subCategory),
+                            focus: true,
+                            onchange: function () { //luan 3/28
+                                //console.log($scope.selectedPhase);
+                                var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
+                                var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+
+                                //$scope.temp = main.getValue();
+                                //$scope.tempSub = subs.getValue();
+                                //alert($scope.tempSub);
+                                //$scope.lightBoxStartDate = startDate.getValue();
+                                //$scope.lightBoxEndDate = endDate.getValue();
+
+                                //luan 3/29
+                                if (sub.getValue() != 'Add New') {
+                                    PREVIOUSSUB = sub.getValue();
+                                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+                                }
+
+                                //luan 3/28
+                                if (sub.getValue() == 'Add New') {
+                                    //sub.setValue('');   //reset
+                                    var scope = $rootScope.$new();
+
+                                    //Prepare the main category and main category id
+                                    var CategoryID = '';
+                                    var main_category = '';
+
+                                    main_category = main.getValue();
+                                    for (var x = 0; x < MainCategory.length; x++) {
+                                        if (main_category == MainCategory[x].CategoryDescription) {
+                                            CategoryID = MainCategory[x].CategoryID;
+                                            VersionId = MainCategory[x].VersionId;
+                                        }
+                                    }
+
+                                    scope.params = {
+                                        phase: $scope.selectedPhase,
+                                        phaseList: $scope.phases,
+                                        organizationID: $scope.OrganizationID,
+                                        mainCategory: main_category,
+                                        mainCategoryID: CategoryID,
+                                        isSubCategory: true
+                                    }
+
+                                    //console.log(scope.params);
+
+                                    $rootScope.modalInstance = $uibModal.open({
+                                        backdrop: 'static',
+                                        keyboard: false,
+                                        scope: scope,
+                                        templateUrl: "app/views/modal/add_main_sub_category_modal.html",
+                                        size: "md",
+                                        controller: "AddMainSubCategoryModalCtrl"
+                                    });
+                                    $rootScope.modalInstance.result.then(function (response) {
+                                        //console.log(response);
+                                        $('.gantt_cal_cover').show();
+                                        $('.gantt_cal_light').css('z-index', '10001');  //restore
+
+                                        //luan 3/29
+                                        if (response.status == 'Cancel') {
+                                            //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+
+                                            //main.setValue(PREVIOUSMAIN);   //revert history
+                                            sub.setValue(PREVIOUSSUB);   //revert history
+
+                                            PREVIOUSMAIN = main.getValue();
+                                            PREVIOUSSUB = sub.getValue();
+                                            //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+                                        }
+
+                                        if (response.status == 'Success') {
+                                            $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + $scope.selectedPhase.PhaseID + "/" + CategoryID + "/" + VersionId).then(function (SubCategoryData) {
+                                                var subCategory = SubCategoryData.data.result;
+                                                //console.log(subCategory);
+                                                var selectedSubcategory = {};
+
+                                                $scope.subCategory = [];
+
+                                                //console.log(PREVIOUSMAIN, PREVIOUSSUB);
+
+                                                //luan 3/28
+                                                var temp = {};
+                                                // Jignesh-26-03-2021
+                                                var authRole = $scope.localStorageSrevice.get('authorizationData').role;
+                                                //if (authRole === "Admin") {
+                                                if (authRole.indexOf('Admin') != -1) {
+                                                    temp.key = 'Add New';
+                                                    temp.label = 'Add New';
+                                                    $scope.subCategory.push(temp);
+                                                }
+
+
+                                                for (var i = 0; i < subCategory.length; i++) {
+                                                    var obj = {};
+                                                    obj.key = subCategory[i].SubCategoryDescription;
+                                                    obj.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription; //Jignesh-T-16/11/2021 (While creating new subCategory in presently created task)
+                                                    $scope.subCategory.push(obj);
+
+                                                    //console.log(obj, response.objectSaved);
+                                                    var savedLabel = response.objectSaved.SubCategoryID + ' - ' + response.objectSaved.SubCategoryDescription
+                                                    if (obj.label == savedLabel) {
+                                                        selectedSubcategory = obj;
+                                                        //console.log(selectedSubcategory);
+                                                    }
+
+                                                }
+
+                                                //escape html tags
+                                                for (var x = 0; x < $scope.subCategory.length; x++) {
+                                                    $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                                                    $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
+                                                }
+
+                                                $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
+                                                $scope.scheduleGanttInstance.showLightbox($scope.selectedActivity.id);
+                                                var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
+                                                var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
+
+                                                if (response.message != undefined) {
+                                                    dhtmlx.alert(response.message);
+                                                    $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
+                                                }
+
+                                                main.setValue(PREVIOUSMAIN);   //Manasi 26-02-2021
+                                                //main.setValue($scope.newCategory.label);   //Manasi 11-02-2021
+                                                sub.setValue(selectedSubcategory.key);
+                                                //console.log($scope.subCategory);
+
+                                            });
+                                        } else {
+                                            if (response.message != undefined) {
+                                                dhtmlx.alert(response.message);
+                                                $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
+                                            }
+                                        }
+                                    }, function error(response) {
+                                        //console.log(response);
+                                    });
+                                    return;
+                                }
+
+                            }
                         },
-                        //{
-                        //    name: "subphase",
-                        //    height: 38,
-                        //    map_to: "subCategory",
-                        //    type: "select",
-                        //    options: $scope.scheduleGanttInstance.serverList("sub", $scope.subCategory),
-                        //    focus: true,
-                        //    onchange: function () { //luan 3/28
-                        //        //console.log($scope.selectedPhase);
-                        //        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
-                        //        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-
-                        //        //$scope.temp = main.getValue();
-                        //        //$scope.tempSub = subs.getValue();
-                        //        //alert($scope.tempSub);
-                        //        //$scope.lightBoxStartDate = startDate.getValue();
-                        //        //$scope.lightBoxEndDate = endDate.getValue();
-
-                        //        //luan 3/29
-                        //        if (sub.getValue() != 'Add New') {
-                        //            PREVIOUSSUB = sub.getValue();
-                        //            //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-                        //        }
-
-                        //        //luan 3/28
-                        //        if (sub.getValue() == 'Add New') {
-                        //            //sub.setValue('');   //reset
-                        //            var scope = $rootScope.$new();
-
-                        //            //Prepare the main category and main category id
-                        //            var CategoryID = '';
-                        //            var main_category = '';
-
-                        //            main_category = main.getValue();
-                        //            for (var x = 0; x < MainCategory.length; x++) {
-                        //                if (main_category == MainCategory[x].CategoryDescription) {
-                        //                    CategoryID = MainCategory[x].CategoryID;
-                        //                    VersionId = MainCategory[x].VersionId;
-                        //                }
-                        //            }
-
-                        //            scope.params = {
-                        //                phase: $scope.selectedPhase,
-                        //                phaseList: $scope.phases,
-                        //                organizationID: $scope.OrganizationID,
-                        //                mainCategory: main_category,
-                        //                mainCategoryID: CategoryID,
-                        //                isSubCategory: true
-                        //            }
-
-                        //            //console.log(scope.params);
-
-                        //            $rootScope.modalInstance = $uibModal.open({
-                        //                backdrop: 'static',
-                        //                keyboard: false,
-                        //                scope: scope,
-                        //                templateUrl: "app/views/modal/add_main_sub_category_modal.html",
-                        //                size: "md",
-                        //                controller: "AddMainSubCategoryModalCtrl"
-                        //            });
-                        //            $rootScope.modalInstance.result.then(function (response) {
-                        //                //console.log(response);
-                        //                $('.gantt_cal_cover').show();
-                        //                $('.gantt_cal_light').css('z-index', '10001');  //restore
-
-                        //                //luan 3/29
-                        //                if (response.status == 'Cancel') {
-                        //                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-
-                        //                    //main.setValue(PREVIOUSMAIN);   //revert history
-                        //                    sub.setValue(PREVIOUSSUB);   //revert history
-
-                        //                    PREVIOUSMAIN = main.getValue();
-                        //                    PREVIOUSSUB = sub.getValue();
-                        //                    //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-                        //                }
-
-                        //                if (response.status == 'Success') {
-                        //                    $http.get(serviceBasePath + "Request/SubActivityCategory/" + $scope.OrganizationID + "/" + $scope.selectedPhase.PhaseID + "/" + CategoryID + "/" + VersionId).then(function (SubCategoryData) {
-                        //                        var subCategory = SubCategoryData.data.result;
-                        //                        //console.log(subCategory);
-                        //                        var selectedSubcategory = {};
-
-                        //                        $scope.subCategory = [];
-
-                        //                        //console.log(PREVIOUSMAIN, PREVIOUSSUB);
-
-                        //                        //luan 3/28
-                        //                        var temp = {};
-                        //                        // Jignesh-26-03-2021
-                        //                        var authRole = $scope.localStorageSrevice.get('authorizationData').role;
-                        //                        //if (authRole === "Admin") {
-                        //                        if (authRole.indexOf('Admin') != -1) {
-                        //                            temp.key = 'Add New';
-                        //                            temp.label = 'Add New';
-                        //                            $scope.subCategory.push(temp);
-                        //                        }
-
-
-                        //                        for (var i = 0; i < subCategory.length; i++) {
-                        //                            var obj = {};
-                        //                            obj.key = subCategory[i].SubCategoryDescription;
-                        //                            obj.label = subCategory[i].SubCategoryID + ' - ' + subCategory[i].SubCategoryDescription; //Jignesh-T-16/11/2021 (While creating new subCategory in presently created task)
-                        //                            $scope.subCategory.push(obj);
-
-                        //                            //console.log(obj, response.objectSaved);
-                        //                            var savedLabel = response.objectSaved.SubCategoryID + ' - ' + response.objectSaved.SubCategoryDescription
-                        //                            if (obj.label == savedLabel) {
-                        //                                selectedSubcategory = obj;
-                        //                                //console.log(selectedSubcategory);
-                        //                            }
-
-                        //                        }
-
-                        //                        //escape html tags
-                        //                        for (var x = 0; x < $scope.subCategory.length; x++) {
-                        //                            $scope.subCategory[x].key = $scope.subCategory[x].key.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //                            $scope.subCategory[x].label = $scope.subCategory[x].label.replace(/&/g, '&#38').replace(/</g, '&#60').replace(/>/g, '&#62').replace(/'/g, '&#39').replace(/'/g, '&#34');   //Manasi 11-02-2021;
-                        //                        }
-
-                        //                        $scope.scheduleGanttInstance.updateCollection("sub", $scope.subCategory);
-                        //                        $scope.scheduleGanttInstance.showLightbox($scope.selectedActivity.id);
-                        //                        var main = $scope.scheduleGanttInstance.getLightboxSection('mainphase');
-                        //                        var sub = $scope.scheduleGanttInstance.getLightboxSection('subphase');
-
-                        //                        if (response.message != undefined) {
-                        //                            dhtmlx.alert(response.message);
-                        //                            $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
-                        //                        }
-
-                        //                        main.setValue(PREVIOUSMAIN);   //Manasi 26-02-2021
-                        //                        //main.setValue($scope.newCategory.label);   //Manasi 11-02-2021
-                        //                        sub.setValue(selectedSubcategory.key);
-                        //                        //console.log($scope.subCategory);
-
-                        //                    });
-                        //                } else {
-                        //                    if (response.message != undefined) {
-                        //                        dhtmlx.alert(response.message);
-                        //                        $('div.gantt_modal_box.dhtmlx_modal_box.gantt-confirm.dhtmlx-confirm').css('z-index', '100000001');
-                        //                    }
-                        //                }
-                        //            }, function error(response) {
-                        //                //console.log(response);
-                        //            });
-                        //            return;
-                        //        }
-
-                        //    }
-                        //},
                         { name: "start_date", single_date: true, height: 38, map_to: "start_date", type: "duration", year_range: 100 },
                         { name: "end_date", single_date: true, height: 38, map_to: "end_date", type: "duration", year_range: 100 },
                     ];
